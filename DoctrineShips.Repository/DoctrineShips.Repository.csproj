@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{B00E2357-0B56-4528-AE75-C67D829C85F9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DoctrineShips.Repository</RootNamespace>
+    <AssemblyName>DoctrineShips.Repository</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="DoctrineShipsRepository.cs" />
+    <Compile Include="IDoctrineShipsRepository.cs" />
+    <Compile Include="Operations\ShortUrlOperations.cs" />
+    <Compile Include="Operations\NotificationRecipientOperations.cs" />
+    <Compile Include="Operations\SubscriptionPlanOperations.cs" />
+    <Compile Include="Operations\LogMessageOperations.cs" />
+    <Compile Include="Operations\ArticleOperations.cs" />
+    <Compile Include="Operations\AccessCodeOperations.cs" />
+    <Compile Include="Operations\AccountOperations.cs" />
+    <Compile Include="Operations\ContractOperations.cs" />
+    <Compile Include="Operations\CustomerOperations.cs" />
+    <Compile Include="Operations\SettingProfileOperations.cs" />
+    <Compile Include="Operations\SalesAgentOperations.cs" />
+    <Compile Include="Operations\ComponentOperations.cs" />
+    <Compile Include="Operations\ShipFitComponentOperations.cs" />
+    <Compile Include="Operations\ShipFitOperations.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DoctrineShips.Entities\DoctrineShips.Entities.csproj">
+      <Project>{051bac10-62ad-4f81-b76c-6fb95cd8dc82}</Project>
+      <Name>DoctrineShips.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GenericRepository\GenericRepository.csproj">
+      <Project>{6e682a14-c872-4813-b620-76e108dea683}</Project>
+      <Name>GenericRepository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tools\Tools.csproj">
+      <Project>{4b2baa3c-ee4e-4239-86f4-e658c2a23376}</Project>
+      <Name>Tools</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

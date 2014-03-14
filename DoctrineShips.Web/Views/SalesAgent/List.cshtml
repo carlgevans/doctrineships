@@ -1,0 +1,42 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using GridMvc.Html
+@model SalesAgentListViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Sales Agents";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Sales Agents<br />
+            <small>A list of the current sales agents for the account.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>Click on a sales agent to view their contracts.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.SalesAgents != null && Model.SalesAgents.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Sales Agents:</strong> @Model.SalesAgents.Count()</h5>
+            </div>
+
+            @Html.Grid(Model.SalesAgents).Columns(columns =>
+                        {
+                            columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => @<a href='@Url.Action("SalesAgentContracts", "Search", new { salesAgentId = @c.SalesAgentId }, Request.Url.Scheme)'><img src="@c.ImageUrl" /></a>);
+                            columns.Add(c => c.Name).Encoded(false).Sanitized(false).Titled("Name").Filterable(true).Sortable(true).RenderValueAs(c => @<a href='@Url.Action("SalesAgentContracts", "Search", new { salesAgentId = @c.SalesAgentId }, Request.Url.Scheme)'>@c.Name</a>);
+                            columns.Add(c => c.LastContractRefresh).Encoded(false).Sanitized(false).Titled("Last Refresh").RenderValueAs(c => c.LastContractRefresh + "&nbsp;&nbsp;<span class=\"ds-tooltip\" tooltip=\"Force a contract refresh for this sales agent. This may only be performed once every 30 minutes.\"><a href='" + @Url.Action("ForceContractRefresh", "SalesAgent", new { salesAgentId = @c.SalesAgentId }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-refresh\"></span></a></span>").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ContractsAvailable).Css("hidden-xs").Titled("Active Contracts").Encoded(false).Sanitized(false).RenderValueAs(c => @<span class="ds-tooltip" tooltip="Count includes invalid contracts.">@c.ContractsAvailable</span>).Filterable(true).Sortable(true);
+                        }).WithPaging(5, 5).WithMultipleFilters()
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Sales Agents Found</b>
+        </div>
+    }
+</div>

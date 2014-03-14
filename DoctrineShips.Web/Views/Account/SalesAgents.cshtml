@@ -1,0 +1,95 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountSalesAgentsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Sales Agents";
+}
+
+<div class="ds-dialog" id="deletesalesagents" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to delete the selected sales agents? Any outstanding contracts will remain until they expire.</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deletesalesagents_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Sales Agents<br />
+            <small>Manage Sales Agents for the account.</small>
+        </h1>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.SalesAgents != null && Model.SalesAgents.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Sales Agents:</strong> @Model.SalesAgents.Count()</h5>
+            </div>
+
+            @using (Html.BeginForm("DeleteSalesAgent", "Account", FormMethod.Post, new { @id = "deletesalesagents_form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Grid(Model.SalesAgents).Columns(columns =>
+                            {
+                                columns.Add(c => c.SalesAgentId).Css("hidden-xs").Encoded(false).Sanitized(false).Titled("Id").RenderValueAs(c => @<a href='@Url.Action("SalesAgentContracts", "Search", new { salesAgentId = @c.SalesAgentId }, Request.Url.Scheme)'>@c.SalesAgentId</a>).Filterable(true).Sortable(true);
+                                columns.Add(c => c.Name).Titled("Name").Filterable(true).Sortable(true);
+                                columns.Add(c => c.LastContractRefresh).Encoded(false).Sanitized(false).Titled("Last Refresh").RenderValueAs(c => c.LastContractRefresh + "&nbsp;&nbsp;<span class=\"ds-tooltip\" tooltip=\"Force a contract refresh for this sales agent. This may only be performed once every 30 minutes.\"><a href='" + @Url.Action("ForceContractRefresh", "Account", new { salesAgentId = @c.SalesAgentId }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-refresh\"></span></a></span>").Filterable(true).Sortable(true);
+                                columns.Add(c => c.IsActive).Encoded(false).Sanitized(false).Titled("Active?").RenderValueAs(c => c.IsActive == true ? "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateSalesAgentState", "Account", new { salesAgentId = @c.SalesAgentId, isActive = 0 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-ok\"></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateSalesAgentState", "Account", new { salesAgentId = @c.SalesAgentId, isActive = 1 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-remove\"></span></a></span>").Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deletesalesagents')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.SalesAgentId" name="RemoveList" value="@c.SalesAgentId" />);
+                            }).WithPaging(10, 5).WithMultipleFilters()
+            }
+
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Sales Agents Found</b>
+        </div>
+    }
+
+    <br />
+
+    @using (Html.BeginForm("AddSalesAgent", "Account", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.ApiId)
+                @Html.TextBoxFor(m => m.ApiId)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.ApiKey)
+                @Html.TextBoxFor(m => m.ApiKey)
+            </div>
+            <div class="ds-form-group">
+                <button id="submit2" type="submit"><span class="glyphicon glyphicon-plus"></span> Add Sales Agent</button>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,51 @@
+﻿@{
+    ViewBag.Title = "Doctrine Ships - Import Ship Fits";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Import Ship Fits<br />
+            <small>Import a ship fit from an EVE ship fitting xml file.</small>
+        </h1>
+    </div>
+    <div class="ds-header-detail">
+        <p>The import tool must be used from an out-of-game browser.</p>
+    </div>
+
+    @using (Html.BeginForm("ImportEveXml", "Account", FormMethod.Post, new { enctype = "multipart/form-data", id = "importForm", @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            <div class="ds-form-group">
+                <br />
+                <strong>Importing For Account: @User.Identity.Name</strong>
+            </div>
+            @Html.AntiForgeryToken()
+            <div class="ds-form-group">
+                <input class="file" type="file" name="xmlFile" /><br />
+                <button id="submit" type="submit"><span class="glyphicon glyphicon-upload"></span> Upload</button>
+            </div>
+        </div>
+    }
+    <div id="importLoading" class="ds-loading"><p>Importing, Please Wait...</p><img src="@Url.Content("~/Content/images/icons/loading.gif")" alt="Loading" /></div>
+</div>
+
+<script src="@Url.Content("~/Scripts/jquery-1.11.0.min.js")" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        // Hide the loading message on page load.
+        $("#importLoading").hide();
+
+        // Attach a click handler to the submit button.
+        $('#submit').click(function () {
+
+            // Hide the form.
+            $("#importForm").hide();
+
+            // Show the loading message.
+            $("#importLoading").show();
+
+        });
+    });
+</script>

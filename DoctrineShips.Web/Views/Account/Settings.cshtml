@@ -1,0 +1,98 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+
+@model AccountSettingsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Settings";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Settings<br />
+            <small>Edit the setting profile for the account.</small>
+        </h1>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null)
+    {
+        using (Html.BeginForm("UpdateSettings", "Account", FormMethod.Post, new { @class = "ds-form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.SettingProfileId)
+            @Html.ValidationSummary()
+            <div class="ds-table">
+                <table>
+                    <tr>
+                        <th class="ds-table-heading"></th>
+                        <th class="ds-table-heading">Setting</th>
+                        <th class="ds-table-heading">Value</th>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="Broker Fee Percentage.&#10;&#10;This value is used when calculating component buy prices.&#10;&#10;The Broker Relations skill reduces broker fees by 5% per level from 1% down to 0.75% at level 5.&#10;&#10;Doctrine Ships does not take standings in to account."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.BrokerPercentage)</th>
+                        <td>@Html.DropDownListFor(m => m.BrokerPercentage, Model.BrokerPercentages)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="Sales Tax Percentage.&#10;&#10;The Accounting skill reduces the default sales tax rate by 10% per level from 1.5% down to 0.75% at level 5."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.SalesTaxPercentage)</th>
+                        <td>@Html.DropDownListFor(m => m.SalesTaxPercentage, Model.SalesTaxPercentages)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The markup percentage for ship fit contracts.&#10;&#10;This value is used when calculating contract rewards and estimated profit."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.ContractMarkupPercentage)</th>
+                        <td>@Html.DropDownListFor(m => m.ContractMarkupPercentage, Model.ContractMarkupPercentages)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The broker fee when placing contracts.&#10;&#10;The default value is 10000 ISK for private, corporation or alliance contracts.&#10;&#10;This value may change with in-game skills."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.ContractBrokerFee)</th>
+                        <td>@Html.TextBoxFor(m => m.ContractBrokerFee)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="A shipping cost per m3.&#10;&#10;This value is used to calculate an estimate of the shipping costs for a particular ship fit."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.ShippingCostPerM3)</th>
+                        <td>@Html.TextBoxFor(m => m.ShippingCostPerM3)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The station from which buy prices are calculated.&#10;&#10;It is advised that this be set to 60003760 (Jita) for the most accurate ship fit pricing.&#10;&#10;Missing components on the market will reduce the accuracy of quoted ship fit prices."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.BuyStationId)</th>
+                        <td>@Html.TextBoxFor(m => m.BuyStationId)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The station from which sell prices are calculated.&#10;&#10;It is advised that this be set to 60003760 (Jita) for the most accurate ship fit pricing.&#10;&#10;Missing components on the market will reduce the accuracy of quoted ship fit prices."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.SellStationId)</th>
+                        <td>@Html.TextBoxFor(m => m.SellStationId)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The level at which a contract availability alert will be generated.&#10;&#10;Once the number of contracts for a particular monitored ship fit falls to this level or below, alerts will be generated for all active notification recipients.&#10;&#10;Ship fits at or below this level will show as amber in the main ship fit list."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.AlertThreshold)</th>
+                        <td>@Html.TextBoxFor(m => m.AlertThreshold)</td>
+                    </tr>
+                    <tr>
+                        <td><span class="ds-tooltip" tooltip="The twitter handle to which account-level alerts are to be sent.&#10;&#10;The recipient must follow DoctrineShips in order to receive messages."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.TwitterHandle)</th>
+                        <td>@Html.TextBoxFor(m => m.TwitterHandle)</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><button id="submit" type="submit"><span class="glyphicon glyphicon-save"></span> Update Settings</button></td>
+                    </tr>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Setting Profile Found</b>
+        </div>
+    }
+</div>

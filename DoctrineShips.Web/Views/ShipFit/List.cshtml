@@ -1,0 +1,57 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model ShipFitListViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Ship Fits";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Ship Fits<br />
+            <small>A list of the ship fits available for the account.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>Click on an image to view details of the fit.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.ShipFits != null && Model.ShipFits.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
+                <h5><strong>Ship Fits:</strong> @Model.ShipFits.Count()</h5>
+            </div>
+
+            @Html.Grid(Model.ShipFits).Columns(columns =>
+                        {
+                            columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFitId }, Request.Url.Scheme)'><img src="@c.ThumbnailImageUrl" /></a><p>&nbsp;&nbsp;@c.Hull</p></div>);
+                            columns.Add(c => c.ShipFitId).Encoded(false).Sanitized(false).Titled("Fit ID").RenderValueAs(c => @<a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFitId }, Request.Url.Scheme)'>@("DS" + @c.ShipFitId)</a>).Filterable(true).Sortable(true);
+                            columns.Add(c => c.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                            columns.Add(c => c.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ContractsAvailable).Encoded(false).Sanitized(false).Titled("Contracts").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Only valid contracts are counted.">@(c.ContractsAvailable < 0 ? "Count\nDisabled" : c.ContractsAvailable.ToString())</span>).Filterable(true).Sortable(true);
+                            columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => "<div class=\"ds-grid-tools\"><span class=\"ds-tooltip\" tooltip=\"Click to open the ship fitting in-game (IGB Only).\"><button type=\"button\"onclick=\"showFitting(\'" + @c.FittingString + "\')\"><span class=\"glyphicon glyphicon-list-alt\"></span> Eve Fit</span></button></div>");
+                        }).WithPaging(20, 5).WithMultipleFilters().SetRowCssClasses(item =>
+                                                                                                                 {
+                                                                                                                     if (item.ContractsAvailable < 0)
+                                                                                                                         return "ds-grid-status-none";
+                                                                                                                     if (item.ContractsAvailable == 0)
+                                                                                                                         return "ds-grid-status-alert";
+                                                                                                                     if (item.ContractsAvailable >= 1 && item.ContractsAvailable <= Model.SettingProfile.AlertThreshold)
+                                                                                                                         return "ds-grid-status-warning";
+                                                                                                                     return "ds-grid-status-ok";
+                                                                                                                 })
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Ship Fits Found</b>
+        </div>
+    }
+
+</div>

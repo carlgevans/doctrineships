@@ -1,0 +1,51 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model KnowledgeBaseArticleViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Knowledge Base Article";
+    ViewBag.PageCss = Url.Content("~/Content/styles/knowledgebasearticle.css");
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Knowledge Base Article<br />
+        </h1>
+    </div>
+
+    @if (Model != null && Model.Article != null)
+    {
+        <div id="ds-knowledgebase">
+            <table>
+                <tr>
+                    <th class="ds-knowledgebase-heading" colspan="4">Article Details</th>
+                </tr>
+                <tr>
+                    <th><b>Title</b></th>
+                    <td>@Model.Article.Title</td>
+                    <th><b>Author</b></th>
+                    <td>@Model.Article.Author</td>
+                </tr>
+                <tr>
+                    <th><b>Date Created</b></th>
+                    <td>@Model.Article.DateCreated</td>
+                    <th><b>Last Updated</b></th>
+                    <td>@Model.Article.LastUpdated</td>
+                </tr>
+            </table>
+
+            <div class="ds-knowledgebase-content">
+                @Html.Raw(Model.Article.Content)
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>Article Not Found</b>
+        </div>
+    }
+</div>

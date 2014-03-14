@@ -1,0 +1,145 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountNotificationRecipientsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Notification Recipients";
+}
+
+<div class="ds-dialog" id="deleterecipients" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to delete the selected recipients?</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deleterecipients_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ds-dialog" id="updaterecsettings" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Update Recipient Settings</h4>
+            </div>
+            <div class="ds-dialog-body">
+                @using (Html.BeginForm("UpdateNotificationRecipients", "Account", FormMethod.Post, new { @id = "updaterecsettings_form", @class = "ds-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="NotificationRecipientId" name="NotificationRecipientId" />
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.AlertIntervalHours)
+                        @Html.TextBoxFor(m => m.AlertIntervalHours)
+                    </div>
+                    <div class="ds-form-checkbox">
+                        @Html.LabelFor(m => m.ReceivesDailySummary)
+                        <br />
+                        @Html.CheckBoxFor(m => m.ReceivesDailySummary)
+                    </div>
+                    <div class="ds-form-checkbox">
+                        @Html.LabelFor(m => m.ReceivesAlerts)
+                        <br />
+                        @Html.CheckBoxFor(m => m.ReceivesAlerts)
+                    </div>
+                }
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="updaterecsettings_confirm" data-dismiss="modal"><span class="glyphicon glyphicon-save"></span> Update</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateRecipientSettings(notificationRecipientId, alertIntervalHours) {
+        $("#NotificationRecipientId").val(notificationRecipientId);
+        $("#AlertIntervalHours").val(alertIntervalHours);
+
+        // Open the dialog.
+        confirmDialog("#updaterecsettings");
+    }
+</script>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Notification Recipients<br />
+            <small>Manage notification recipients for the account.</small>
+        </h1>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.NotificationRecipients != null && Model.NotificationRecipients.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Recipients:</strong> @Model.NotificationRecipients.Count()</h5>
+            </div>
+
+        @using (Html.BeginForm("DeleteNotificationRecipient", "Account", FormMethod.Post, new { @id = "deleterecipients_form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.Grid(Model.NotificationRecipients).Columns(columns =>
+                        {
+                            columns.Add(c => c.TwitterHandle).Titled("Twitter Handle").Filterable(true).Sortable(true);
+                            columns.Add(c => c.Description).Titled("Description").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ReceivesAlerts).Encoded(false).Sanitized(false).Titled("Alerts").RenderValueAs(c => c.ReceivesAlerts == true ? "<span class=\"ds-tooltip\" tooltip=\"This recipient is receiving contract availability alerts.&#10;&#10;The recipient must follow @DoctrineShips in order to receive messages.&#10;&#10;Click to open the recipient settings dialog.\"><a href=\"javascript:void(0)\" onclick=\"updateRecipientSettings(" + @c.NotificationRecipientId + "," + @c.AlertIntervalHours + ")\"><span class=\"glyphicon glyphicon-ok\"></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"This recipient is NOT receiving contract availability alerts.&#10;&#10;Click to open the recipient settings dialog.\"><a href=\"javascript:void(0)\" onclick=\"updateRecipientSettings(" + @c.NotificationRecipientId + "," + @c.AlertIntervalHours + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a></span>").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ReceivesDailySummary).Encoded(false).Sanitized(false).Titled("Daily Summary").RenderValueAs(c => c.ReceivesDailySummary == true ? "<span class=\"ds-tooltip\" tooltip=\"This recipient is receiving daily summary reports of contract availability.&#10;&#10;The recipient must follow DoctrineShips in order to receive messages.&#10;&#10;Click to open the recipient settings dialog.\"><a href=\"javascript:void(0)\" onclick=\"updateRecipientSettings(" + @c.NotificationRecipientId + "," + @c.AlertIntervalHours + ")\"><span class=\"glyphicon glyphicon-ok\"></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"This recipient is NOT receiving daily summary reports of contract availability.&#10;&#10;Click to open the recipient settings dialog.\"><a href=\"javascript:void(0)\" onclick=\"updateRecipientSettings(" + @c.NotificationRecipientId + "," + @c.AlertIntervalHours + ")\"><span class=\"glyphicon glyphicon-remove\"></span></a></span>").Filterable(true).Sortable(true);
+                            columns.Add(c => c.AlertIntervalHours).Encoded(false).Sanitized(false).Titled("Alert Interval").RenderValueAs(c => "<span class=\"ds-tooltip\" tooltip=\"The alert interval is the shortest period of time that the recipient will receive another alert.&#10;&#10;When an alert is triggered, the date and time of the last alert is checked against the alert interval. If the interval has elapsed then the alert is sent.&#10;&#10;Last Alert:&#10;" + @c.LastAlert + "&#10;&#10;Earliest Next Alert:&#10;" + (@c.LastAlert + TimeSpan.FromHours(@c.AlertIntervalHours)) + "\">" + c.AlertIntervalHours + " Hrs</span>").Filterable(true).Sortable(true);
+                            columns.Add().Encoded(false).Sanitized(false).Titled("Settings").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateRecipientSettings(@c.NotificationRecipientId, @c.AlertIntervalHours)"><span class="glyphicon glyphicon-cog"></span></a>).Filterable(true).Sortable(true);
+                            columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deleterecipients')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.NotificationRecipientId" name="RemoveList" value="@c.NotificationRecipientId" />);
+                        }).WithPaging(10, 5).WithMultipleFilters()
+        }
+
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Notification Recipients Found</b>
+        </div>
+    }
+
+    <br />
+    @using (Html.BeginForm("AddNotificationRecipient", "Account", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.AlertIntervalHours)
+            @Html.HiddenFor(m => m.ReceivesDailySummary)
+            @Html.HiddenFor(m => m.ReceivesAlerts)
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.TwitterHandle)
+                @Html.TextBoxFor(m => m.TwitterHandle)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+            <div class="ds-form-group">
+                <button id="submit2" type="submit"><span class="glyphicon glyphicon-plus"></span> Add Recipient</button>
+            </div>
+        </div>
+    }
+</div>

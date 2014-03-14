@@ -1,0 +1,648 @@
+@import "less/bootstrap.less";
+
+// **************************
+// Variables
+// **************************
+@footerHeight: 60px;
+@bgColourMain: #f8f8f8;
+@bgColourBody: #f8f8f8;
+@bgColourFooter: #f8f8f8;
+@mainTextColour: #333;
+@dimmedColour: #e9e7e7;
+@dimmedHoverColour: #b7b7b7;
+@dimmedShadowColour: rgb(146, 144, 144);
+@gridColour: rgba(66, 139, 202, 0.15);
+@gridSelectedColour: rgba(66, 139, 202, 0.15);
+@gridHoverColour: rgba(66, 139, 202, 0.15);
+@statusAlertColour: #c79292;
+@statusWarningColour: #e1ca94;
+@statusOkColour: #abceb1;
+@statusNoneColour: none;
+
+// **************************
+// Global Styles
+// **************************
+
+html, body {
+    .container;
+    height: 100%;
+    background-color: @bgColourBody;
+    color: @mainTextColour;
+}
+
+// **************************
+// Doctrine Ships Specific Styles
+// **************************
+
+#ds-wrap {
+    min-height: 100%;
+    height: auto;
+    height: 100%;
+    margin: 0 auto -@footerHeight;
+    background-color: @bgColourMain;
+}
+
+#ds-main {
+    .wrapper;
+    padding-top: 70px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: @bgColourMain;
+}
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-main {
+        margin-left: -30px;
+        padding-left: 0px;
+        padding-right: 0px;
+    }
+}
+
+#ds-footerpush {
+    height: @footerHeight;
+}
+
+#ds-footer {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
+    .text-center;
+    .text-muted;
+    height: @footerHeight;
+    background-color: @bgColourFooter;
+}
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-footer {
+        margin: 0px;
+        padding: 0px;
+    }
+}
+
+#ds-header {
+    .wrapper;
+}
+
+    #ds-header h1 {
+        .make-xs-column(12);
+        .make-sm-column(8);
+        .make-md-column(9);
+        .page-header;
+    }
+
+    #ds-header .ds-header-detail {
+        .make-xs-column(12);
+        .make-sm-column(8);
+        .make-md-column(9);
+    }
+
+    #ds-header .ds-header-image {
+        .hidden-xs;
+        .make-sm-column(4);
+        .make-md-column(3);
+        .thumbnail;
+        .text-center;
+        .text-primary;
+        .pull-right;
+        min-width: 140px;
+        min-height: 200px;
+        padding-top: 20px;
+        background-color: @dimmedColour;
+        border-radius: 20px;
+    }
+
+#ds-customer {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(4);
+    .make-md-column(3);
+}
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-customer {
+        margin-left: 0px;
+    }
+}
+
+#ds-customer > a {
+    .thumbnail;
+    .text-center;
+    background-color: @dimmedColour;
+    border-radius: 20px;
+}
+
+    #ds-customer > a:hover {
+        text-decoration: none;
+        background-color: @dimmedHoverColour;
+    }
+
+    #ds-customer > a > img {
+        padding-top: 20px;
+        min-width: 128px;
+        height: 148px;
+    }
+
+#ds-grid {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
+}
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-grid {
+        .make-xs-column-offset(1);
+        .make-xs-column(10);
+    }
+}
+
+#ds-grid img {
+    .thumbnail;
+    margin-bottom: 5px;
+    padding: 2px;
+}
+
+#ds-grid p {
+    display: inline;
+}
+
+#ds-grid .ds-grid-tools button {
+    .btn;
+    .btn-default;
+    .btn-sm;
+    // Layout changes for small viewport devices.
+    @media (max-width: @screen-xs-max) {
+        .btn-xs;
+    }
+}
+
+#ds-grid .ds-grid-header {
+    .wrapper;
+    .make-sm-column(12);
+    .make-md-column(12);
+    .panel;
+    .panel-default;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    background-color: @dimmedColour;
+    border-radius: 20px;
+    padding: 10px 30px 10px 30px;
+}
+
+    #ds-grid .ds-grid-header > button {
+        .btn;
+        .btn-primary;
+        .btn-sm;
+        .pull-right;
+        margin: 2px;
+    }
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-grid .ds-grid-header {
+        .wrapper;
+        .make-xs-column(12);
+        min-width: 290px;
+        padding: 20px 40px 20px 10px;
+    }
+
+        #ds-grid .ds-grid-header button {
+            .wrapper;
+            .make-xs-column(12);
+            .btn-xs;
+            margin-bottom: 10px;
+        }
+}
+
+#ds-grid .ds-grid-status-none > td {
+    background-color: @statusNoneColour !important;
+}
+
+#ds-grid .ds-grid-status-alert > td {
+    background-color: @statusAlertColour !important;
+}
+
+#ds-grid .ds-grid-status-warning > td {
+    background-color: @statusWarningColour !important;
+}
+
+#ds-grid .ds-grid-status-ok > td {
+    background-color: @statusOkColour !important;
+}
+
+#ds-shipfit {
+
+}
+
+    #ds-shipfit .ds-shipfit-image {
+        .wrapper;
+        .make-md-column-offset(1);
+        .make-xs-column(12);
+        .make-sm-column(5);
+        .make-md-column(4);
+        margin-top: 20px;
+    }
+
+    #ds-shipfit .ds-shipfit-details {
+        .wrapper;
+        .make-sm-column-offset(1);
+        .make-xs-column(12);
+        .make-sm-column(6);
+        .make-md-column(5);
+        margin-top: 20px;
+    }
+
+    #ds-shipfit .ds-shipfit-market {
+        .wrapper;
+        .make-xs-column(12);
+        .make-sm-column(12);
+        .make-md-column(12);
+        margin-top: 20px;
+    }
+
+    #ds-shipfit .ds-shipfit-components {
+        .wrapper;
+        .make-xs-column(12);
+        .make-sm-column(12);
+        .make-md-column(12);
+        margin-top: 20px;
+    }
+
+    #ds-shipfit .ds-shipfit-heading {
+        background-color: @dimmedHoverColour;
+    }
+
+    #ds-shipfit img {
+        .thumbnail;
+    }
+
+    #ds-shipfit table {
+        .table;
+        .table-condensed;
+    }
+
+    #ds-shipfit th {
+        background-color: @dimmedColour;
+        font-size: 13px;
+    }
+
+    #ds-shipfit button {
+        .btn;
+        .btn-default;
+        .btn-sm;
+        // Layout changes for small viewport devices.
+        @media (max-width: @screen-xs-max) {
+            .btn-xs;
+        }
+    }
+
+#ds-knowledgebase {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
+}
+
+    #ds-knowledgebase table {
+        .table;
+    }
+
+    #ds-knowledgebase th {
+        background-color: @dimmedColour;
+        font-size: 13px;
+    }
+
+    #ds-knowledgebase .ds-knowledgebase-heading {
+        margin-top: 20px;
+        background-color: @dimmedHoverColour;
+    }
+
+    #ds-knowledgebase .ds-knowledgebase-content {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+        #ds-knowledgebase .ds-knowledgebase-content img {
+            .thumbnail;
+            .img-responsive;
+            margin: 30px;
+        }
+
+#ds-subscriptions {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
+}
+
+    #ds-subscriptions .ds-subscriptions-staff {
+        display: inline;
+        margin: 20px;
+        .text-center;
+        .pull-left;
+    }
+
+        #ds-subscriptions .ds-subscriptions-staff img {
+            .thumbnail;
+        }
+
+    #ds-subscriptions h3 {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
+    #ds-subscriptions p {
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+#ds-message {
+    .wrapper;
+    .make-xs-column(11);
+    .make-sm-column(11);
+    .make-md-column(11);
+    margin-top: 10px;
+    .alert;
+    .alert-info;
+}
+
+#ds-success {
+    .wrapper;
+    .make-xs-column(11);
+    .make-sm-column(11);
+    .make-md-column(11);
+    margin-top: 10px;
+    .alert;
+    .alert-success;
+}
+
+#ds-error {
+    .wrapper;
+    .make-xs-column(11);
+    .make-sm-column(11);
+    .make-md-column(11);
+    margin-top: 10px;
+    .alert;
+    .alert-danger;
+}
+
+// **************************
+// Reusable Classes
+// **************************
+
+.ds-dialog {
+    .modal;
+    .fade;
+}
+
+    .ds-dialog .ds-dialog-wrap {
+        .modal-dialog;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 5%;
+        width: 500px;
+        // Use smaller width modal for mobile devices.
+        @media (max-width: @screen-xs-max) {
+            width: 300px;
+        }
+    }
+
+    .ds-dialog .ds-dialog-content {
+        .modal-content;
+    }
+
+    .ds-dialog .ds-dialog-header {
+        .modal-header;
+    }
+
+        .ds-dialog .ds-dialog-header h4 {
+            .modal-title;
+        }
+
+    .ds-dialog .ds-dialog-body {
+        .modal-body;
+    }
+
+    .ds-dialog .ds-dialog-footer {
+        .modal-footer;
+    }
+
+        .ds-dialog .ds-dialog-footer button {
+            .btn;
+            .btn-default;
+        }
+
+.ds-tooltip {
+    display: inline;
+    position: relative;
+    white-space: pre-wrap;
+    text-decoration: none !important;
+    text-align: left !important;
+}
+
+    .ds-tooltip:hover:after {
+        background: #333;
+        border-radius: 5px;
+        bottom: 26px;
+        color: #fff;
+        text-shadow: 4px 2px 2px rgba(0, 0, 0, 1);
+        font-weight: normal;
+        font-family: Verdana;
+        font-weight: normal;
+        font-size: 12px;
+        text-decoration: none;
+        content: attr(tooltip);
+        left: 20%;
+        padding: 5px 15px;
+        position: absolute;
+        z-index: 999998;
+        width: 250px;
+        text-decoration: none !important;
+    }
+
+    .ds-tooltip:hover:before {
+        border: solid;
+        border-color: #333 transparent;
+        border-width: 6px 6px 0 6px;
+        bottom: 20px;
+        content: "";
+        left: 50%;
+        position: absolute;
+        z-index: 999999;
+        text-decoration: none !important;
+    }
+
+.ds-loading p {
+    .text-center;
+}
+
+.ds-loading img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ds-form {
+    .form-horizontal;
+    padding: 10px 30px 10px 30px;
+}
+
+    .ds-form .ds-form-wrap {
+        .make-xs-column-offset(1);
+        .make-sm-column-offset(3);
+        .make-md-column-offset(4);
+        .make-xs-column(10);
+        .make-sm-column(6);
+        .make-md-column(4);
+        .panel;
+        .panel-default;
+        margin-top: 30px;
+        margin-bottom: 40px;
+        background-color: @dimmedColour;
+        border-radius: 20px;
+    }
+
+    .ds-form .ds-form-group {
+        .form-group;
+    }
+
+        .ds-form .ds-form-group input, select {
+            .form-control;
+        }
+
+    .ds-form .ds-form-checkbox {
+    }
+
+    .ds-form .ds-form-group button {
+        .btn;
+        .btn-default;
+    }
+
+    .ds-form .validation-summary-errors {
+        margin-top: 10px;
+        margin-bottom: 30px;
+        .text-danger;
+    }
+
+.ds-status-none {
+    background-color: @statusNoneColour !important;
+}
+
+.ds-status-alert {
+    background-color: @statusAlertColour !important;
+}
+
+.ds-status-warning {
+    background-color: @statusWarningColour !important;
+}
+
+.ds-status-ok {
+    background-color: @statusOkColour !important;
+}
+
+.ds-contentbox {
+    .wrapper;
+    .make-xs-column-offset(0);
+    .make-sm-column-offset(1);
+    .make-md-column-offset(1);
+    .make-xs-column(12);
+    .make-sm-column(10);
+    .make-md-column(10);
+    .panel;
+    .panel-default;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    background-color: @dimmedColour;
+    border-radius: 20px;
+    padding: 10px 30px 10px 30px;
+}
+
+    .ds-contentbox img {
+        .thumbnail;
+        .img-responsive;
+        margin: 30px;
+    }
+
+.ds-table {
+    .wrapper;
+    .make-xs-column-offset(0);
+    .make-sm-column-offset(1);
+    .make-md-column-offset(2);
+    .make-xs-column(12);
+    .make-sm-column(10);
+    .make-md-column(8);
+}
+
+    .ds-table .ds-table-heading {
+        background-color: @dimmedHoverColour;
+    }
+
+    .ds-table table {
+        .table;
+    }
+
+    .ds-table th {
+        background-color: @dimmedColour;
+        font-size: 13px;
+    }
+
+    .ds-table button {
+        .btn;
+        .btn-default;
+        .btn-sm;
+    }
+
+// **************************
+// Misc Classes
+// **************************
+
+.wrapper {
+    .make-row();
+}
+
+// **************************
+// Overrides
+// **************************
+
+.navbar-brand img {
+    margin-top: -10px;
+}
+
+.navbar-brand a {
+    display: block;
+    margin-top: 10px;
+}
+
+.table.grid-table tr.grid-row-selected td {
+    color: @mainTextColour;
+    background-color: @gridSelectedColour !important;
+}
+
+.table.grid-table tr.grid-row-selected a {
+    color: @mainTextColour;
+}
+
+.table.grid-table tr.grid-row td {
+    background-color: @gridColour;
+}
+
+.table.grid-table tr.grid-row:hover td {
+    background-color: @gridHoverColour;
+}
+
+.grid-mvc {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
+}
+
+.make-row {
+    margin-left: 0px;
+    margin-right: 0px;
+}

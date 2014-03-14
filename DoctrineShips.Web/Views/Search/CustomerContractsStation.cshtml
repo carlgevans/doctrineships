@@ -1,0 +1,66 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using GridMvc.Html
+@using Tools;
+@model SearchCustomerContractsStationViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Available Contracts";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Available Contracts<br />
+            <small>Current contracts for the selected corporation or alliance.</small>
+        </h1>
+        <div class="ds-header-image">
+            <img src="@Model.Customer.ImageUrl" alt="@Model.Customer.Name" />
+            <br />
+            <p>@Model.Customer.Name</p>
+        </div>
+        <div class="ds-header-detail">
+            <p>Click on the image of the ship to open the contract in-game. You must be a member of the corporation or alliance to view the contracts listed below.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Contracts != null && Model.Contracts.Count() != 0)
+    {
+        <div id="ds-grid">
+                <div class="ds-grid-header">
+                    <button type="button" onclick="location.href='@Url.Action("CustomerContracts", "Search", new { customerId = @Model.Customer.CustomerId }, Request.Url.Scheme)'"><span class="glyphicon glyphicon-th-list"></span> Multi-Station View</button>
+                    <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
+                    <strong>Contracts:</strong> @Model.Contracts.Count()<br />
+                    <strong>Solar System:</strong><span class="ds-tooltip" tooltip="Click to set destination. IGB only and the website must be trusted."><a href="javascript:void(0)" onclick="setDestination(@Model.Contracts.First().SolarSystemId)"> @Model.Contracts.First().SolarSystemName</a></span><br />
+                    <strong>Station:</strong><span class="ds-tooltip" tooltip="Click to set destination. IGB only and the website must be trusted."><a href="javascript:void(0)" onclick="setDestination(@Model.Contracts.First().StartStationId)"> @Model.Contracts.First().StartStationName</a></span>
+                </div>
+
+                @Html.Grid(Model.Contracts).Columns(columns =>
+                                {
+                                    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href="javascript:void(0)" onclick="showContract(@c.SolarSystemId, @c.ContractId)"><img src="@c.ShipFit.ThumbnailImageUrl" /></a><span class="ds-tooltip" tooltip="Contract Id: @c.ContractId&#10;Issuer Id: @c.IssuerId&#10;Issuer Corp Id: @c.IssuerCorpId&#10;Issued: @c.DateIssued&#10;Expires: @c.DateExpired"><span class="glyphicon glyphicon-info-sign"></span></span><p> @c.ShipFit.Hull</p></div>);
+                                    columns.Add(c => c.ShipFit.ShipFitId).Css("hidden-xs").Titled("Fit ID").RenderValueAs(c => "DS" + c.ShipFitId).Filterable(true).Sortable(true);
+                                    columns.Add(c => c.ShipFit.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                                    columns.Add(c => c.ShipFit.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
+                                    columns.Add(c => c.Price).Titled("Price").RenderValueAs(c => @String.Format("{0:N0} ISK", @c.Price)).Filterable(true).Sortable(true);
+                                    columns.Add(c => c.IsValid).Css("hidden-xs").Titled("Valid?").RenderValueAs(c => c.IsValid == true ? "Yes" : "No").Filterable(true).Sortable(true);
+                                    columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => c.ShipFit.AccountId == Conversion.StringToInt32(User.Identity.Name) ? "<div class=\"ds-grid-tools\"><span class=\"ds-tooltip\" tooltip=\"Click to open the ship fitting in-game (IGB Only).\"><button type=\"button\"onclick=\"showFitting(\'" + @c.ShipFit.FittingString + "\')\"><span class=\"glyphicon glyphicon-list-alt\"></span> Eve Fit</span></button></div>" : "<div class=\"ds-grid-tools\"><span class=\"ds-tooltip\" tooltip=\"You are not authorised to view this ship fitting. You must be authenticated as the owning account.\"><button type=\"button\" onclick=\"showFittingDenied()\"><span class=\"glyphicon glyphicon-list-alt\"></span> Eve Fit</span></button></div>");
+                                }).WithPaging(20, 5).WithMultipleFilters().SetRowCssClasses(item =>
+                                                                                                                                 {
+                                                                                                                                     if (item.IsValid == false)
+                                                                                                                                     {
+                                                                                                                                         return "ds-grid-status-alert";
+                                                                                                                                     }
+                                                                                                                                     else
+                                                                                                                                     {
+                                                                                                                                         return "ds-grid-status-none";
+                                                                                                                                     }
+                                                                                                                                 })
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Contracts Found</b>
+        </div>
+    }
+
+</div>

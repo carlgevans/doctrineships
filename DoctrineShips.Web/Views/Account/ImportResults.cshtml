@@ -1,0 +1,44 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model ShipFitImportResultsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Import Ship Fits - Results";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Import Ship Fits<br />
+            <small>The following ship fittings were imported.</small>
+        </h1>
+    </div>
+
+    @if (Model != null && Model.ShipFits != null && Model.ShipFits.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Ship Fits Imported:</strong> @Model.ShipFits.Count()</h5>
+            </div>
+
+            @Html.Grid(Model.ShipFits).Columns(columns =>
+                            {
+                                columns.Add().Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFitId }, Request.Url.Scheme)'><img src="@c.ThumbnailImageUrl" /></a><p>&nbsp;&nbsp;@c.Hull</p></div>);
+                                columns.Add(c => c.ShipFitId).Encoded(false).Sanitized(false).Titled("Fit ID").RenderValueAs(c => "DS" + @c.ShipFitId).Filterable(true).Sortable(true);
+                                columns.Add(c => c.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                                columns.Add(c => c.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
+                                columns.Add(c => c.FitPackagedVolume).Css("hidden-xs").Titled("Fit Packaged Volume").Filterable(true).Sortable(true);
+                            }).WithPaging(10, 5).WithMultipleFilters()
+            
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Ship Fits Were Imported</b>
+        </div>
+    }
+
+</div>

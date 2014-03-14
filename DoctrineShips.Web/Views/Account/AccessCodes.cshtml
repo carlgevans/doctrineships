@@ -1,0 +1,99 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountAccessCodesViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Access Codes";
+}
+
+<div class="ds-dialog" id="deleteaccesscodes" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure that you want to delete the selected access codes? Double check that you have not removed your own access code.</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deleteaccesscodes_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Access Codes<br />
+            <small>Add access codes for the account.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>When an access code is generated, you will be given the key only once, so please make a note of it. A key cannot be retrieved if forgotten as it is salted and hashed in the database.</p>
+        </div>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.AccessCodes != null && Model.AccessCodes.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Access Codes:</strong> @Model.AccessCodes.Count()</h5>
+            </div>
+
+            @using (Html.BeginForm("DeleteAccessCode", "Account", FormMethod.Post, new { @id = "deleteaccesscodes_form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Grid(Model.AccessCodes).Columns(columns =>
+                            {
+                                columns.Add(c => c.Role).Titled("Role").Filterable(true).Sortable(true);
+                                columns.Add(c => c.Description).Titled("Description").Filterable(true).Sortable(true);
+                                columns.Add(c => c.LastLogin).Css("hidden-xs").Titled("Last Login").Filterable(true).Sortable(true);
+                                columns.Add(c => c.DateCreated).Css("hidden-xs").Titled("Date Created").Filterable(true).Sortable(true);
+                                columns.Add(c => c.IsActive).Encoded(false).Sanitized(false).Titled("Active?").RenderValueAs(c => c.IsActive == true ? "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateAccessCodeState", "Account", new { accessCodeId = @c.AccessCodeId, isActive = 0 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-ok\"></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateAccessCodeState", "Account", new { accessCodeId = @c.AccessCodeId, isActive = 1 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-remove\"></span></a></span>").Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deleteaccesscodes')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => c.Role == Role.SiteAdmin ? "" : "<input type=\"checkbox\" id=\"" + @c.AccessCodeId + "\" name=\"RemoveList\" value=\"" + @c.AccessCodeId + "\" />");
+                            }).WithPaging(5, 5).WithMultipleFilters()
+            }
+
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Account Codes Found</b>
+        </div>
+    }
+
+    <br />
+    @using (Html.BeginForm("AddAccessCode", "Account", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.Description)
+                @Html.EditorFor(m => m.Description)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.SelectedRole)
+                @Html.DropDownListFor(m => m.SelectedRole, Model.Roles)
+            </div>
+            <div class="ds-form-group">
+                <button id="submit2" type="submit"><span class="glyphicon glyphicon-plus"></span> Generate</button>
+            </div>
+        </div>
+    }
+
+</div>

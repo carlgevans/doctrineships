@@ -1,0 +1,80 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model SiteLogViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Site Log";
+}
+
+<div class="ds-dialog" id="clearlog" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to clear the entire site log?</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="clearlog_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Site Log<br />
+            <small>A log of the last 7 days of site events.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>Hover over the info icon next to each message for details.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.LogMessages != null && Model.LogMessages.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Log Entries (Last 7 Days):</strong> @Model.LogMessages.Count()</h5>
+            </div>
+
+            @Html.Grid(Model.LogMessages).Columns(columns =>
+                        {
+                            columns.Add(c => c.Level).Encoded(false).Sanitized(false).RenderValueAs(c => @<span class="ds-tooltip" tooltip="Level: @c.Level&#10;Logged: @c.DateLogged&#10;Source: @c.Source&#10;Type: @c.Type"><span class="glyphicon glyphicon-info-sign"></span></span>).Filterable(true).Sortable(true);
+                            columns.Add(c => c.Message).Titled("Message").Filterable(true).Sortable(true);
+                        }).WithPaging(20, 5).WithMultipleFilters().SetRowCssClasses(item =>
+                                                                   {
+                                                                       switch (item.Level)
+                                                                       {
+                                                                           case 0:
+                                                                               return "ds-grid-status-alert";
+                                                                           case 1:
+                                                                               return "ds-grid-status-warning";
+                                                                           case 2:
+                                                                               return "ds-grid-status-ok";
+                                                                           default:
+                                                                               return "ds-grid-status-none";
+                                                                       }
+                                                                   })
+            
+            @using (Html.BeginForm("ClearLog", "Site", FormMethod.Post, new { @id = "clearlog_form", @class = "ds-form" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="ds-grid-tools"><button type="button" onclick="confirmDialog('clearlog')"><span class="glyphicon glyphicon-trash"></span> Clear Log</button></div>
+            }
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Log Entries Found</b>
+        </div>
+    }
+
+</div>

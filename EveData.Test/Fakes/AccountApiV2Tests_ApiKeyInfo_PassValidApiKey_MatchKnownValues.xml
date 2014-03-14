@@ -1,0 +1,11 @@
+<eveapi version="2">
+  <currentTime>2014-02-16 18:28:29</currentTime>
+  <result>
+    <key accessMask="67108864" type="Character" expires="">
+      <rowset name="characters" key="characterID" columns="characterID,characterName,corporationID,corporationName">
+        <row characterID="90768946" characterName="Lupercus Anninen" corporationID="98169165" corporationName="Brave Newbies Inc." />
+      </rowset>
+    </key>
+  </result>
+  <cachedUntil>2014-02-16 18:32:25</cachedUntil>
+</eveapi>

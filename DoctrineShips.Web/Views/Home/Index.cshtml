@@ -1,0 +1,39 @@
+﻿@using DoctrineShips.Web.ViewModels
+@model HomeIndexViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Home";
+    ViewBag.PageCss = Url.Content("~/Content/styles/homeindex.css");
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Contract Assignees<br />
+            <small>Which corporation or alliance were the contracts put up for?</small>
+        </h1>
+    </div>
+    <br />
+    <div id="ds-customer">
+        <a href='@Url.Action("CustomerContracts", "Search", new { customerId = 0 }, Request.Url.Scheme)'>
+            <img src="@Url.Content("~/Content/images/misc/eve.png")" alt="Public Contracts">
+            <br />
+            <p>Public Contracts</p>
+        </a>
+    </div>
+
+    @if (Model != null && Model.Customers != null && Model.Customers.Count() != 0)
+    {
+        foreach (var customer in Model.Customers)
+        {
+            <div id="ds-customer">
+                <a href='@Url.Action("CustomerContracts", "Search", new { customerId = @customer.CustomerId }, Request.Url.Scheme)'>
+                    <img src="@Url.Content(@customer.ImageUrl)" alt="@customer.Name">
+                    <br />
+                    <p>@customer.Name</p>
+                </a>
+            </div>
+        }
+    }
+        
+</div>

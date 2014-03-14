@@ -1,0 +1,48 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model KnowledgeBaseListViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Knowledge Base";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Knowledge Base<br />
+            <small>Information on how to use the Doctrine Ships service.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>The following knowledge base articles are currently available.</p>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Articles != null && Model.Articles.Count() != 0)
+    {
+        <br />
+        <div id="ds-knowledgebase">
+            <table>
+                <tr>
+                    <th>Title</th>
+                    <th>Last Updated</th>
+                </tr>
+
+                @foreach (var article in Model.Articles)
+                {
+                    <tr>
+                        <td><a href='@Url.Action("Article", "KnowledgeBase", new { articleId = @article.ArticleId }, Request.Url.Scheme)'>@article.Title</a></td>
+                        <td>@article.LastUpdated</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Knowledge Base Articles Found</b>
+        </div>
+    }
+</div>

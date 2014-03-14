@@ -1,0 +1,132 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model SiteAccountsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Site Accounts";
+}
+
+<div class="ds-dialog" id="deleteaccounts" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to delete the selected accounts?</p>
+                <p><strong>WARNING:</strong> All access codes, ship fits, sales agents and their contracts will also be deleted.</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deleteaccounts_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ds-dialog" id="updatesubplan" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Update Subscription Plan</h4>
+            </div>
+            <div class="ds-dialog-body">
+                @using (Html.BeginForm("UpdateAccountSubscriptionPlan", "Site", FormMethod.Post, new { @id = "updatesubplan_form", @class = "ds-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="AccountId" name="AccountId" />
+                    <div class="ds-form-group">
+                        @Html.DropDownListFor(m => m.SubscriptionPlanId, Model.SubscriptionPlans)
+                    </div>
+                }
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="updatesubplan_confirm" data-dismiss="modal"><span class="glyphicon glyphicon-save"></span> Update</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateSubscriptionPlan(accountId) {
+        $("#AccountId").val(accountId);
+
+        // Open the dialog.
+        confirmDialog("#updatesubplan");
+    }
+</script>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Site Accounts<br />
+            <small>Manage accounts for the site.</small>
+        </h1>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.Accounts != null && Model.Accounts.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Accounts:</strong> @Model.Accounts.Count()</h5>
+            </div>
+
+        @using (Html.BeginForm("DeleteAccount", "Site", FormMethod.Post, new { @id = "deleteaccounts_form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            @Html.Grid(Model.Accounts).Columns(columns =>
+                        {
+                            columns.Add(c => c.AccountId).Titled("Id").Filterable(true).Sortable(true);
+                            columns.Add(c => c.Description).Encoded(false).Sanitized(false).Titled("Description").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Date Created: @c.DateCreated.ToString("dd MMM yyyy")">@c.Description</span>).Filterable(true).Sortable(true);
+                            columns.Add(c => c.Balance).Titled("Balance").RenderValueAs(c => @String.Format("{0:N2} ISK", @c.Balance)).Filterable(true).Sortable(true);
+                            columns.Add(c => c.AccessCodes.Count).Css("hidden-xs").Titled("Access Codes").Filterable(true).Sortable(true);
+                            columns.Add(c => c.SalesAgents.Count).Css("hidden-xs").Titled("Sales Agents").Filterable(true).Sortable(true);
+                            columns.Add(c => c.SubscriptionPlan.Name).Encoded(false).Sanitized(false).Titled("Subscription Plan").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Description: @c.SubscriptionPlan.Description&#10;&#10;Sales Agent Licences: @c.SubscriptionPlan.SalesAgentLimit&#10;&#10;Price Per Month: @String.Format("{0:N2} ISK", @c.SubscriptionPlan.PricePerMonth)">@c.SubscriptionPlan.Name&nbsp;&nbsp;<a href="javascript:void(0)" onclick="updateSubscriptionPlan(@c.AccountId)"><span class="glyphicon glyphicon-cog"></span></a></span>).Filterable(true).Sortable(true);
+                            columns.Add(c => c.IsActive).Encoded(false).Sanitized(false).Titled("Active?").RenderValueAs(c => c.IsActive == true ? "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateAccountState", "Site", new { accountId = @c.AccountId, isActive = 0 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-ok\"></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateAccountState", "Site", new { accountId = @c.AccountId, isActive = 1 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-remove\"></span></a></span>").Filterable(true).Sortable(true);
+                            columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deleteaccounts')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => c.AccountId == 0 ? "" : "<input type=\"checkbox\" id=\"" + @c.AccountId + "\" name=\"RemoveList\" value=\"" + @c.AccountId + "\" />");
+                        }).WithPaging(20, 5).WithMultipleFilters()
+        }
+
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Accounts Found</b>
+        </div>
+    }
+
+    <br />
+    @using (Html.BeginForm("AddAccount", "Site", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.Description)
+                @Html.TextBoxFor(m => m.Description)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.SubscriptionPlanId)
+                @Html.DropDownListFor(m => m.SubscriptionPlanId, Model.SubscriptionPlans)
+            </div>
+            <div class="ds-form-group">
+                <button id="submit2" type="submit"><span class="glyphicon glyphicon-plus"></span> Account</button>
+            </div>
+        </div>
+    }
+</div>

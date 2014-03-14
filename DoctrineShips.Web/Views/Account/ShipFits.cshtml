@@ -1,0 +1,76 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountShipFitsViewModel
+
+@{
+    ViewBag.Title = "Doctrine Ships - Account Ship Fits";
+}
+
+<div class="ds-dialog" id="deleteshipfits" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to delete the selected ship fits? All related contracts will also be deleted.</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deleteshipfits_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Ship Fits<br />
+            <small>Manage Ship Fits for the account.</small>
+        </h1>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.ShipFits != null && Model.ShipFits.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Ship Fits:</strong> @Model.ShipFits.Count()</h5>
+            </div>
+
+            @using (Html.BeginForm("DeleteShipFit", "Account", FormMethod.Post, new { @id = "deleteshipfits_form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Grid(Model.ShipFits).Columns(columns =>
+                            {
+                                columns.Add(c => c.ShipFitId).Encoded(false).Sanitized(false).Titled("Fit ID").RenderValueAs(c => @<a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFitId }, Request.Url.Scheme)'>@("DS" + @c.ShipFitId)</a>).Filterable(true).Sortable(true);
+                                columns.Add(c => c.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                                columns.Add(c => c.Hull).Css("hidden-xs").Titled("Hull").Filterable(true).Sortable(true);
+                                columns.Add(c => c.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
+                                columns.Add(c => c.ContractsAvailable).Encoded(false).Sanitized(false).Titled("Contracts").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Only valid contracts are counted.">@(c.ContractsAvailable < 0 ? "Disabled" : c.ContractsAvailable.ToString())</span>).Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("Monitored?").RenderValueAs(c => c.IsMonitored == true ? "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateShipFitMonitoringState", "Account", new { shipFitId = @c.ShipFitId, isActive = 0 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-ok\"></span></a></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateShipFitMonitoringState", "Account", new { shipFitId = @c.ShipFitId, isActive = 1 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-remove\"></span></a></span></a></span>").Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deleteshipfits')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.ShipFitId" name="RemoveList" value="@c.ShipFitId" />);
+                            }).WithPaging(20, 5).WithMultipleFilters()
+            }
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Ship Fits Found</b>
+        </div>
+    }
+
+</div>
