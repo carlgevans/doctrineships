@@ -92,5 +92,21 @@
 
             return shipFits;
         }
+
+        internal Dictionary<string, int> GetShipFitList()
+        {
+            var shipFitList = this.unitOfWork.Repository<ShipFit>()
+                                   .Query()
+                                   .Get()
+                                   .GroupBy(u => u.FittingHash) // Ignores identical fits in the same account.
+                                   .Select(x => new
+                                   {
+                                       FittingHash = x.FirstOrDefault().FittingHash,
+                                       ShipFitId = x.FirstOrDefault().ShipFitId
+                                   })
+                                   .ToDictionary(x => x.FittingHash, x => x.ShipFitId);
+
+            return shipFitList;
+        }
     }
 }

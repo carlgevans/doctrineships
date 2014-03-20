@@ -66,6 +66,9 @@
             this.Property(t => t.FittingString)
                 .IsRequired();
 
+            this.Property(t => t.FittingHash)
+                .IsRequired();
+
             this.Property(t => t.LastPriceRefresh)
                 .IsRequired();
 
@@ -89,6 +92,7 @@
             this.Property(t => t.BuyOrderProfit).HasColumnName("BuyOrderProfit");
             this.Property(t => t.SellOrderProfit).HasColumnName("SellOrderProfit");
             this.Property(t => t.FittingString).HasColumnName("FittingString");
+            this.Property(t => t.FittingHash).HasColumnName("FittingHash");
             this.Property(t => t.LastPriceRefresh).HasColumnName("LastPriceRefresh");
 
             // Relationships

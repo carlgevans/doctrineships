@@ -753,11 +753,12 @@
         }
 
         /// <summary>
-        /// Generate and refresh all fitting strings.
+        /// Generate and refresh all fitting strings and hashes.
         /// </summary>
         public void RefreshAllFittingStrings()
         {
             ShipFitManager.RefreshAllFittingStrings();
+            ShipFitManager.RefreshAllFittingHashes();
         }
 
         /// <summary>

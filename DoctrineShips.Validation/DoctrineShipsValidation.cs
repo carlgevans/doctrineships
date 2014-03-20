@@ -108,11 +108,6 @@
             return CustomerCheck.Customer(customer);
         }
 
-        public IValidationResult ShipFitContract(IEnumerable<ShipFitComponent> shipFitComponents, IEnumerable<IEveDataContractItem> contractItems)
-        {
-            return ContractCheck.ShipFitContract(shipFitComponents, contractItems);
-        }
-
         public IValidationResult ShipFit(ShipFit shipFit)
         {
             return ShipFitCheck.ShipFit(shipFit);

@@ -36,7 +36,7 @@
 
                 @Html.Grid(Model.Contracts).Columns(columns =>
                                 {
-                                    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href="javascript:void(0)" onclick="showContract(@c.SolarSystemId, @c.ContractId)"><img src="@c.ShipFit.ThumbnailImageUrl" /></a><span class="ds-tooltip" tooltip="Contract Id: @c.ContractId&#10;Issuer Id: @c.IssuerId&#10;Issuer Corp Id: @c.IssuerCorpId&#10;Issued: @c.DateIssued&#10;Expires: @c.DateExpired"><span class="glyphicon glyphicon-info-sign"></span></span><p> @c.ShipFit.Hull</p></div>);
+                                    columns.Add().Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href="javascript:void(0)" onclick="showContract(@c.SolarSystemId, @c.ContractId)"><img src="@c.ShipFit.ThumbnailImageUrl" /></a><span class="ds-tooltip" tooltip="Contract Description:&#10;@c.Title&#10;&#10;Contract Id: @c.ContractId&#10;Issuer Id: @c.IssuerId&#10;Issuer Corp Id: @c.IssuerCorpId&#10;Issued: @c.DateIssued&#10;Expires: @c.DateExpired"><span class="glyphicon glyphicon-info-sign"></span></span><p> @c.ShipFit.Hull</p></div>);
                                     columns.Add(c => c.ShipFit.ShipFitId).Css("hidden-xs").Titled("Fit ID").RenderValueAs(c => "DS" + c.ShipFitId).Filterable(true).Sortable(true);
                                     columns.Add(c => c.ShipFit.Name).Titled("Fit Name").Filterable(true).Sortable(true);
                                     columns.Add(c => c.ShipFit.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);

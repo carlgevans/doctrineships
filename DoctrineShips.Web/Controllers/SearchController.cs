@@ -35,6 +35,7 @@
             // Group the list by station.
             viewModel.Contracts = unsortedContracts
                                   .OrderBy(o => o.DateExpired)
+                                  .OrderByDescending(o => o.IsValid)
                                   .GroupBy(u => u.StartStationId)
                                   .Select(grp => grp.ToList())
                                   .ToList();
@@ -62,6 +63,7 @@
             viewModel.Contracts = unsortedContracts
                                     .Where(x => x.StartStationId == cleanStationId)
                                     .OrderBy(o => o.DateExpired)
+                                    .OrderByDescending(o => o.IsValid)
                                     .ToList();
 
             return View(viewModel);
@@ -85,6 +87,7 @@
             // Group the list by station.
             viewModel.Contracts = unsortedContracts
                                   .OrderBy(o => o.DateExpired)
+                                  .OrderByDescending(o => o.IsValid)
                                   .GroupBy(u => u.StartStationId)
                                   .Select(grp => grp.ToList())
                                   .ToList();

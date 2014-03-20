@@ -113,6 +113,7 @@
         IEnumerable<ShipFit> GetShipFitsWithComponents();
         IEnumerable<ShipFit> GetShipFitsForContractCount();
         IEnumerable<ShipFit> GetShipFitsForAccount(int accountId);
+        Dictionary<string, int> GetShipFitList();
 
         // ShipFitComponent Operations.
         void DeleteShipFitComponent(int shipFitComponentId);

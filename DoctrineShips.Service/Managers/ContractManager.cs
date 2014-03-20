@@ -21,6 +21,7 @@
         private readonly IEveDataSource eveDataSource;
         private readonly IDoctrineShipsValidation doctrineShipsValidation;
         private readonly ISystemLogger logger;
+        private static IDictionary<string, int> shipFitList;
 
         /// <summary>
         /// Initialises a new instance of a Contract Manager.
@@ -38,6 +39,27 @@
         }
 
         /// <summary>
+        /// Ship Fit List accessor. Populates a dictionary of ship fit hashes when accessed.
+        /// </summary>
+        internal IDictionary<string, int> ShipFitList
+        {
+            get
+            {
+                if (shipFitList == null)
+                {
+                    shipFitList = this.doctrineShipsRepository.GetShipFitList();
+                }
+
+                return shipFitList;
+            }
+
+            set 
+            {
+                shipFitList = value;
+            }
+        }
+
+        /// <summary>
         /// <para>Refresh the contracts of a batchSize of sales agents with a LastContractRefresh time in the past.</para>
         /// </summary>
         /// <param name="force">If true, indicates that all sales agents should be refreshed, ignoring their NextRefresh values.</param>
@@ -49,6 +71,9 @@
 
             if (salesAgents.Any() == true)
             {
+                // Reset the ship fit list.
+                ShipFitList = null;
+
                 this.RefreshContracts(salesAgents);
             }
         }
@@ -147,7 +172,6 @@
             newContract.Status = Conversion.StringToEnum<ContractStatus>(eveDataContract.Status.ToString(), ContractStatus.Deleted);
             newContract.Type = Conversion.StringToEnum<ContractType>(eveDataContract.Type.ToString(), ContractType.ItemExchange);
             newContract.Availability = Conversion.StringToEnum<ContractAvailability>(eveDataContract.Availability.ToString(), ContractAvailability.Private);
-            newContract.Title = this.ParseContractDescription(eveDataContract.Title);
             newContract.Price = eveDataContract.Price;
             newContract.Volume = eveDataContract.Volume;
             newContract.DateIssued = eveDataContract.DateIssued;
@@ -155,31 +179,35 @@
             newContract.IssuerCorpId = eveDataContract.IssuerCorpId;
             newContract.IssuerId = eveDataContract.IssuerId;
             newContract.ForCorp = eveDataContract.ForCorp;
+            newContract.IsValid = false;
+
+            // Populate the contract title/description field.
+            if (eveDataContract.Title == string.Empty)
+            {
+                newContract.Title = "None";
+            }
+            else
+            {
+                newContract.Title = eveDataContract.Title;
+            }
 
             // Populate the remaining contract details. These calls are cached.
             newContract.SolarSystemId = this.eveDataSource.GetStationSolarSystemId(newContract.StartStationId);
             newContract.SolarSystemName = this.eveDataSource.GetSolarSystemName(newContract.SolarSystemId);
             newContract.StartStationName = this.eveDataSource.GetStationName(newContract.StartStationId);
 
-            // Convert the contract title to a ship fit id.
-            newContract.ShipFitId = Conversion.StringToInt32(newContract.Title, 0);
+            // Attempt to match the contract contents to a ship fit id.
+            newContract.ShipFitId = this.ContractShipFitMatch(newContract.ContractId, salesAgent);
+
+            // If the ship fit was matched, set the contract as valid.
+            if (newContract.ShipFitId != 0)
+            {
+                newContract.IsValid = true;
+            }
 
             // Validate the new contract.
             if (this.doctrineShipsValidation.Contract(newContract).IsValid == true)
             {
-                IEnumerable<ShipFitComponent> shipFitComponents = this.doctrineShipsRepository.GetShipFitComponents(newContract.ShipFitId);
-                IEnumerable<IEveDataContractItem> contractItems = this.eveDataSource.GetContractItems(salesAgent.ApiId, salesAgent.ApiKey, newContract.ContractId, salesAgent.SalesAgentId, salesAgent.IsCorp);
-
-                // Validate the current contract's items against the ship fit.
-                if (this.doctrineShipsValidation.ShipFitContract(shipFitComponents, contractItems).IsValid == true)
-                {
-                    newContract.IsValid = true;
-                }
-                else
-                {
-                    newContract.IsValid = false;
-                }
-
                 // Add the populated contract object to the database.
                 this.doctrineShipsRepository.CreateContract(newContract);
 
@@ -194,27 +222,47 @@
         }
 
         /// <summary>
-        /// Parses a contract description string to find the ship fit identification number (E.g. DS34).
+        /// Attempts to match a contract's contents to a ship fit.
         /// </summary>
-        /// <param name="toParse">The description string to be parsed.</param>
-        /// <returns>A string containing the doctrine ships fit Id or an empty string if not found.</returns>
-        internal string ParseContractDescription(string toParse)
+        /// <param name="contractId">The id of the contract to be matched.</param>
+        /// <param name="salesAgent">A sales agent object representing the contract owner.</param>
+        /// <returns>An integer ship fit id or 0 if no match was made.</returns>
+        internal int ContractShipFitMatch(long contractId, SalesAgent salesAgent)
         {
-            string shipFitId = string.Empty;
-            string notTheId = string.Empty;
+            int shipFitId = 0;
 
-            // Match DS### at the start of the string, store everything else in a temp variable.
-            notTheId = Regex.Replace(toParse, @"^DS\d+", string.Empty);
+            // Fetch the list of items included in the contract.
+            IEnumerable<IEveDataContractItem> contractItems = this.eveDataSource.GetContractItems(salesAgent.ApiId, salesAgent.ApiKey, contractId, salesAgent.SalesAgentId, salesAgent.IsCorp);
 
-            if (notTheId.Length > 0)
+            if (contractItems != null && contractItems.Any() == true)
             {
-                // Remove the contents of the temp variable from the original string.
-                shipFitId = toParse.Replace(notTheId, string.Empty);
-            }
-            else
-            {
-                // The original string is either an exact ship fit or an empty string.
-                shipFitId = toParse;
+                string concatComponents = string.Empty;
+                IEnumerable<ShipFitComponent> compressedContractItems = new List<ShipFitComponent>();
+
+                // Compress the contract items components list, removing duplicates but adding the quantities.
+                compressedContractItems = contractItems
+                    .OrderBy(o => o.TypeId)
+                    .GroupBy(u => u.TypeId)
+                    .Select(x => new ShipFitComponent()
+                    {
+                        ComponentId = x.Key,
+                        Quantity = x.Sum(p => p.Quantity)
+                    });
+
+                // Concatenate all components and their quantities into a single string.
+                foreach (var item in compressedContractItems)
+                {
+                    concatComponents += item.ComponentId + item.Quantity;
+                }
+
+                // Generate a hash for the fitting and salt it with the sales agent's account id. This permits identical fits across accounts.
+                string fittingHash = Security.GenerateHash(concatComponents, salesAgent.AccountId.ToString());
+
+                // Attempt to find a ship fit with the same components list as the contract.
+                if (!ShipFitList.TryGetValue(fittingHash, out shipFitId))
+                {
+                    shipFitId = 0;
+                }
             }
 
             return shipFitId;
@@ -253,6 +301,9 @@
                     // Has 30 minutes elapsed since the last forced refresh?
                     if (Time.HasElapsed(salesAgent.LastForce, TimeSpan.FromMinutes(30)))
                     {
+                        // Reset the ship fit list.
+                        ShipFitList = null;
+
                         // Refresh the contracts for the passed sales agent.
                         this.RefreshContracts(salesAgent, batch: true);
 
