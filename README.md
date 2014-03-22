@@ -1,17 +1,17 @@
-Brave Doctrines
-===============
+Brave Doctrine Contracts
+========================
 
 An EVE Online ship fitting management and contract validation system.
 
 © 2014 Carl G. Evans and contributors.
 
-https://github.com/DoctrineShips/DoctrineShips
+https://github.com/bravecollective/doctrine-contracts/
 
 Written in C# MVC.
 
-##1. What is Doctrine Ships?
+##1. What is Brave Doctrine Contracts?
 
-Doctrine Ships can help to improve the organisation and standardisation of EVE Online fleet doctrines and ensure that alliance/corporation members are flying the correct fits in the shortest amount of time possible.
+Brave Doctrine Contracts can help to improve the organisation and standardisation of EVE Online fleet doctrines and ensure that alliance/corporation members are flying the correct fits in the shortest amount of time possible.
 
 Members can be sure that they are flying the most up-to-date fitting and that the contracts they are buying have all of the valid components; including ammunition, drones, scripts and repair paste. Invalid contracts are shown in red and can be filtered out.
 
@@ -70,11 +70,11 @@ Packages are not included in the repository, so be sure to enable NuGet Package 
 
 ##4. License
 
-Doctrine Ships has been released under the MIT Open Source license. All contributors agree to transfer ownership of their code to Carl G. Evans for release under this license.
+Brave Doctrine Contracts has been released under the MIT Open Source license. All contributors agree to transfer ownership of their code to Carl G. Evans for release under this license.
 
 ###4.1 The MIT License (MIT)
 
-Copyright (c) 2014 DoctrineShips
+Copyright (c) 2014 Brave Doctrine Contracts
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
