@@ -1,5 +1,5 @@
-Doctrine Ships
-==========
+Brave Doctrines
+===============
 
 An EVE Online ship fitting management and contract validation system.
 
