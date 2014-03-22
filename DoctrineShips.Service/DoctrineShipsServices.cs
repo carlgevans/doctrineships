@@ -322,6 +322,17 @@
         }
 
         /// <summary>
+        /// Refresh all ship fit data.
+        /// </summary>
+        public void RefreshShipFits()
+        {
+            ShipFitManager.RefreshAllFittingStrings();
+            ShipFitManager.RefreshAllFittingHashes();
+            ShipFitManager.RefreshAllShipFitPackagedVolumes();
+            ShipFitManager.RefreshShipFitContractCounts();
+        }
+
+        /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
@@ -750,15 +761,6 @@
         public string GetLongUrl(string shortUrlId)
         {
             return TaskManager.GetLongUrl(shortUrlId);
-        }
-
-        /// <summary>
-        /// Generate and refresh all fitting strings and hashes.
-        /// </summary>
-        public void RefreshAllFittingStrings()
-        {
-            ShipFitManager.RefreshAllFittingStrings();
-            ShipFitManager.RefreshAllFittingHashes();
         }
 
         /// <summary>

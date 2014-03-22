@@ -133,7 +133,7 @@
         }
 
         [OutputCache(Duration = 5)]
-        public ActionResult RefreshAllFittingStrings(string key)
+        public ActionResult RefreshShipFits(string key)
         {
             Stopwatch stopWatch = new Stopwatch();
 
@@ -147,18 +147,18 @@
                 stopWatch.Start();
 
                 // Refresh all fitting strings.
-                this.doctrineShipsServices.RefreshAllFittingStrings();
+                this.doctrineShipsServices.RefreshShipFits();
 
                 // Stop the clock.
                 stopWatch.Stop();
 
-                logger.LogMessage("Refresh Of All Fitting Strings & Hashes Successful, Time Taken: " + stopWatch.Elapsed, 2, "Message", MethodBase.GetCurrentMethod().Name);
-                return Content("Refresh Of All Fitting Strings & Hashes Successful, Time Taken: " + stopWatch.Elapsed);
+                logger.LogMessage("Refresh Of All Ship Fits Successful, Time Taken: " + stopWatch.Elapsed, 2, "Message", MethodBase.GetCurrentMethod().Name);
+                return Content("Refresh Of All Ship Fits Successful, Time Taken: " + stopWatch.Elapsed);
             }
             else
             {
-                logger.LogMessage("Refresh Of All Fitting Strings & Hashes Failed, Invalid Key: " + cleanKey, 1, "Message", MethodBase.GetCurrentMethod().Name);
-                return Content("Refresh Of All Fitting Strings & Hashes Failed, Invalid Key");
+                logger.LogMessage("Refresh Of All Ship Fits Failed, Invalid Key: " + cleanKey, 1, "Message", MethodBase.GetCurrentMethod().Name);
+                return Content("Refresh Of All Ship Fits Failed, Invalid Key");
             }
         }
     }

@@ -55,9 +55,9 @@
                   new { controller = "Task", action = "HourlyMaintenance", key = string.Empty });
 
             routes.MapRoute(
-                  "RefreshAllFittingStrings",
-                  "Task/RefreshAllFittingStrings/{key}",
-                  new { controller = "Task", action = "RefreshAllFittingStrings", key = string.Empty });
+                  "RefreshShipFits",
+                  "Task/RefreshShipFits/{key}",
+                  new { controller = "Task", action = "RefreshShipFits", key = string.Empty });
 
             routes.MapRoute(
                   "ShipFitDetail",

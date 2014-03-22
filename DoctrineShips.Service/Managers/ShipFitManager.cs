@@ -692,6 +692,22 @@
         }
 
         /// <summary>
+        /// Refresh packaged volumes for all ship fits.
+        /// </summary>
+        internal void RefreshAllShipFitPackagedVolumes()
+        {
+            IEnumerable<ShipFit> shipFits = this.doctrineShipsRepository.GetShipFitsWithComponents();
+
+            if (shipFits.Any() == true)
+            {
+                foreach (var shipFit in shipFits)
+                {
+                    this.RefreshShipFitPackagedVolume(shipFit);
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the state of a ship fit's contract availability monitoring.
         /// </summary>
         /// <param name="accountId">The account Id of the requestor. The account Id should own the sales agent being changed.</param>

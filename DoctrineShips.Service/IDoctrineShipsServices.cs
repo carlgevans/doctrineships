@@ -121,6 +121,11 @@
         void RefreshContracts(bool force, int batchSize);
 
         /// <summary>
+        /// Refresh all ship fit data.
+        /// </summary>
+        void RefreshShipFits();
+
+        /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
@@ -362,11 +367,6 @@
         /// <returns>Returns a longUrl string.</returns>
         /// </summary>
         string GetLongUrl(string shortUrlId);
-
-        /// <summary>
-        /// Generate and refresh all fitting strings.
-        /// </summary>
-        void RefreshAllFittingStrings();
 
         /// <summary>
         /// Generate and returns an EFT fitting string for a ship fit.
