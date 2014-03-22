@@ -26,6 +26,77 @@
     </div>
 </div>
 
+<div class="ds-dialog" id="updateshipfitsettings" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Update Ship Fit Settings</h4>
+            </div>
+            <div id="ds-shipfitsettingsloading" class="ds-loading"><br /><p>Fetching Existing Values...</p><img src="@Url.Content("~/Content/images/icons/loading.gif")" alt="Loading" /></div>
+            <div class="ds-dialog-body">
+                @using (Html.BeginForm("UpdateShipFit", "Account", FormMethod.Post, new { @id = "updateshipfitsettings_form", @class = "ds-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+                    <input type="hidden" id="ShipFitId" name="ShipFitId" />
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @id = "ShipFitName" })
+                    </div>
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.Role)
+                        @Html.TextBoxFor(m => m.Role, new { @id = "ShipFitRole" })
+                    </div>
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.Notes)
+                        <br />
+                        @Html.TextAreaFor(m => m.Notes, new { @id = "ShipFitNotes", @class = "ds-form-textarea" })
+                    </div>
+                }
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="updateshipfitsettings_confirm" data-dismiss="modal"><span class="glyphicon glyphicon-save"></span> Update</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateShipFitSettings(shipFitId) {
+        // Show the loading bar.
+        $("#updateshipfitsettings_form").hide();
+        $("#ds-shipfitsettingsloading").show();
+
+        $.ajax({
+            url: "/Account/GetShipFitValues",
+            type: "post",
+            data: { shipFitId: shipFitId },
+            datatype: 'json',
+            success: function (shipFit) {
+                // Set the form values.
+                $("#ShipFitId").val(shipFitId);
+                $("#ShipFitName").val(shipFit.name);
+                $("#ShipFitRole").val(shipFit.role);
+                $("#ShipFitNotes").val(shipFit.notes);
+
+                // Hide the loading bar & display the form.
+                $("#ds-shipfitsettingsloading").hide();
+                $("#updateshipfitsettings_form").show();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#ShipFitName").val("An Error Occured: " + textStatus + " - " + errorThrown);
+                $("#ds-shipfitsettingsloading").hide();
+                $("#updateshipfitsettings_form").show();
+            }
+        });
+
+        // Open the dialog.
+        confirmDialog("#updateshipfitsettings");
+    }
+</script>
+
 <div id="ds-main" role="main">
     <div id="ds-header">
         <h1>
@@ -61,6 +132,7 @@
                                 columns.Add(c => c.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
                                 columns.Add(c => c.ContractsAvailable).Encoded(false).Sanitized(false).Titled("Contracts").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Only valid contracts are counted.">@(c.ContractsAvailable < 0 ? "Disabled" : c.ContractsAvailable.ToString())</span>).Filterable(true).Sortable(true);
                                 columns.Add().Encoded(false).Sanitized(false).Titled("Monitored?").RenderValueAs(c => c.IsMonitored == true ? "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateShipFitMonitoringState", "Account", new { shipFitId = @c.ShipFitId, isActive = 0 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-ok\"></span></a></span></a></span>" : "<span class=\"ds-tooltip\" tooltip=\"Click to toggle the status.\"><a href='" + @Url.Action("UpdateShipFitMonitoringState", "Account", new { shipFitId = @c.ShipFitId, isActive = 1 }, Request.Url.Scheme) + "'><span class=\"glyphicon glyphicon-remove\"></span></a></span></a></span>").Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("Settings").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateShipFitSettings('@c.ShipFitId')"><span class="glyphicon glyphicon-cog"></span></a>).Filterable(true).Sortable(true);
                                 columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deleteshipfits')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.ShipFitId" name="RemoveList" value="@c.ShipFitId" />);
                             }).WithPaging(20, 5).WithMultipleFilters()
             }

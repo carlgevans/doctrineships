@@ -305,6 +305,7 @@
                 shipFit.SellOrderProfit = 0;
                 shipFit.FittingString = string.Empty;
                 shipFit.FittingHash = string.Empty;
+                shipFit.Notes = string.Empty;
                 shipFit.LastPriceRefresh = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
 
                 if (this.doctrineShipsValidation.ShipFit(shipFit).IsValid == true)
@@ -750,6 +751,45 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Updates a ship fit for a particular account.
+        /// </summary>
+        /// <param name="shipFit">A partially populated ship fit object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        internal IValidationResult UpdateShipFit(ShipFit shipFit)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            var existingShipFit = this.doctrineShipsRepository.GetShipFit(shipFit.ShipFitId);
+
+            if (existingShipFit != null)
+            {
+                if (existingShipFit.AccountId != shipFit.AccountId)
+                {
+                    validationResult.AddError("ShipFit.Permission", "The ship fit being modified does not belong to the requesting account.");
+                }
+                else
+                {
+                    // Map the updates to the existing ship fit.
+                    existingShipFit.Name = shipFit.Name;
+                    existingShipFit.Role = shipFit.Role;
+                    existingShipFit.Notes = shipFit.Notes;
+
+                    // Validate the ship fit updates.
+                    validationResult = this.doctrineShipsValidation.ShipFit(existingShipFit);
+                    if (validationResult.IsValid == true)
+                    {
+                        // Update the existing record, save and log.
+                        this.doctrineShipsRepository.UpdateShipFit(existingShipFit);
+                        this.doctrineShipsRepository.Save();
+                        logger.LogMessage("Ship Fit '" + existingShipFit.Name + "' Successfully Updated For Account Id: " + existingShipFit.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

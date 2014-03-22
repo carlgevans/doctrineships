@@ -65,6 +65,11 @@
                   new { controller = "ShipFit", action = "Detail", shipFitId = string.Empty });
 
             routes.MapRoute(
+                  "ShipFitDetailResult",
+                  "ShipFit/DetailResult/{shipFitId}",
+                  new { controller = "ShipFit", action = "DetailResult", shipFitId = string.Empty });
+
+            routes.MapRoute(
                   name: "Default",
                   url: "{controller}/{action}/{id}",
                   defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });

@@ -22,6 +22,22 @@
                 validationResult.AddError("AccountId.Range_" + shipFit.ShipFitId.ToString(), "AccountId can not be less than or equal to 0. Also, the upper limit cannot exceed the max value of the int data type.");
             }
 
+            // Null checks.
+            if (shipFit.Notes == null)
+            {
+                validationResult.AddError("Notes.Null", "Notes cannot be null.");
+            }
+
+            if (shipFit.Name == null)
+            {
+                validationResult.AddError("Name.Null", "Name cannot be null.");
+            }
+
+            if (shipFit.Role == null)
+            {
+                validationResult.AddError("Role.Null", "Role cannot be null.");
+            }
+
             return validationResult;
         }
 

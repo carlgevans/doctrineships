@@ -5,6 +5,7 @@
     using System.Web.UI;
     using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
+    using DoctrineShips.Web.Filters;
     using DoctrineShips.Web.ViewModels;
     using Tools;
     using System;
@@ -43,6 +44,19 @@
             // Cleanse the passed ship fit id string to prevent XSS.
             int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
 
+            ViewBag.ShipFitId = cleanShipFitId;
+
+            return View();
+        }
+
+        [AjaxOnly]
+        [HttpGet]
+        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", VaryByParam = "*", Location = OutputCacheLocation.Server)]
+        public ActionResult DetailResult(string shipFitId)
+        {
+            // Cleanse the passed ship fit id string to prevent XSS.
+            int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
+
             // Convert the currently logged-in account id to an integer.
             int accountId = Conversion.StringToInt32(User.Identity.Name);
 
@@ -65,12 +79,12 @@
                                               .Select(grp => grp.ToList())
                                               .ToList();
 
-                return View(viewModel);
+                return PartialView("_DetailResult", viewModel);
             }
             else
             {
-                return View();
-            } 
+                return PartialView("_DetailResult");
+            }
         }
 
         [HttpPost]
