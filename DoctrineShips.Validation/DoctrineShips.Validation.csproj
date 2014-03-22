@@ -48,7 +48,6 @@
     <Compile Include="Checks\SalesAgentCheck.cs" />
     <Compile Include="Checks\ShipFitCheck.cs" />
     <Compile Include="DoctrineShipsValidation.cs" />
-    <Compile Include="Entities\ComponentComparer.cs" />
     <Compile Include="IDoctrineShipsValidation.cs" />
     <Compile Include="IValidationResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

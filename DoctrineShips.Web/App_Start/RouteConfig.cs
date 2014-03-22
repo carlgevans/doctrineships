@@ -55,14 +55,19 @@
                   new { controller = "Task", action = "HourlyMaintenance", key = string.Empty });
 
             routes.MapRoute(
-                  "RefreshAllFittingStrings",
-                  "Task/RefreshAllFittingStrings/{key}",
-                  new { controller = "Task", action = "RefreshAllFittingStrings", key = string.Empty });
+                  "RefreshShipFits",
+                  "Task/RefreshShipFits/{key}",
+                  new { controller = "Task", action = "RefreshShipFits", key = string.Empty });
 
             routes.MapRoute(
                   "ShipFitDetail",
                   "ShipFit/Detail/{shipFitId}",
                   new { controller = "ShipFit", action = "Detail", shipFitId = string.Empty });
+
+            routes.MapRoute(
+                  "ShipFitDetailResult",
+                  "ShipFit/DetailResult/{shipFitId}",
+                  new { controller = "ShipFit", action = "DetailResult", shipFitId = string.Empty });
 
             routes.MapRoute(
                   name: "Default",

@@ -235,6 +235,9 @@
 
                             // Generate and refresh the fitting string for the ship fit.
                             this.RefreshFittingString(newShipFit);
+
+                            // Generate a fitting hash unique to this account.
+                            this.RefreshFittingHash(newShipFit, accountId);
                         }
                     }
                 }
@@ -301,6 +304,8 @@
                 shipFit.BuyOrderProfit = 0;
                 shipFit.SellOrderProfit = 0;
                 shipFit.FittingString = string.Empty;
+                shipFit.FittingHash = string.Empty;
+                shipFit.Notes = string.Empty;
                 shipFit.LastPriceRefresh = DateTime.UtcNow.Subtract(TimeSpan.FromDays(1));
 
                 if (this.doctrineShipsValidation.ShipFit(shipFit).IsValid == true)
@@ -573,6 +578,48 @@
         }
 
         /// <summary>
+        /// Generate and refresh the fitting hash, unique to an account.
+        /// </summary>
+        /// <param name="shipFit">A doctrine ships ship fit.</param>
+        /// <param name="accountId">The account Id for which a fitting hash should be generated.</param>
+        internal void RefreshFittingHash(ShipFit shipFit, int accountId)
+        {
+            string concatComponents = string.Empty;
+            IEnumerable<ShipFitComponent> compressedShipFitComponents = new List<ShipFitComponent>();
+
+            if (shipFit.ShipFitComponents != null && shipFit.ShipFitComponents.Any() == true)
+            {
+                // Compress the ship fit components list, removing duplicates but adding the quantities.
+                compressedShipFitComponents = shipFit.ShipFitComponents
+                        .OrderBy(o => o.ComponentId)
+                        .GroupBy(u => u.ComponentId)
+                        .Select(x => new ShipFitComponent()
+                        {
+                            ComponentId = x.Key,
+                            Quantity = x.Sum(p => p.Quantity)
+                        });
+
+                // Concatenate all components and their quantities into a single string.
+                foreach (var item in compressedShipFitComponents)
+                {
+                    concatComponents += item.ComponentId + item.Quantity;
+                }
+
+                // Generate a hash for the fitting and salt it with the account id. This permits identical fits across accounts.
+                shipFit.FittingHash = Security.GenerateHash(concatComponents, accountId.ToString());
+            }
+            else
+            {
+                // There are no components so generate a random hash.
+                shipFit.FittingHash = Security.GenerateHash(Security.GenerateRandomString(32), Security.GenerateSalt(6));
+            }
+
+            // Commit changes to the database.
+            this.doctrineShipsRepository.UpdateShipFit(shipFit);
+            this.doctrineShipsRepository.Save();
+        }
+
+        /// <summary>
         /// Generate and returns an EFT fitting string for a ship fit.
         /// </summary>
         /// <param name="shipFitId">The id of a doctrine ships ship fit.</param>
@@ -630,6 +677,38 @@
         }
 
         /// <summary>
+        /// Generate and refresh all fitting hashes.
+        /// </summary>
+        internal void RefreshAllFittingHashes()
+        {
+            IEnumerable<ShipFit> shipFits = this.doctrineShipsRepository.GetShipFitsWithComponents();
+
+            if (shipFits.Any() == true)
+            {
+                foreach (var shipFit in shipFits)
+                {
+                    this.RefreshFittingHash(shipFit, shipFit.AccountId);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Refresh packaged volumes for all ship fits.
+        /// </summary>
+        internal void RefreshAllShipFitPackagedVolumes()
+        {
+            IEnumerable<ShipFit> shipFits = this.doctrineShipsRepository.GetShipFitsWithComponents();
+
+            if (shipFits.Any() == true)
+            {
+                foreach (var shipFit in shipFits)
+                {
+                    this.RefreshShipFitPackagedVolume(shipFit);
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the state of a ship fit's contract availability monitoring.
         /// </summary>
         /// <param name="accountId">The account Id of the requestor. The account Id should own the sales agent being changed.</param>
@@ -672,6 +751,45 @@
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// Updates a ship fit for a particular account.
+        /// </summary>
+        /// <param name="shipFit">A partially populated ship fit object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        internal IValidationResult UpdateShipFit(ShipFit shipFit)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            var existingShipFit = this.doctrineShipsRepository.GetShipFit(shipFit.ShipFitId);
+
+            if (existingShipFit != null)
+            {
+                if (existingShipFit.AccountId != shipFit.AccountId)
+                {
+                    validationResult.AddError("ShipFit.Permission", "The ship fit being modified does not belong to the requesting account.");
+                }
+                else
+                {
+                    // Map the updates to the existing ship fit.
+                    existingShipFit.Name = shipFit.Name;
+                    existingShipFit.Role = shipFit.Role;
+                    existingShipFit.Notes = shipFit.Notes;
+
+                    // Validate the ship fit updates.
+                    validationResult = this.doctrineShipsValidation.ShipFit(existingShipFit);
+                    if (validationResult.IsValid == true)
+                    {
+                        // Update the existing record, save and log.
+                        this.doctrineShipsRepository.UpdateShipFit(existingShipFit);
+                        this.doctrineShipsRepository.Save();
+                        logger.LogMessage("Ship Fit '" + existingShipFit.Name + "' Successfully Updated For Account Id: " + existingShipFit.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
+                    }
+                }
+            }
+
+            return validationResult;
         }
     }
 }

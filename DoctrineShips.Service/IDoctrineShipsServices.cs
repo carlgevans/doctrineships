@@ -121,6 +121,11 @@
         void RefreshContracts(bool force, int batchSize);
 
         /// <summary>
+        /// Refresh all ship fit data.
+        /// </summary>
+        void RefreshShipFits();
+
+        /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
@@ -350,6 +355,13 @@
         IValidationResult UpdateNotificationRecipient(NotificationRecipient notificationRecipient);
 
         /// <summary>
+        /// Updates a ship fit for a particular account.
+        /// </summary>
+        /// <param name="shipFit">A partially populated ship fit object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        IValidationResult UpdateShipFit(ShipFit shipFit);
+
+        /// <summary>
         /// Generate and add a short url from a passed long url.
         /// <param name="longUrl">A long url to be shortened.</param>
         /// <returns>Returns a shortUrlId string.</returns>
@@ -362,11 +374,6 @@
         /// <returns>Returns a longUrl string.</returns>
         /// </summary>
         string GetLongUrl(string shortUrlId);
-
-        /// <summary>
-        /// Generate and refresh all fitting strings.
-        /// </summary>
-        void RefreshAllFittingStrings();
 
         /// <summary>
         /// Generate and returns an EFT fitting string for a ship fit.

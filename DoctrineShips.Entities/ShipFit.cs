@@ -27,6 +27,8 @@
         public double BuyOrderProfit { get; set; }
         public double SellOrderProfit { get; set; }
         public string FittingString { get; set; }
+        public string FittingHash { get; set; }
+        public string Notes { get; set; }
         public DateTime LastPriceRefresh { get; set; }
         public virtual ICollection<ShipFitComponent> ShipFitComponents { get; set; }
         public virtual Account Account { get; set; }

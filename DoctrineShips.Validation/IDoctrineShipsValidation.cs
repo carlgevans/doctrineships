@@ -38,14 +38,6 @@
         IValidationResult Customer(Customer customer);
 
         /// <summary>
-        /// Check that the passed contract items match the passed ship fit components.
-        /// </summary>
-        /// <param name="shipFitComponents">A list of doctrine ships ShipFitComponent objects.</param>
-        /// <param name="contractItems">A list of IEveDataContractItem objects.</param>
-        /// <returns>Returns an IValidationResult.</returns>
-        IValidationResult ShipFitContract(IEnumerable<ShipFitComponent> shipFitComponents, IEnumerable<IEveDataContractItem> contractItems);
-
-        /// <summary>
         /// Check that the passed ship fit is valid and ready to be written to the database.
         /// </summary>
         /// <param name="shipFit">A doctrine ships ShipFit object.</param>

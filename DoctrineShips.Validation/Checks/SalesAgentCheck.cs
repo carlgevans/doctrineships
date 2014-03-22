@@ -4,7 +4,6 @@
     using System.Linq;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
-    using DoctrineShips.Validation.Entities;
     using EveData.Entities;
 
     internal sealed class SalesAgentCheck

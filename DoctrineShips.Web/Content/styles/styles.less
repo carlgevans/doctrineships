@@ -236,7 +236,6 @@ html, body {
 }
 
 #ds-shipfit {
-
 }
 
     #ds-shipfit .ds-shipfit-image {
@@ -264,6 +263,18 @@ html, body {
         .make-md-column(12);
         margin-top: 20px;
     }
+
+    #ds-shipfit .ds-shipfit-notes {
+        .wrapper;
+        .make-xs-column(12);
+        .make-sm-column(12);
+        .make-md-column(12);
+        margin-top: 20px;
+    }
+
+        #ds-shipfit .ds-shipfit-notes p {
+            white-space: pre-line;
+        }
 
     #ds-shipfit .ds-shipfit-components {
         .wrapper;
@@ -300,6 +311,10 @@ html, body {
             .btn-xs;
         }
     }
+
+#ds-shipfitdetailloading {
+    margin-top: 50px;
+}
 
 #ds-knowledgebase {
     .wrapper;
@@ -363,9 +378,9 @@ html, body {
 
 #ds-message {
     .wrapper;
-    .make-xs-column(11);
-    .make-sm-column(11);
-    .make-md-column(11);
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
     margin-top: 10px;
     .alert;
     .alert-info;
@@ -373,9 +388,9 @@ html, body {
 
 #ds-success {
     .wrapper;
-    .make-xs-column(11);
-    .make-sm-column(11);
-    .make-md-column(11);
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
     margin-top: 10px;
     .alert;
     .alert-success;
@@ -383,9 +398,9 @@ html, body {
 
 #ds-error {
     .wrapper;
-    .make-xs-column(11);
-    .make-sm-column(11);
-    .make-md-column(11);
+    .make-xs-column(12);
+    .make-sm-column(12);
+    .make-md-column(12);
     margin-top: 10px;
     .alert;
     .alert-danger;
@@ -516,6 +531,11 @@ html, body {
         }
 
     .ds-form .ds-form-checkbox {
+    }
+
+    .ds-form .ds-form-textarea {
+        height: 200px;
+        width: 100%;
     }
 
     .ds-form .ds-form-group button {

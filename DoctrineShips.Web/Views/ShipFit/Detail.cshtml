@@ -1,9 +1,4 @@
-﻿@using DoctrineShips.Web.ViewModels
-@using DoctrineShips.Entities
-
-@model ShipFitDetailViewModel
-
-@{
+﻿@{
     ViewBag.Title = "Doctrine Ships - Ship Fit Detail";
     ViewBag.PageCss = Url.Content("~/Content/styles/shipfitdetail.css");
 }
@@ -22,162 +17,26 @@
             </ul>
         </div>
     </div>
-
-    @if (Model != null)
-    {
-        <div id="ds-shipfit">
-
-            <div class="ds-shipfit-image">
-                <a href="javascript:void(0)" onclick="showFitting('@Model.ShipFit.FittingString')"><img src="@Model.ShipFit.RenderImageUrl" alt="Ship Render Image" /></a>
-                <button type="button" onclick="showEftFitting('@Model.ShipFit.ShipFitId')"><span class="glyphicon glyphicon-list"></span> EFT Fit</button>
-                <button type="button" onclick="showFitting('@Model.ShipFit.FittingString')"><span class="glyphicon glyphicon-list-alt"></span> EVE Fit</button>
-                <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Url</span></button>
-            </div>
-
-            <div class="ds-shipfit-details">
-                <table>
-                    <tr>
-                        <th class="ds-shipfit-heading" colspan="2">Fit Details</th>
-                    </tr>
-                    <tr>
-                        <th>Fit ID</th>
-                        <td>DS@(Model.ShipFit.ShipFitId)</td>
-                    </tr>
-                    <tr>
-                        <th>Hull</th>
-                        <td>@Model.ShipFit.Hull</td>
-                    </tr>
-                    <tr>
-                        <th>Fit Name</th>
-                        <td>@Model.ShipFit.Name</td>
-                    </tr>
-                    <tr>
-                        <th>Role</th>
-                        <td>@Model.ShipFit.Role</td>
-                    </tr>
-                    <tr>
-                        <th>Fit Packaged Volume</th>
-                        <td>@String.Format("{0:0.00}", @Model.ShipFit.FitPackagedVolume)</td>
-                    </tr>
-                    <tr>
-                        <th>Contracts Available</th>
-
-                        @if (@Model.ShipFit.ContractsAvailable < 0)
-                        {
-                            <td class="ds-status-none">Count Disabled</td>
-                        }
-                        else if (@Model.ShipFit.ContractsAvailable == 0)
-                        {
-                            <td class="ds-status-alert">@Model.ShipFit.ContractsAvailable</td>
-                        }
-                        else if (@Model.ShipFit.ContractsAvailable >= 1 && @Model.ShipFit.ContractsAvailable <= @Model.SettingProfile.AlertThreshold)
-                        {
-                            <td class="ds-status-warning">@Model.ShipFit.ContractsAvailable</td>
-                        }
-                        else
-                        {
-                            <td class="ds-status-ok">@Model.ShipFit.ContractsAvailable</td>
-                        }
-                    </tr>
-                </table>
-            </div>
-
-            <div class="ds-shipfit-market">
-                <table>
-                    <tr>
-                        <th class="ds-shipfit-heading" colspan="4">Market Details</th>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Hub Buy Price</th>
-                        <th colspan="2">Hub Sell Price</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="(Component Buy Prices * Broker Fee Percentage [@Model.SettingProfile.BrokerPercentage]) * Quantities">@String.Format("{0:N2}", @Model.ShipFit.BuyPrice) ISK</span></td>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="Component Sell Prices * Quantities">@String.Format("{0:N2}", @Model.ShipFit.SellPrice) ISK</span></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Estimated Shipping</th>
-                        <th colspan="2">Contract Reward</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="Fit Packaged Volume [@Model.ShipFit.FitPackagedVolume] * Shipping Cost Per m3 [@Model.SettingProfile.ShippingCostPerM3]">@String.Format("{0:N2}", @Model.ShipFit.ShippingCost) ISK</span></td>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="(Hub Sell Price * Markup Percentage [@Model.SettingProfile.ContractMarkupPercentage]) + Estimated Shipping Cost + Contract Broker Fee [@Model.SettingProfile.ContractBrokerFee]">@String.Format("{0:N2}", @Model.ShipFit.ContractReward) ISK</span></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Estimated Profit (From Buy Orders)</th>
-                        <th colspan="2">Estimated Profit (From Sell Orders)</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="Contract Reward - Hub Buy Price">@String.Format("{0:N2}", @Model.ShipFit.BuyOrderProfit) ISK</span></td>
-                        <td colspan="2"><span class="ds-tooltip" tooltip="Contract Reward - Hub Sell Price">@String.Format("{0:N2}", @Model.ShipFit.SellOrderProfit) ISK</span></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Last API Price Update</th>
-                        <th colspan="2">Next API Price Update</th>
-                    </tr>
-                    <tr>
-                        <td colspan="2">@Model.ShipFit.LastPriceRefresh</td>
-                        <td colspan="2">@(Model.ShipFit.LastPriceRefresh + @TimeSpan.FromMinutes(5))</td>
-                    </tr>
-                </table>
-            </div>
-
-            @if (Model != null && Model.ShipFitComponents != null && Model.ShipFitComponents.Count() != 0)
-            {
-                <div class="ds-shipfit-components">
-                    <table>
-
-                        @foreach (var group in Model.ShipFitComponents)
-                        {
-                            <tr>
-                                <th class="ds-shipfit-heading" colspan="5">@group.First().SlotType</th>
-                            </tr>
-                            <tr>
-                                <th></th>
-                                <th>Name</th>
-                                <th class="hidden-xs">Vol (m3)</th>
-                                <th>Qty</th>
-                                <th class="hidden-xs"></th>
-                            </tr>
-
-                            foreach (var item in group)
-                            {
-                                <tr>
-                                    <td><a href="javascript:void(0)" onclick="CCPEVE.showInfo(@item.Component.ComponentId)"><img src="@item.Component.ImageUrl" /></a></td>
-                                    <td>
-                                        @if (@item.Quantity == 1)
-                                        {
-                                            <span class="ds-tooltip" tooltip="Hub Component Prices&#10;   Buy (1): @String.Format("{0:0,0.00}", @item.BuyPrice) ISK&#10;   Sell (1): @String.Format("{0:0,0.00}", @item.SellPrice) ISK">@item.Component.Name</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="ds-tooltip" tooltip="Hub Component Prices&#10;   Buy (1): @String.Format("{0:0,0.00}", @item.BuyPrice) ISK&#10;   Sell (1): @String.Format("{0:0,0.00}", @item.SellPrice) ISK&#10;   Buy (@item.Quantity): @String.Format("{0:0,0.00}", item.BuyPrice * @item.Quantity) ISK&#10;   Sell (@item.Quantity): @String.Format("{0:0,0.00}", item.SellPrice * @item.Quantity) ISK">@item.Component.Name</span>
-                                        }
-                                    </td>
-                                    <td class="hidden-xs">@item.Component.Volume</td>
-                                    <td>@item.Quantity</td>
-                                    <td class="hidden-xs">
-                                        <button type="button" onclick="buyComponent(@item.Component.ComponentId)"><span class="glyphicon glyphicon-shopping-cart"></span> Buy</button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-
-                    </table>
-                </div>
-            }
-            else
-            {
-                <div id="ds-message">
-                    <b>No Ship Fit Components Found</b>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div id="ds-message">
-            <b>Ship Fit Not Found Or Invalid Permissions</b>
-        </div>
-    }
+    <div id="ds-shipfitdetailloading" class="ds-loading"><p>Refreshing Market Data...</p><img src="@Url.Content("~/Content/images/icons/loading.gif")" alt="Loading" /></div>
+    <div id="ds-shipfitdetailresult"></div>
 </div>
+
+<script src="@Url.Content("~/Scripts/jquery-1.11.0.min.js")" type="text/javascript"></script>
+<script>
+    var shipFitId = @ViewBag.ShipFitId
+
+    // Show the loading bar.
+    $("#ds-shipfitdetailresult").hide();
+    $("#ds-shipfitdetailloading").show();
+
+    $.ajax({
+        url: "/ShipFit/DetailResult/" + shipFitId,
+        type: "GET"
+    })
+    .done(function (partialViewResult) {
+        // Hide the loading bar & display the partial view.
+        $("#ds-shipfitdetailloading").hide();
+        $("#ds-shipfitdetailresult").html(partialViewResult);
+        $("#ds-shipfitdetailresult").show();
+    });
+</script>

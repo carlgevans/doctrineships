@@ -51,7 +51,7 @@
                     CustomerId = 0,
                     IsCorp = true,
                     Name = "Unknown",
-                    ImageUrl = "http://image.eveonline.com/Corporation/1_128.png"
+                    ImageUrl = "https://image.eveonline.com/Corporation/1_128.png"
                 };
             }
 

@@ -650,6 +650,11 @@
             return ShipFitOperations.GetShipFitsForAccount(accountId);
         }
 
+        public Dictionary<string, int> GetShipFitList()
+        {
+            return ShipFitOperations.GetShipFitList();
+        }
+
         public void DeleteShipFitComponent(int shipFitComponentId)
         {
             ShipFitComponentOperations.DeleteShipFitComponent(shipFitComponentId);

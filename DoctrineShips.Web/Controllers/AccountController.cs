@@ -13,6 +13,7 @@
     using DoctrineShips.Entities;
     using DoctrineShips.Service;
     using DoctrineShips.Validation;
+    using DoctrineShips.Web.Filters;
     using DoctrineShips.Web.ViewModels;
     using Tools;
 
@@ -624,6 +625,77 @@
             }
 
             return RedirectToAction("NotificationRecipients");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken()]
+        public ActionResult UpdateShipFit(AccountShipFitsViewModel viewModel)
+        {
+            // Convert the currently logged-in account id to an integer.
+            int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+            if (ModelState.IsValid)
+            {
+                // Create an Auto Mapper map between the ship fit entity and the view model.
+                Mapper.CreateMap<AccountShipFitsViewModel, ShipFit>();
+
+                // Sanitise the form values.
+                viewModel.AccountId = accountId;
+                viewModel.Name = Conversion.StringToSafeString(viewModel.Name);
+                viewModel.Role = Conversion.StringToSafeString(viewModel.Role);
+                viewModel.Notes = Conversion.StringToSafeString(viewModel.Notes);
+
+                // Populate a ship fit with automapper and pass it back to the service layer for update.
+                ShipFit shipFit = Mapper.Map<AccountShipFitsViewModel, ShipFit>(viewModel);
+                IValidationResult validationResult = this.doctrineShipsServices.UpdateShipFit(shipFit);
+
+                // If the validationResult is not valid, something did not validate in the service layer.
+                if (validationResult.IsValid)
+                {
+                    TempData["Status"] = "The ship fit was successfully updated.";
+                }
+                else
+                {
+                    TempData["Status"] = "Error: The ship fit was not updated, a validation error occured.<br /><b>Error Details: </b>";
+
+                    foreach (var error in validationResult.Errors)
+                    {
+                        TempData["Status"] += error.Value + "<br />";
+                    }
+                }
+
+                return RedirectToAction("ShipFits");
+            }
+            else
+            {
+                // Re-populate the view model and return with any validation errors.
+                viewModel.ShipFits = this.doctrineShipsServices.GetShipFitList(accountId);
+                ViewBag.Status = "Error: The ship fit was not updated, a validation error occured.";
+                return View("~/Views/Account/ShipFits.cshtml", viewModel);
+            }
+        }
+
+        [AjaxOnly]
+        [HttpPost]
+        public ActionResult GetShipFitValues(string shipFitId)
+        {
+            // Cleanse the passed ship fit id string to prevent XSS.
+            int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
+
+            // Convert the currently logged-in account id to an integer.
+            int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+            // Populate the view model with the ship fit.
+            var shipFit = this.doctrineShipsServices.GetShipFitDetail(cleanShipFitId, accountId);
+
+            if (shipFit != null)
+            {
+                return Json(new { name = shipFit.Name, role = shipFit.Role, notes = shipFit.Notes });
+            }
+            else
+            {
+                return Json(new { name = "Error, Ship Fit Not Found", role = "", notes = "" });
+            }
         }
     }
 }

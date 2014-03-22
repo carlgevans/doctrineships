@@ -35,22 +35,22 @@
             switch (imageType)
             {
                 case EveDataImageType.Character:
-                    imageUrl = "http://image.eveonline.com/" + EveDataImageType.Character + "/" + id + "_" + size + ".jpg";
+                    imageUrl = "https://image.eveonline.com/" + EveDataImageType.Character + "/" + id + "_" + size + ".jpg";
                     break;
                 case EveDataImageType.Corporation:
-                    imageUrl = "http://image.eveonline.com/" + EveDataImageType.Corporation + "/" + id + "_" + size + ".png";
+                    imageUrl = "https://image.eveonline.com/" + EveDataImageType.Corporation + "/" + id + "_" + size + ".png";
                     break;
                 case EveDataImageType.Alliance:
-                    imageUrl = "http://image.eveonline.com/" + EveDataImageType.Alliance + "/" + id + "_" + size + ".png";
+                    imageUrl = "https://image.eveonline.com/" + EveDataImageType.Alliance + "/" + id + "_" + size + ".png";
                     break;
                 case EveDataImageType.InventoryType:
-                    imageUrl = "http://image.eveonline.com/" + EveDataImageType.InventoryType + "/" + id + "_" + size + ".png";
+                    imageUrl = "https://image.eveonline.com/" + EveDataImageType.InventoryType + "/" + id + "_" + size + ".png";
                     break;
                 case EveDataImageType.Render:
-                    imageUrl = "http://image.eveonline.com/" + EveDataImageType.Render + "/" + id + "_" + size + ".png";
+                    imageUrl = "https://image.eveonline.com/" + EveDataImageType.Render + "/" + id + "_" + size + ".png";
                     break;
                 default:
-                    imageUrl = "http://image.eveonline.com/Alliance/1_128.png";
+                    imageUrl = "https://image.eveonline.com/Alliance/1_128.png";
                     break;
             }
 

@@ -213,6 +213,8 @@
     <Content Include="Content\images\icons\loading.gif" />
     <Content Include="Content\images\main\doctrineships.png" />
     <Content Include="Content\images\misc\eve.png" />
+    <Content Include="Content\images\misc\nomatch.png" />
+    <Content Include="Content\images\misc\nomatchrender.png" />
     <Content Include="Content\images\misc\payment1.png" />
     <Content Include="Content\images\misc\payment2.png" />
     <Content Include="Content\images\misc\payment3.png" />
@@ -252,6 +254,7 @@
     <Content Include="Views\Search\CustomerContractsStation.cshtml" />
     <Content Include="Views\Search\SalesAgentContracts.cshtml" />
     <Content Include="Web.config.sample" />
+    <Content Include="Views\ShipFit\_DetailResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

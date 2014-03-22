@@ -322,6 +322,17 @@
         }
 
         /// <summary>
+        /// Refresh all ship fit data.
+        /// </summary>
+        public void RefreshShipFits()
+        {
+            ShipFitManager.RefreshAllFittingStrings();
+            ShipFitManager.RefreshAllFittingHashes();
+            ShipFitManager.RefreshAllShipFitPackagedVolumes();
+            ShipFitManager.RefreshShipFitContractCounts();
+        }
+
+        /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
@@ -733,6 +744,16 @@
         }
 
         /// <summary>
+        /// Updates a ship fit for a particular account.
+        /// </summary>
+        /// <param name="shipFit">A partially populated ship fit object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        public IValidationResult UpdateShipFit(ShipFit shipFit)
+        {
+            return ShipFitManager.UpdateShipFit(shipFit);
+        }
+
+        /// <summary>
         /// Generate and add a short url from a passed long url.
         /// <param name="longUrl">A long url to be shortened.</param>
         /// <returns>Returns a shortUrlId string.</returns>
@@ -750,14 +771,6 @@
         public string GetLongUrl(string shortUrlId)
         {
             return TaskManager.GetLongUrl(shortUrlId);
-        }
-
-        /// <summary>
-        /// Generate and refresh all fitting strings.
-        /// </summary>
-        public void RefreshAllFittingStrings()
-        {
-            ShipFitManager.RefreshAllFittingStrings();
         }
 
         /// <summary>
