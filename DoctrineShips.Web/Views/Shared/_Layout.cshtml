@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>@ViewBag.Title</title>
+    <title>@System.Web.HttpContext.Current.Application["Brand"] - @ViewBag.Title</title>
     <link href="@Url.Content("~/Content/styles/styles.css")" rel="stylesheet" type="text/css" />
     <link href="@Url.Content("~/Content/styles/gridmvc.css")" rel="stylesheet" type="text/css" />
     <link rel="shortcut icon" href="~/Content/favicon.ico" />
@@ -28,7 +28,7 @@
     <div id="ds-footer">
         <p>
             Last Page Refresh: @DateTime.UtcNow<br />
-            Version @typeof(DoctrineShips.Web.MvcApplication).Assembly.GetName().Version - Copyright © @DateTime.UtcNow.Year Doctrine Ships
+            Version @typeof(DoctrineShips.Web.MvcApplication).Assembly.GetName().Version - Copyright © @DateTime.UtcNow.Year @System.Web.HttpContext.Current.Application["Brand"]
         </p>
     </div>
 

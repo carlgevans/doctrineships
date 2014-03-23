@@ -3,6 +3,7 @@
     using System;
     using System.Security.Principal;
     using System.Web;
+    using System.Web.Configuration;
     using System.Web.Http;
     using System.Web.Mvc;
     using System.Web.Routing;
@@ -12,7 +13,7 @@
     using DoctrineShips.Web.Controllers;
     using GenericRepository;
     using Tools;
-
+    
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : System.Web.HttpApplication
     {
@@ -22,6 +23,9 @@
             WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            // Set a global application brand.
+            Application["Brand"] = WebConfigurationManager.AppSettings["Brand"];
         }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
