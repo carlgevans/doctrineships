@@ -23,6 +23,7 @@
     <add key="TwitterConsumerSecret" value="<Twitter API Details For Tweet Alerts>" />
     <add key="TwitterAccessToken" value="<Twitter API Details For Tweet Alerts>" />
     <add key="TwitterAccessTokenSecret" value="<Twitter API Details For Tweet Alerts>" />
+    <add key="Brand" value="<Site Brand Name>" />
   </appSettings>
   <system.web>
     <httpRuntime targetFramework="4.5" />
