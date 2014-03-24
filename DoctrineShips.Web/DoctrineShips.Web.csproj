@@ -172,15 +172,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AccountNotificationRecipientsViewModel.cs" />
-    <Compile Include="ViewModels\AccountSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\AccountSettingsViewModel.cs" />
     <Compile Include="ViewModels\AccountSalesAgentsViewModel.cs" />
     <Compile Include="ViewModels\SharedMenuViewModel.cs" />
-    <Compile Include="ViewModels\HomeSubscriptionsViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomerContractsStationViewModel.cs" />
     <Compile Include="ViewModels\SearchSalesAgentContractsViewModel.cs" />
     <Compile Include="ViewModels\AccountShipFitsViewModel.cs" />
-    <Compile Include="ViewModels\SiteSubscriptionPlansViewModel.cs" />
     <Compile Include="ViewModels\SiteLogViewModel.cs" />
     <Compile Include="ViewModels\SiteAccountsViewModel.cs" />
     <Compile Include="ViewModels\SiteCustomersViewModel.cs" />
@@ -247,8 +244,6 @@
     <Content Include="Views\Site\Log.cshtml" />
     <Content Include="Views\SalesAgent\List.cshtml" />
     <Content Include="Views\Account\ShipFits.cshtml" />
-    <Content Include="Views\Site\SubscriptionPlans.cshtml" />
-    <Content Include="Views\Account\Subscription.cshtml" />
     <Content Include="Views\Account\NotificationRecipients.cshtml" />
     <Content Include="Views\Shared\_Dialogs.cshtml" />
     <Content Include="Views\Search\CustomerContractsStation.cshtml" />
@@ -356,9 +351,9 @@
     <Content Include="Content\styles\less\utilities.less" />
     <Content Include="Content\styles\less\variables.less" />
     <Content Include="Content\styles\less\wells.less" />
+    <None Include="Properties\PublishProfiles\DoctrineShipsBC.pubxml" />
     <None Include="Properties\PublishProfiles\DoctrineShips.pubxml" />
     <Content Include="Views\Account\AccessDenied.cshtml" />
-    <Content Include="Views\Home\Subscriptions.cshtml" />
     <Content Include="Views\Account\AccessCodes.cshtml" />
     <Content Include="Views\KnowledgeBase\List.cshtml" />
     <Content Include="Views\Account\SalesAgents.cshtml" />

@@ -29,15 +29,6 @@
             SiteAccountsViewModel viewModel = new SiteAccountsViewModel();
 
             viewModel.Accounts = this.doctrineShipsServices.GetAccounts();
-            
-            // Populate the subscription plan selection list.
-            viewModel.SubscriptionPlans = this.doctrineShipsServices.GetSubscriptionPlans()
-                                         .Select(x => new SelectListItem
-                                         {
-                                             Value = x.SubscriptionPlanId.ToString(),
-                                             Text = x.Name
-                                         })
-                                         .ToList();
 
             // Set the ViewBag to the TempData status value passed from the Add & Delete methods.
             ViewBag.Status = TempData["Status"];
@@ -57,7 +48,7 @@
                 // Clean the passed description.
                 string cleanDescription = Server.HtmlEncode(viewModel.Description);
 
-                IValidationResult validationResult = this.doctrineShipsServices.AddAccount(cleanDescription, viewModel.SubscriptionPlanId, out generatedKey, out newAccountId);
+                IValidationResult validationResult = this.doctrineShipsServices.AddAccount(cleanDescription, out generatedKey, out newAccountId);
 
                 // If the validationResult is not valid, something did not validate in the service layer.
                 if (validationResult.IsValid)
@@ -86,15 +77,6 @@
             {
                 // Re-populate the view model and return with any validation errors.
                 viewModel.Accounts = this.doctrineShipsServices.GetAccounts();
-                
-                // Re-populate the subscription plan selection list.
-                viewModel.SubscriptionPlans = this.doctrineShipsServices.GetSubscriptionPlans()
-                                             .Select(x => new SelectListItem
-                                             {
-                                                 Value = x.SubscriptionPlanId.ToString(),
-                                                 Text = x.Name
-                                             })
-                                             .ToList();
 
                 return View("~/Views/Site/Accounts.cshtml", viewModel);
             }
@@ -206,18 +188,6 @@
             return RedirectToAction("Customers");
         }
 
-        public ActionResult SubscriptionPlans()
-        {
-            SiteSubscriptionPlansViewModel viewModel = new SiteSubscriptionPlansViewModel();
-
-            viewModel.SubscriptionPlans = this.doctrineShipsServices.GetSubscriptionPlans();
-
-            // Set the ViewBag to the TempData status value passed from the add and remove methods.
-            ViewBag.Status = TempData["Status"];
-
-            return View(viewModel);
-        }
-
         public ActionResult Log()
         {
             SiteLogViewModel viewModel = new SiteLogViewModel();
@@ -246,100 +216,6 @@
 
             // Update the state.
             this.doctrineShipsServices.UpdateAccountState(cleanAccountId, cleanIsActive);
-
-            return RedirectToAction("Accounts");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken()]
-        public ActionResult AddSubscriptionPlan(SiteSubscriptionPlansViewModel viewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                // Create an Auto Mapper map between the subscription plan entity and the view model. Ignore the id as this will be auto-generated.
-                Mapper.CreateMap<SiteSubscriptionPlansViewModel, SubscriptionPlan>().ForMember(x => x.SubscriptionPlanId, opt => opt.Ignore());
-
-                // Populate a subscription plan with automapper and pass it back to the service layer for addition.
-                SubscriptionPlan subscriptionPlan = Mapper.Map<SiteSubscriptionPlansViewModel, SubscriptionPlan>(viewModel);
-                IValidationResult validationResult = this.doctrineShipsServices.AddSubscriptionPlan(subscriptionPlan);
-
-                // If the validationResult is not valid, something did not validate in the service layer.
-                if (validationResult.IsValid)
-                {
-                    TempData["Status"] = "The subscription plan was successfully added.";
-                }
-                else
-                {
-                    TempData["Status"] = "Error: The subscription plan was not added, a validation error occured.<br /><b>Error Details: </b>";
-
-                    foreach (var error in validationResult.Errors)
-                    {
-                        TempData["Status"] += error.Value + "<br />";
-                    }
-                }
-
-                return RedirectToAction("SubscriptionPlans");
-            }
-            else
-            {
-                // Re-populate the view model and return with any validation errors.
-                viewModel.SubscriptionPlans = this.doctrineShipsServices.GetSubscriptionPlans();
-                return View("~/Views/Site/SubscriptionPlans.cshtml", viewModel);
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken()]
-        public ActionResult DeleteSubscriptionPlan(SiteSubscriptionPlansViewModel viewModel)
-        {
-            if (viewModel.RemoveList != null)
-            {
-                // Create a collection for the results of the delete operations.
-                ICollection<bool> resultList = new List<bool>();
-
-                foreach (var subscriptionPlanId in viewModel.RemoveList)
-                {
-                    resultList.Add(this.doctrineShipsServices.DeleteSubscriptionPlan(subscriptionPlanId));
-                }
-
-                // If any of the deletions failed, output an error message.
-                if (resultList.Contains(false))
-                {
-                    TempData["Status"] = "Error: One or more subscription plans were not removed. Are any of the plans still in use by accounts?";
-                }
-                else
-                {
-                    TempData["Status"] = "All selected subscription plans were successfully removed.";
-                }
-            }
-
-            return RedirectToAction("SubscriptionPlans");
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken()]
-        public ActionResult UpdateAccountSubscriptionPlan(SiteAccountsViewModel viewModel)
-        {
-            if (viewModel != null)
-            {
-                // Update the subscription plan.
-                IValidationResult validationResult = this.doctrineShipsServices.UpdateAccountSubscriptionPlan(viewModel.AccountId, viewModel.SubscriptionPlanId);
-
-                // If the validationResult is not valid, something did not validate in the service layer.
-                if (validationResult.IsValid)
-                {
-                    TempData["Status"] = "The subscription plan was successfully updated.";
-                }
-                else
-                {
-                    TempData["Status"] = "Error: The subscription plan was not updated, a validation error occured.<br /><b>Error Details: </b>";
-
-                    foreach (var error in validationResult.Errors)
-                    {
-                        TempData["Status"] += error.Value + "<br />";
-                    }
-                }
-            }
 
             return RedirectToAction("Accounts");
         }

@@ -19,11 +19,6 @@
             <ul class="nav navbar-nav">
                 <li><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
 
-                @if (!Request.IsAuthenticated)
-                {
-                    <li><a href='/Home/Subscriptions'><span class="glyphicon glyphicon-info-sign"></span> Service Subscriptions</a></li>
-                }
-
                 @if (Request.IsAuthenticated && User.IsInAnyRole("User", "Admin", "SiteAdmin"))
                 {
 
@@ -49,7 +44,6 @@
                             <li>@Html.ActionLink("Ship Fits", "ShipFits", "Account")</li>
                             <li>@Html.ActionLink("Sales Agents", "SalesAgents", "Account")</li>
                             <li>@Html.ActionLink("Access Codes", "AccessCodes", "Account")</li>
-                            <li>@Html.ActionLink("Subscription", "Subscription", "Account")</li>
                             <li>@Html.ActionLink("Notification Recipients", "NotificationRecipients", "Account")</li>
                             <li>@Html.ActionLink("Settings", "Settings", "Account")</li>
 
@@ -60,7 +54,6 @@
                                 <li class="divider"></li>
                                 <li>@Html.ActionLink("Customers", "Customers", "Site")</li>
                                 <li>@Html.ActionLink("Accounts", "Accounts", "Site")</li>
-                                <li>@Html.ActionLink("Subscription Plans", "SubscriptionPlans", "Site")</li>
                                 <li>@Html.ActionLink("Log", "Log", "Site")</li>
                             }
                         </ul>

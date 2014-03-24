@@ -57,7 +57,6 @@
     <Compile Include="Mapping\AccessCodeMap.cs" />
     <Compile Include="Mapping\ShortUrlMap.cs" />
     <Compile Include="Mapping\NotificationRecipientMap.cs" />
-    <Compile Include="Mapping\SubscriptionPlanMap.cs" />
     <Compile Include="Mapping\LogMessageMap.cs" />
     <Compile Include="Mapping\ArticleMap.cs" />
     <Compile Include="Mapping\AccountMap.cs" />

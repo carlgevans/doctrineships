@@ -58,23 +58,13 @@
         }
 
         /// <summary>
-        /// Fetches and returns a list of all Doctrine Ships subscription plans.
-        /// </summary>
-        /// <returns>A list of SubscriptionPlan objects.</returns>
-        internal IEnumerable<SubscriptionPlan> GetSubscriptionPlans()
-        {
-            return this.doctrineShipsRepository.GetSubscriptionPlans();
-        }
-
-        /// <summary>
         /// <para>Adds an account with a default setting profile and an account admin access code.</para>
         /// </summary>
         /// <param name="description">A short description for the new account.</param>
-        /// <param name="subscriptionPlanId">The subscription plan for the new account.</param>
         /// <param name="generatedKey">An out string parameter containing the account admin key or an emptry string on failure.</param>
         /// <param name="newAccountId">An out int parameter containing the new account id or 0 on failure.</param>
         /// <returns>Returns a validation result object.</returns>
-        internal IValidationResult AddAccount(string description, int subscriptionPlanId, out string generatedKey, out int newAccountId)
+        internal IValidationResult AddAccount(string description, out string generatedKey, out int newAccountId)
         {
             generatedKey = string.Empty;
             newAccountId = 0;
@@ -86,12 +76,8 @@
             // Populate the remaining properties.
             newAccount.Description = description;
             newAccount.DateCreated = DateTime.UtcNow;
-            newAccount.LastCredit = DateTime.UtcNow;
-            newAccount.LastDebit = DateTime.UtcNow;
-            newAccount.Balance = 0;
             newAccount.IsActive = true;
             newAccount.SettingProfileId = 0;
-            newAccount.SubscriptionPlanId = subscriptionPlanId;
 
             // Validate the new account.
             validationResult = this.doctrineShipsValidation.Account(newAccount);
@@ -425,107 +411,6 @@
         }
 
         /// <summary>
-        /// Debit any accounts with subscription payments that are due.
-        /// </summary>
-        internal void DebitDueAccounts()
-        {
-            // Fetch any accounts that have not been processed for 30 days.
-            IEnumerable<Account> accounts = this.doctrineShipsRepository.GetDueAccounts(TimeSpan.FromDays(30));
-
-            if (accounts.Any() == true)
-            {
-                foreach (var account in accounts)
-                {
-                    // Deduct the subscription from the account balance.
-                    account.Balance = account.Balance - account.SubscriptionPlan.PricePerMonth;
-
-                    // Set the last debit date.
-                    account.LastDebit = DateTime.UtcNow;
-
-                    // Update the account and log.
-                    this.doctrineShipsRepository.UpdateAccount(account);
-                    logger.LogMessage("Account '" + account.Description + "' has been debited '" + String.Format("{0:N2} ISK", account.SubscriptionPlan.PricePerMonth) + "', leaving a balance of '" + String.Format("{0:N2} ISK", account.Balance) + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-                }
-
-                // Save all changes.
-                this.doctrineShipsRepository.Save();
-            }
-            else
-            {
-                logger.LogMessage("No Accounts Were Due For Subscription Payments.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-            }
-        }
-
-        /// <summary>
-        /// Credit any accounts where payments have been made to the corporate wallet.
-        /// </summary>
-        internal void CreditAccountPayments(int corpApiId, string corpApiKey)
-        {
-            // Fetch any recent wallet entries and sort them by oldest transaction first.
-            IEnumerable<IEveDataWalletEntry> walletEntries = this.eveDataSource.GetCorporationWalletEntries(corpApiId, corpApiKey).OrderBy(x => x.Date);
-
-            if (walletEntries != null)
-            {
-                foreach (var walletEntry in walletEntries)
-                {
-                    // If the wallet reference type is 'Player Donation' or 'Corporation Account Withdrawal' then continue.
-                    if (walletEntry.RefTypeId == 10 || walletEntry.RefTypeId == 37)
-                    {
-                        // If the wallet entry reason field contains a valid account id then continue.
-                        int accountId = this.ParseWalletReason(walletEntry.Reason);
-                        if (accountId != 0)
-                        {
-                            // Fetch the account.
-                            Account account = this.doctrineShipsRepository.GetAccount(accountId);
-
-                            // If the account was found then continue.
-                            if (account != null)
-                            {
-                                 // If the date of this wallet entry is newer than the LastCredit date stored for this
-                                 // account, then add the amount to the account balance and update the LastCredit date.
-                                 if (walletEntry.Date > account.LastCredit)
-                                 {
-                                     account.Balance = account.Balance + walletEntry.Amount;
-                                     account.LastCredit = walletEntry.Date;
-                                     this.doctrineShipsRepository.UpdateAccount(account);
-                                     this.doctrineShipsRepository.Save();
-                                     logger.LogMessage("Account '" + account.Description + "' has made a payment and has been credited '" + String.Format("{0:N2} ISK", walletEntry.Amount) + "', leaving a balance of '" + String.Format("{0:N2} ISK", account.Balance) + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-                                 }
-                            }  
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Parses a wallet entry reason string to find the account identification number (E.g. DS12).
-        /// </summary>
-        /// <param name="toParse">The reason string to be parsed.</param>
-        /// <returns>A number containing the doctrine ships account id or 0 if a valid string was not found.</returns>
-        internal int ParseWalletReason(string toParse)
-        {
-            int accountId = 0;
-            string notTheId = string.Empty;
-
-            // Match DS### in the string, store everything else in a temp variable.
-            notTheId = Regex.Replace(toParse, @"DS\d+", string.Empty);
-
-            if (notTheId.Length > 0)
-            {
-                // Remove the contents of the temp variable from the original string.
-                accountId = Conversion.StringToInt32(toParse.Replace(notTheId, string.Empty));
-            }
-            else
-            {
-                // The original string is either an exact account id or an empty string.
-                accountId = Conversion.StringToInt32(toParse);
-            }
-
-            return accountId;
-        }
-
-        /// <summary>
         /// Updates the state of an access code.
         /// </summary>
         /// <param name="accountId">The account Id of the requestor. The account Id should own the access code being changed.</param>
@@ -596,90 +481,6 @@
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// <para>Adds a subscription plan.</para>
-        /// </summary>
-        /// <param name="subscriptionPlan">A populated subscription plan object.</param>
-        /// <returns>Returns a validation result object.</returns>
-        internal IValidationResult AddSubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            IValidationResult validationResult = new ValidationResult();
-
-            // Validate the new subscription plan.
-            validationResult = this.doctrineShipsValidation.SubscriptionPlan(subscriptionPlan);
-            if (validationResult.IsValid == true)
-            {
-                // Add the new subscription plan.
-                this.doctrineShipsRepository.CreateSubscriptionPlan(subscriptionPlan);
-                this.doctrineShipsRepository.Save();
-
-                // Log the addition.
-                logger.LogMessage("Subscription Plan '" + subscriptionPlan.Name + "' Successfully Added.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-            }
-
-            return validationResult;
-        }
-
-        /// <summary>
-        /// Deletes a subscription plan.
-        /// </summary>
-        /// <param name="subscriptionPlanId">The id of the subscription plan being deleted.</param>
-        /// <returns>Returns true if the deletion was successful or false if not.</returns>
-        internal bool DeleteSubscriptionPlan(int subscriptionPlanId)
-        {
-            SubscriptionPlan subscriptionPlan = this.doctrineShipsRepository.GetSubscriptionPlan(subscriptionPlanId);
-
-            if (subscriptionPlan != null)
-            {
-                // Are any accounts still using this subscription plan?
-                if (this.doctrineShipsRepository.GetAccountsSubscriptionPlanCount(subscriptionPlanId) == 0)
-                {
-                    // Delete the subscription plan and log the event.
-                    this.doctrineShipsRepository.DeleteSubscriptionPlan(subscriptionPlan.SubscriptionPlanId);
-                    this.doctrineShipsRepository.Save();
-                    logger.LogMessage("Subscription Plan '" + subscriptionPlan.Name + "' Successfully Deleted.", 1, "Message", MethodBase.GetCurrentMethod().Name);
-
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        /// <summary>
-        /// Updates the subscription plan for an account.
-        /// </summary>
-        /// <param name="accountId">The account Id being changed.</param>
-        /// <param name="subscriptionPlanId">The id of the new subscription plan.</param>
-        /// <returns>Returns a validation result object.</returns>
-        internal IValidationResult UpdateAccountSubscriptionPlan(int accountId, int subscriptionPlanId)
-        {
-            IValidationResult validationResult = new ValidationResult();
-
-            Account account = this.doctrineShipsRepository.GetAccount(accountId);
-
-            if (account != null)
-            {
-                // Change the subscription plan of the account and validate.
-                account.SubscriptionPlanId = subscriptionPlanId;
-
-                validationResult = this.doctrineShipsValidation.Account(account);
-                if (validationResult.IsValid == true)
-                {
-                    // Update the account and log the event.
-                    this.doctrineShipsRepository.UpdateAccount(account);
-                    this.doctrineShipsRepository.Save();
-                    logger.LogMessage("Subscription Plan Successfully Changed For Account: '" + account.Description + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-                }
-            }
-            else
-            {
-                validationResult.AddError("AccountId.Null", "The account does not exist in the database.");
-            }
-
-            return validationResult;
         }
 
         /// <summary>

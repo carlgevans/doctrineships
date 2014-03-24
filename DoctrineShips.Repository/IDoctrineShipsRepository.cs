@@ -23,9 +23,7 @@
         Account AddAccount(Account account);
         Account CreateAccount(Account account);
         Account GetAccount(int accountId);
-        int GetAccountsSubscriptionPlanCount(int subscriptionPlanId);
         IEnumerable<Account> GetAccounts();
-        IEnumerable<Account> GetDueAccounts(TimeSpan duePeriod);
         IEnumerable<Account> GetAccountsForNotifications();
 
         // Article Operations.
@@ -123,15 +121,6 @@
         ShipFitComponent CreateShipFitComponent(ShipFitComponent shipFitComponent);
         ShipFitComponent GetShipFitComponent(int shipFitComponentId);
         IEnumerable<ShipFitComponent> GetShipFitComponents(int shipFitId);
-
-        // Subscription Plan Operations.
-        void DeleteSubscriptionPlan(int subscriptionPlanId);
-        void UpdateSubscriptionPlan(SubscriptionPlan subscriptionPlan);
-        SubscriptionPlan AddSubscriptionPlan(SubscriptionPlan subscriptionPlan);
-        SubscriptionPlan CreateSubscriptionPlan(SubscriptionPlan subscriptionPlan);
-        SubscriptionPlan GetSubscriptionPlan(int subscriptionPlanId);
-        SubscriptionPlan GetSubscriptionPlanReadOnly(int subscriptionPlanId);
-        IEnumerable<SubscriptionPlan> GetSubscriptionPlans();
 
         // ShortUrl Operations.
         void DeleteShortUrl(string shortUrlId);

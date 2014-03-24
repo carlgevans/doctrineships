@@ -78,59 +78,51 @@
         {
             IValidationResult validationResult = new ValidationResult();
 
-            // Check the remaining sales agent licences for the account.
-            if (this.GetRemainingSalesAgentLicences(accountId) <= 0)
-            {
-                validationResult.AddError("SalesAgent.Licences", "You have exceeded the number of sales agent licences available with your account subscription plan.");
-            }
-            else
-            {
-                // Fetch details about the Api Key from Eve Data.
-                IEveDataApiKey apiKeyInfo = this.eveDataSource.GetApiKeyInfo(apiId, apiKey);
+            // Fetch details about the Api Key from Eve Data.
+            IEveDataApiKey apiKeyInfo = this.eveDataSource.GetApiKeyInfo(apiId, apiKey);
 
-                if (apiKeyInfo != null)
+            if (apiKeyInfo != null)
+            {
+                // Validate the api key.
+                validationResult = this.doctrineShipsValidation.ApiKey(apiKeyInfo);
+                if (validationResult.IsValid == true)
                 {
-                    // Validate the api key.
-                    validationResult = this.doctrineShipsValidation.ApiKey(apiKeyInfo);
+                    // Use the api key info to populate a new sales agent object.
+                    SalesAgent newSalesAgent = new SalesAgent();
+
+                    // If this is a character or account key use the character details, if a corp key use the corp details.
+                    if (apiKeyInfo.Type == EveDataApiKeyType.Character || apiKeyInfo.Type == EveDataApiKeyType.Account)
+                    {
+                        // If this is an account key, the first character in the list will be used.
+                        newSalesAgent.SalesAgentId = apiKeyInfo.Characters.FirstOrDefault().CharacterId;
+                        newSalesAgent.Name = apiKeyInfo.Characters.FirstOrDefault().CharacterName;
+                        newSalesAgent.ImageUrl = eveDataSource.GetCharacterPortraitUrl(newSalesAgent.SalesAgentId);
+                        newSalesAgent.IsCorp = false;
+                    }
+                    else if (apiKeyInfo.Type == EveDataApiKeyType.Corporation)
+                    {
+                        newSalesAgent.SalesAgentId = apiKeyInfo.Characters.FirstOrDefault().CorporationId;
+                        newSalesAgent.Name = apiKeyInfo.Characters.FirstOrDefault().CorporationName;
+                        newSalesAgent.ImageUrl = eveDataSource.GetCorporationLogoUrl(newSalesAgent.SalesAgentId);
+                        newSalesAgent.IsCorp = true;
+                    }
+
+                    // Populate the remaining properties.
+                    newSalesAgent.AccountId = accountId;
+                    newSalesAgent.ApiId = apiId;
+                    newSalesAgent.ApiKey = apiKey;
+                    newSalesAgent.IsActive = true;
+                    newSalesAgent.LastForce = DateTime.UtcNow;
+                    newSalesAgent.LastContractRefresh = DateTime.UtcNow;
+
+                    // Validate the new sales agent.
+                    validationResult = this.doctrineShipsValidation.SalesAgent(newSalesAgent);
                     if (validationResult.IsValid == true)
                     {
-                        // Use the api key info to populate a new sales agent object.
-                        SalesAgent newSalesAgent = new SalesAgent();
-
-                        // If this is a character or account key use the character details, if a corp key use the corp details.
-                        if (apiKeyInfo.Type == EveDataApiKeyType.Character || apiKeyInfo.Type == EveDataApiKeyType.Account)
-                        {
-                            // If this is an account key, the first character in the list will be used.
-                            newSalesAgent.SalesAgentId = apiKeyInfo.Characters.FirstOrDefault().CharacterId;
-                            newSalesAgent.Name = apiKeyInfo.Characters.FirstOrDefault().CharacterName;
-                            newSalesAgent.ImageUrl = eveDataSource.GetCharacterPortraitUrl(newSalesAgent.SalesAgentId);
-                            newSalesAgent.IsCorp = false;
-                        }
-                        else if (apiKeyInfo.Type == EveDataApiKeyType.Corporation)
-                        {
-                            newSalesAgent.SalesAgentId = apiKeyInfo.Characters.FirstOrDefault().CorporationId;
-                            newSalesAgent.Name = apiKeyInfo.Characters.FirstOrDefault().CorporationName;
-                            newSalesAgent.ImageUrl = eveDataSource.GetCorporationLogoUrl(newSalesAgent.SalesAgentId);
-                            newSalesAgent.IsCorp = true;
-                        }
-
-                        // Populate the remaining properties.
-                        newSalesAgent.AccountId = accountId;
-                        newSalesAgent.ApiId = apiId;
-                        newSalesAgent.ApiKey = apiKey;
-                        newSalesAgent.IsActive = true;
-                        newSalesAgent.LastForce = DateTime.UtcNow;
-                        newSalesAgent.LastContractRefresh = DateTime.UtcNow;
-
-                        // Validate the new sales agent.
-                        validationResult = this.doctrineShipsValidation.SalesAgent(newSalesAgent);
-                        if (validationResult.IsValid == true)
-                        {
-                            // Add the new sales agent and log the event.
-                            this.doctrineShipsRepository.CreateSalesAgent(newSalesAgent);
-                            this.doctrineShipsRepository.Save();
-                            logger.LogMessage("Sales Agent '" + newSalesAgent.Name + "' Successfully Added For Account Id: " + newSalesAgent.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
-                        }
+                        // Add the new sales agent and log the event.
+                        this.doctrineShipsRepository.CreateSalesAgent(newSalesAgent);
+                        this.doctrineShipsRepository.Save();
+                        logger.LogMessage("Sales Agent '" + newSalesAgent.Name + "' Successfully Added For Account Id: " + newSalesAgent.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
                     }
                 }
                 else
@@ -167,24 +159,6 @@
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// <para>Fetches and returns the remaining number of sales agent licences for an account.</para>
-        /// </summary>
-        /// <param name="accountId">The account Id to be checked.</param>
-        /// <returns>Returns the number of sales agents available for an account or 0 if the account is not found.</returns>
-        internal int GetRemainingSalesAgentLicences(int accountId)
-        {
-            Account account = this.doctrineShipsRepository.GetAccount(accountId);
-
-            if (account != null)
-            {
-                // Return the remaining sales agent licence count.
-                return account.SubscriptionPlan.SalesAgentLimit - account.SalesAgents.Count();
-            }
-
-            return 0;
         }
 
         /// <summary>

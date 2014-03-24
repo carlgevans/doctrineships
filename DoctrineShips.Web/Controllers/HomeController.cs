@@ -25,15 +25,5 @@
 
             return View(viewModel);
         }
-
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
-        public ActionResult Subscriptions()
-        {
-            HomeSubscriptionsViewModel viewModel = new HomeSubscriptionsViewModel();
-
-            viewModel.SubscriptionPlans = this.doctrineShipsServices.GetSubscriptionPlans().Where(x => x.IsHidden == false);
-
-            return View(viewModel);
-        }
     }
 }

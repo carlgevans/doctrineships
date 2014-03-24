@@ -7,7 +7,7 @@
     public class DoctrineShipsContext : DbContextBase
     {
         public DoctrineShipsContext() :
-            base("name=DoctrineShipsDb")
+            base("name=DoctrineShipsBCDb")
         {
             //Database.SetInitializer<DoctrineShipsContext>(new DropCreateDatabaseAlways<DoctrineShipsContext>());
             Database.SetInitializer<DoctrineShipsContext>(null);
@@ -36,7 +36,6 @@
             modelBuilder.Configurations.Add(new ShipFitComponentMap());
             modelBuilder.Configurations.Add(new ShipFitMap());
             modelBuilder.Configurations.Add(new ShortUrlMap());
-            modelBuilder.Configurations.Add(new SubscriptionPlanMap());
         }
     }
 }

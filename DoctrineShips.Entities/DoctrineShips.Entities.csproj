@@ -44,7 +44,6 @@
     </Compile>
     <Compile Include="ShortUrl.cs" />
     <Compile Include="NotificationRecipient.cs" />
-    <Compile Include="SubscriptionPlan.cs" />
     <Compile Include="Article.cs" />
     <Compile Include="AccessCode.cs" />
     <Compile Include="Account.cs" />

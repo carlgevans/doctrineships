@@ -46,7 +46,6 @@
     <Compile Include="IDoctrineShipsRepository.cs" />
     <Compile Include="Operations\ShortUrlOperations.cs" />
     <Compile Include="Operations\NotificationRecipientOperations.cs" />
-    <Compile Include="Operations\SubscriptionPlanOperations.cs" />
     <Compile Include="Operations\LogMessageOperations.cs" />
     <Compile Include="Operations\ArticleOperations.cs" />
     <Compile Include="Operations\AccessCodeOperations.cs" />

@@ -26,7 +26,6 @@
         private ShipFitOperations shipFitOperations;
         private ShipFitComponentOperations shipFitComponentOperations;
         private ShortUrlOperations shortUrlOperations;
-        private SubscriptionPlanOperations subscriptionPlanOperations;
 
         public DoctrineShipsRepository(IUnitOfWork unitOfWork)
         {
@@ -202,19 +201,6 @@
             }
         }
 
-        internal SubscriptionPlanOperations SubscriptionPlanOperations
-        {
-            get
-            {
-                if (this.subscriptionPlanOperations == null)
-                {
-                    this.subscriptionPlanOperations = new SubscriptionPlanOperations(unitOfWork);
-                }
-
-                return this.subscriptionPlanOperations;
-            }
-        }
-
         public void DeleteAccessCode(int accessCodeId)
         {
             AccessCodeOperations.DeleteAccessCode(accessCodeId);
@@ -280,19 +266,9 @@
             return AccountOperations.GetAccount(accountId);
         }
 
-        public int GetAccountsSubscriptionPlanCount(int subscriptionPlanId)
-        {
-            return AccountOperations.GetAccountsSubscriptionPlanCount(subscriptionPlanId);
-        }
-
         public IEnumerable<Account> GetAccounts()
         {
             return AccountOperations.GetAccounts();
-        }
-
-        public IEnumerable<Account> GetDueAccounts(TimeSpan duePeriod)
-        {
-            return AccountOperations.GetDueAccounts(duePeriod);
         }
 
         public IEnumerable<Account> GetAccountsForNotifications()
@@ -688,41 +664,6 @@
         public IEnumerable<ShipFitComponent> GetShipFitComponents(int shipFitId)
         {
             return ShipFitComponentOperations.GetShipFitComponents(shipFitId);
-        }
-
-        public void DeleteSubscriptionPlan(int subscriptionPlanId)
-        {
-            SubscriptionPlanOperations.DeleteSubscriptionPlan(subscriptionPlanId);
-        }
-
-        public void UpdateSubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            SubscriptionPlanOperations.UpdateSubscriptionPlan(subscriptionPlan);
-        }
-
-        public SubscriptionPlan AddSubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            return SubscriptionPlanOperations.AddSubscriptionPlan(subscriptionPlan);
-        }
-
-        public SubscriptionPlan CreateSubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            return SubscriptionPlanOperations.CreateSubscriptionPlan(subscriptionPlan);
-        }
-
-        public SubscriptionPlan GetSubscriptionPlan(int subscriptionPlanId)
-        {
-            return SubscriptionPlanOperations.GetSubscriptionPlan(subscriptionPlanId);
-        }
-
-        public SubscriptionPlan GetSubscriptionPlanReadOnly(int subscriptionPlanId)
-        {
-            return SubscriptionPlanOperations.GetSubscriptionPlanReadOnly(subscriptionPlanId);
-        }
-
-        public IEnumerable<SubscriptionPlan> GetSubscriptionPlans()
-        {
-            return SubscriptionPlanOperations.GetSubscriptionPlans();
         }
 
         public void DeleteShortUrl(string shortUrlId)

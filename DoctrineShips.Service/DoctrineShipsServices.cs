@@ -347,9 +347,6 @@
             // Deletes short urls older than 30 days.
             TaskManager.DeleteOldShortUrls();
 
-            // Debit any accounts with subscription payments that are due.
-            AccountManager.DebitDueAccounts();
-
             // Send out daily ship fit availability summaries for all accounts.
             await TaskManager.SendDailySummary(twitterContext);
         }
@@ -362,9 +359,6 @@
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
         public async Task HourlyMaintenance(int corpApiId, string corpApiKey, LinqToTwitter::TwitterContext twitterContext)
         {
-            // Credit any accounts where payments have been made to the corporate wallet.
-            AccountManager.CreditAccountPayments(corpApiId, corpApiKey);
-
             // Send out any ship fit availability alerts for all accounts.
             await TaskManager.SendAvailabilityAlert(twitterContext);
         }
@@ -382,13 +376,12 @@
         /// <para>Adds an account with a default setting profile and an account admin access code.</para>
         /// </summary>
         /// <param name="description">A short description for the new account.</param>
-        /// <param name="subscriptionPlanId">The subscription plan for the new account.</param>
         /// <param name="generatedKey">An out string parameter containing the account admin key or an emptry string on failure.</param>
         /// <param name="newAccountId">An out int parameter containing the new account id or 0 on failure.</param>
         /// <returns>Returns a validation result object.</returns>
-        public IValidationResult AddAccount(string description, int subscriptionPlanId, out string generatedKey, out int newAccountId)
+        public IValidationResult AddAccount(string description, out string generatedKey, out int newAccountId)
         {
-            return AccountManager.AddAccount(description, subscriptionPlanId, out generatedKey, out newAccountId);
+            return AccountManager.AddAccount(description, out generatedKey, out newAccountId);
         }
 
         /// <summary>
@@ -475,15 +468,6 @@
         public IEnumerable<Account> GetAccounts()
         {
             return AccountManager.GetAccounts();
-        }
-
-        /// <summary>
-        /// Fetches and returns a list of all Doctrine Ships subscription plans.
-        /// </summary>
-        /// <returns>A list of SubscriptionPlan objects.</returns>
-        public IEnumerable<SubscriptionPlan> GetSubscriptionPlans()
-        {
-            return AccountManager.GetSubscriptionPlans();
         }
 
         /// <summary>
@@ -677,37 +661,6 @@
             SalesAgentManager.RefreshSalesAgentContractCounts();
 
             return result;
-        }
-
-        /// <summary>
-        /// <para>Adds a subscription plan.</para>
-        /// </summary>
-        /// <param name="subscriptionPlan">A populated subscription plan object.</param>
-        /// <returns>Returns a validation result object.</returns>
-        public IValidationResult AddSubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            return AccountManager.AddSubscriptionPlan(subscriptionPlan);
-        }
-
-        /// <summary>
-        /// Deletes a subscription plan.
-        /// </summary>
-        /// <param name="subscriptionPlanId">The id of the subscription plan being deleted.</param>
-        /// <returns>Returns true if the deletion was successful or false if not.</returns>
-        public bool DeleteSubscriptionPlan(int subscriptionPlanId)
-        {
-            return AccountManager.DeleteSubscriptionPlan(subscriptionPlanId);
-        }
-
-        /// <summary>
-        /// Updates the subscription plan for an account.
-        /// </summary>
-        /// <param name="accountId">The account Id being changed.</param>
-        /// <param name="subscriptionPlanId">The id of the new subscription plan.</param>
-        /// <returns>Returns a validation result object.</returns>
-        public IValidationResult UpdateAccountSubscriptionPlan(int accountId, int subscriptionPlanId)
-        {
-            return AccountManager.UpdateAccountSubscriptionPlan(accountId, subscriptionPlanId);
         }
 
         /// <summary>

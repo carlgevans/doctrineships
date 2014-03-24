@@ -46,7 +46,6 @@
                .Query()
                .Filter(x => x.AccountId == accountId)
                .Include(x => x.AccessCodes)
-               .Include(x => x.SubscriptionPlan)
                .Include(x => x.SalesAgents)
                .Get()
                .FirstOrDefault();
@@ -54,40 +53,12 @@
             return account;
         }
 
-        internal int GetAccountsSubscriptionPlanCount(int subscriptionPlanId)
-        {
-            var accounts = this.unitOfWork.Repository<Account>()
-                              .Query()
-                              .Filter(x => x.SubscriptionPlanId == subscriptionPlanId)
-                              .Get()
-                              .ToList();
-
-            return accounts.Count;
-        }
-
         internal IEnumerable<Account> GetAccounts()
         {
             var accounts = this.unitOfWork.Repository<Account>()
                               .Query()
                               .Include(x => x.AccessCodes)
-                              .Include(x => x.SubscriptionPlan)
                               .Include(x => x.SalesAgents)
-                              .Get()
-                              .OrderBy(x => x.AccountId)
-                              .ToList();
-
-            return accounts;
-        }
-
-        internal IEnumerable<Account> GetDueAccounts(TimeSpan duePeriod)
-        {
-            DateTime dateNow = DateTime.UtcNow;
-            DateTime oldestDate = dateNow - duePeriod;
-
-            var accounts = this.unitOfWork.Repository<Account>()
-                              .Query()
-                              .Filter(x => x.LastDebit < oldestDate)
-                              .Include(x => x.SubscriptionPlan)
                               .Get()
                               .OrderBy(x => x.AccountId)
                               .ToList();

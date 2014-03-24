@@ -166,3 +166,5 @@ $RECYCLE.BIN/
 # =========================
 
 /DoctrineShips.Web/App_Data
+DoctrineShips.Web/Web.configBC
+DoctrineShips.Web/Web.configDS

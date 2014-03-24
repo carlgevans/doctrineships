@@ -138,11 +138,6 @@
             return AccountCheck.SettingProfile(settingProfile);
         }
 
-        public IValidationResult SubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            return AccountCheck.SubscriptionPlan(subscriptionPlan);
-        }
-
         public IValidationResult NotificationRecipient(NotificationRecipient notificationRecipient)
         {
             return AccountCheck.NotificationRecipient(notificationRecipient);

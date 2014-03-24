@@ -434,19 +434,6 @@
             return View(viewModel);
         }
 
-        public ActionResult Subscription()
-        {
-            AccountSubscriptionViewModel viewModel = new AccountSubscriptionViewModel();
-
-            // Convert the currently logged-in account id to an integer.
-            int accountId = Conversion.StringToInt32(User.Identity.Name);
-
-            // Retrieve the current account.
-            viewModel.Account = this.doctrineShipsServices.GetAccount(accountId);
-
-            return View(viewModel);
-        }
-
         public ActionResult UpdateAccessCodeState(string accessCodeId, string isActive)
         {
             // Convert the currently logged-in account id to an integer.

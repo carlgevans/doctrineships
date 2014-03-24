@@ -17,8 +17,6 @@
         {
             IValidationResult validationResult = new ValidationResult();
 
-            var subscriptionPlan = this.doctrineShipsRepository.GetSubscriptionPlan(account.SubscriptionPlanId);
-
             // Null checks.
             if (account.Description == string.Empty || account.Description == null)
             {
@@ -31,12 +29,6 @@
                 {
                     validationResult.AddError("Description.Length", "Description should be less than 30 characters in length.");
                 }
-            }
-
-            // Does the subscription plan exist in the database?
-            if (subscriptionPlan == null)
-            {
-                validationResult.AddError("SubscriptionPlan.Null", "The subscription plan does not exist in the database.");
             }
 
             return validationResult;
@@ -143,35 +135,6 @@
             if (settingProfile.AlertThreshold < 0 || settingProfile.AlertThreshold > int.MaxValue)
             {
                 validationResult.AddError("AlertThreshold.Range", "AlertThreshold is outside of expected ranges.");
-            }
-
-            return validationResult;
-        }
-
-        internal IValidationResult SubscriptionPlan(SubscriptionPlan subscriptionPlan)
-        {
-            IValidationResult validationResult = new ValidationResult();
-
-            // Null checks.
-            if (subscriptionPlan.Name == null)
-            {
-                validationResult.AddError("Name.Null", "Name cannot be null.");
-            }
-
-            if (subscriptionPlan.Description == null)
-            {
-                validationResult.AddError("Description.Null", "Description cannot be null.");
-            }
-
-            // Range checks.
-            if (subscriptionPlan.SalesAgentLimit < 1 || subscriptionPlan.SalesAgentLimit > 500)
-            {
-                validationResult.AddError("SalesAgentLimit.Range", "SalesAgentLimit is outside of expected ranges. SalesAgentLimit should be between 1 and 500.");
-            }
-
-            if (subscriptionPlan.PricePerMonth < 0 || subscriptionPlan.PricePerMonth > long.MaxValue)
-            {
-                validationResult.AddError("PricePerMonth.Range", "PricePerMonth can not be less than 0. Also, the upper limit cannot exceed the max value of the long data type.");
             }
 
             return validationResult;

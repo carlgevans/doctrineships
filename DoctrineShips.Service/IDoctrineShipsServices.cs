@@ -150,11 +150,10 @@
         /// <para>Adds an account with a default setting profile and an account admin access code.</para>
         /// </summary>
         /// <param name="description">A short description for the new account.</param>
-        /// <param name="subscriptionPlanId">The subscription plan for the new account.</param>
         /// <param name="generatedKey">An out string parameter containing the account admin key or an emptry string on failure.</param>
         /// <param name="newAccountId">An out int parameter containing the new account id or 0 on failure.</param>
         /// <returns>Returns a validation result object.</returns>
-        IValidationResult AddAccount(string description, int subscriptionPlanId, out string generatedKey, out int newAccountId);
+        IValidationResult AddAccount(string description, out string generatedKey, out int newAccountId);
 
         /// <summary>
         /// Deletes an account and all access codes, ship fits, sales agents and their contracts.
@@ -168,12 +167,6 @@
         /// </summary>
         /// <returns>A list of account objects.</returns>
         IEnumerable<Account> GetAccounts();
-
-        /// <summary>
-        /// Fetches and returns a list of all Doctrine Ships subscription plans.
-        /// </summary>
-        /// <returns>A list of SubscriptionPlan objects.</returns>
-        IEnumerable<SubscriptionPlan> GetSubscriptionPlans();
 
         /// <summary>
         /// Authenticate an account id and key combination.
@@ -307,28 +300,6 @@
         /// <param name="salesAgentId">The id of the sales agent for which a contract refresh is to be forced.</param>
         /// <returns>Returns true if the force was successful or false if not.</returns>
         bool ForceContractRefresh(int accountId, int salesAgentId);
-
-        /// <summary>
-        /// <para>Adds a subscription plan.</para>
-        /// </summary>
-        /// <param name="subscriptionPlan">A populated subscription plan object.</param>
-        /// <returns>Returns a validation result object.</returns>
-        IValidationResult AddSubscriptionPlan(SubscriptionPlan subscriptionPlan);
-
-        /// <summary>
-        /// Deletes a subscription plan.
-        /// </summary>
-        /// <param name="subscriptionPlanId">The id of the subscription plan being deleted.</param>
-        /// <returns>Returns true if the deletion was successful or false if not.</returns>
-        bool DeleteSubscriptionPlan(int subscriptionPlanId);
-
-        /// <summary>
-        /// Updates the subscription plan for an account.
-        /// </summary>
-        /// <param name="accountId">The account Id being changed.</param>
-        /// <param name="subscriptionPlanId">The id of the new subscription plan.</param>
-        /// <returns>Returns a validation result object.</returns>
-        IValidationResult UpdateAccountSubscriptionPlan(int accountId, int subscriptionPlanId);
 
         /// <summary>
         /// <para>Deletes a notification recipient from an accountId and a notificationRecipientId.</para>
