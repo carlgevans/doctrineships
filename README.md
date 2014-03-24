@@ -74,7 +74,7 @@ Brave Doctrine Contracts has been released under the MIT Open Source license. Al
 
 ###4.1 The MIT License (MIT)
 
-Copyright (c) 2014 Brave Doctrine Contracts
+Copyright (c) 2014 Carl G. Evans
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
