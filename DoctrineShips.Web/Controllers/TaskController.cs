@@ -15,8 +15,6 @@
         private readonly IDoctrineShipsServices doctrineShipsServices;
         private readonly ISystemLogger logger;
         private readonly string taskKey;
-        private readonly int corpApiId;
-        private readonly string corpApiKey;
         private readonly SingleUserAuthorizer twitterAuth;
         private readonly TwitterContext twitterContext;
         
@@ -25,8 +23,6 @@
             this.doctrineShipsServices = doctrineShipsServices;
             this.logger = logger;
             this.taskKey = WebConfigurationManager.AppSettings["TaskKey"];
-            this.corpApiId = Conversion.StringToInt32(WebConfigurationManager.AppSettings["CorpApiId"]);
-            this.corpApiKey = WebConfigurationManager.AppSettings["CorpApiKey"];
             this.twitterAuth = new SingleUserAuthorizer
             {
                 CredentialStore = new SingleUserInMemoryCredentialStore
@@ -87,7 +83,7 @@
                 stopWatch.Start();
 
                 // Run hourly maintenance tasks.
-                await this.doctrineShipsServices.HourlyMaintenance(this.corpApiId, this.corpApiKey, twitterContext);
+                await this.doctrineShipsServices.HourlyMaintenance(twitterContext);
 
                 // Stop the clock.
                 stopWatch.Stop();

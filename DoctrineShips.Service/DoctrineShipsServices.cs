@@ -354,10 +354,8 @@
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        public async Task HourlyMaintenance(int corpApiId, string corpApiKey, LinqToTwitter::TwitterContext twitterContext)
+        public async Task HourlyMaintenance(LinqToTwitter::TwitterContext twitterContext)
         {
             // Send out any ship fit availability alerts for all accounts.
             await TaskManager.SendAvailabilityAlert(twitterContext);

@@ -135,10 +135,8 @@
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
         /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        Task HourlyMaintenance(int corpApiId, string corpApiKey, LinqToTwitter::TwitterContext twitterContext);
+        Task HourlyMaintenance(LinqToTwitter::TwitterContext twitterContext);
 
         /// <summary>
         /// Fetches and returns a Doctrine Ships account.
