@@ -132,9 +132,9 @@ App_Data/*.mdf
 App_Data/*.ldf
 
 # Web Config files (As they contain passwords etc). See Web.config.sample instead.
-Web.config
-Web.Debug.config
-Web.Release.config
+DoctrineShips.Web/Web.config
+DoctrineShips.Web/Web.Debug.config
+DoctrineShips.Web/Web.Release.config
 
 # Publish profiles
 PublishProfiles/
