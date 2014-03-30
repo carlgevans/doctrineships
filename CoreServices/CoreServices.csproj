@@ -42,10 +42,10 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
-    <Compile Include="CoreRequest.cs" />
-    <Compile Include="CoreKey.cs" />
-    <Compile Include="ICoreKey.cs" />
-    <Compile Include="ICoreRequest.cs" />
+    <Compile Include="CoreService.cs" />
+    <Compile Include="CoreApplication.cs" />
+    <Compile Include="ICoreApplication.cs" />
+    <Compile Include="ICoreService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
