@@ -175,6 +175,7 @@
     <Compile Include="ViewModels\AccountSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\AccountSettingsViewModel.cs" />
     <Compile Include="ViewModels\AccountSalesAgentsViewModel.cs" />
+    <Compile Include="ViewModels\SearchShipFitContractsViewModel.cs" />
     <Compile Include="ViewModels\SharedMenuViewModel.cs" />
     <Compile Include="ViewModels\HomeSubscriptionsViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomerContractsStationViewModel.cs" />
@@ -255,6 +256,7 @@
     <Content Include="Views\Search\SalesAgentContracts.cshtml" />
     <Content Include="Web.config.sample" />
     <Content Include="Views\ShipFit\_DetailResult.cshtml" />
+    <Content Include="Views\Search\ShipFitContracts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

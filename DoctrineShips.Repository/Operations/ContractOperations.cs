@@ -115,6 +115,19 @@
             return issuerContracts;
         }
 
+        internal IEnumerable<Contract> GetShipFitContracts(int shipFitId)
+        {
+            var shipFitContracts = this.unitOfWork.Repository<Contract>()
+                        .Query()
+                        .Filter(q => q.Status == ContractStatus.Outstanding && q.Type == ContractType.ItemExchange)
+                        .Filter(q => q.ShipFitId == shipFitId)
+                        .Include(x => x.ShipFit)
+                        .Get()
+                        .ToList();
+
+            return shipFitContracts;
+        }
+
         internal HashSet<long> GetSalesAgentContractIds(int salesAgentId, bool isCorp = false)
         {
             HashSet<long> salesAgentContractIds;

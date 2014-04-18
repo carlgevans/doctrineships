@@ -410,6 +410,11 @@
             return ContractOperations.GetIssuerContracts(salesAgentId);
         }
 
+        public IEnumerable<Contract> GetShipFitContracts(int shipFitId)
+        {
+            return ContractOperations.GetShipFitContracts(shipFitId);
+        }
+
         public HashSet<long> GetSalesAgentContractIds(int salesAgentId, bool isCorp = false)
         {
             return ContractOperations.GetSalesAgentContractIds(salesAgentId, isCorp);
