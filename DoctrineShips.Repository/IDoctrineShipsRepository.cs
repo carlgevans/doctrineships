@@ -53,6 +53,7 @@
         IEnumerable<Contract> GetContracts();
         IEnumerable<Contract> GetAssigneeContracts(int assigneeId);
         IEnumerable<Contract> GetIssuerContracts(int salesAgentId);
+        IEnumerable<Contract> GetShipFitContracts(int shipFitId);
         HashSet<long> GetSalesAgentContractIds(int salesAgentId, bool isCorp = false);
         Dictionary<int, int> GetContractShipFitCounts();
         Dictionary<long, int> GetContractSalesAgentCounts();

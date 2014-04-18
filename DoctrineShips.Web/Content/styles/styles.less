@@ -114,6 +114,11 @@ html, body {
         border-radius: 20px;
     }
 
+        #ds-header .ds-header-image img {
+            max-width: 140px;
+            max-height: 200px;
+        }
+
 #ds-customer {
     .wrapper;
     .make-xs-column(12);
@@ -175,6 +180,20 @@ html, body {
     .btn;
     .btn-default;
     .btn-sm;
+    width: 85px;
+    text-align: left;
+    // Layout changes for small viewport devices.
+    @media (max-width: @screen-xs-max) {
+        .btn-xs;
+    }
+}
+
+#ds-grid .ds-grid-tools a {
+    .btn;
+    .btn-default;
+    .btn-sm;
+    width: 85px;
+    text-align: left;
     // Layout changes for small viewport devices.
     @media (max-width: @screen-xs-max) {
         .btn-xs;
@@ -242,14 +261,23 @@ html, body {
         .wrapper;
         .make-md-column-offset(1);
         .make-xs-column(12);
-        .make-sm-column(5);
+        .make-sm-column(6);
         .make-md-column(4);
         margin-top: 20px;
     }
 
+        #ds-shipfit .ds-shipfit-image .ds-shipfit-image-tools a {
+            .btn;
+            .btn-default;
+            .btn-sm;
+            // Layout changes for small viewport devices.
+            @media (max-width: @screen-xs-max) {
+                .btn-xs;
+            }
+        }
+
     #ds-shipfit .ds-shipfit-details {
         .wrapper;
-        .make-sm-column-offset(1);
         .make-xs-column(12);
         .make-sm-column(6);
         .make-md-column(5);

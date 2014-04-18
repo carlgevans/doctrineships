@@ -70,6 +70,13 @@
         IEnumerable<Contract> GetSalesAgentContracts(int salesAgentId);
 
         /// <summary>
+        /// Returns a list of contracts for a given ship fit.
+        /// </summary>
+        /// <param name="shipFitId">The id of the ship fit for which contracts should be returned.</param>
+        /// <returns>A list of ship fit contract objects.</returns>
+        IEnumerable<Contract> GetShipFitContracts(int shipFitId);
+
+        /// <summary>
         /// Fetches and returns a Doctrine Ships sales agent.
         /// </summary>
         /// <param name="salesAgentId">The id of the sales agent for which a sales agent object should be returned.</param>

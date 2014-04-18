@@ -75,6 +75,16 @@
         }
 
         /// <summary>
+        /// Returns a list of contracts for a given ship fit.
+        /// </summary>
+        /// <param name="shipFitId">The id of the ship fit for which contracts should be returned.</param>
+        /// <returns>A list of ship fit contract objects.</returns>
+        internal IEnumerable<Contract> GetShipFitContracts(int shipFitId)
+        {
+            return this.doctrineShipsRepository.GetShipFitContracts(shipFitId);
+        }
+
+        /// <summary>
         /// Deletes a ship fit, its components and all related contracts.
         /// </summary>
         /// <param name="accountId">The account Id of the requestor. The account Id should own the ship fit being deleted.</param>
