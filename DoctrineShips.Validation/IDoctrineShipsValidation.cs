@@ -85,5 +85,12 @@
         /// <param name="notificationRecipient">A doctrine ships NotificationRecipient object.</param>
         /// <returns>Returns an IValidationResult.</returns>
         IValidationResult NotificationRecipient(NotificationRecipient notificationRecipient);
+
+        /// <summary>
+        /// Check that the passed doctrine is valid and ready to be written to the database.
+        /// </summary>
+        /// <param name="doctrine">A doctrine ships Doctrine object.</param>
+        /// <returns>Returns an IValidationResult.</returns>
+        IValidationResult Doctrine(Doctrine doctrine);
     }
 }

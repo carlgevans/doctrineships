@@ -29,6 +29,8 @@
             modelBuilder.Configurations.Add(new ComponentMap());
             modelBuilder.Configurations.Add(new ContractMap());
             modelBuilder.Configurations.Add(new CustomerMap());
+            modelBuilder.Configurations.Add(new DoctrineMap());
+            modelBuilder.Configurations.Add(new DoctrineShipFitMap());
             modelBuilder.Configurations.Add(new LogMessageMap());
             modelBuilder.Configurations.Add(new NotificationRecipientMap());
             modelBuilder.Configurations.Add(new SalesAgentMap());

@@ -42,6 +42,8 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Doctrine.cs" />
+    <Compile Include="DoctrineShipFit.cs" />
     <Compile Include="ShortUrl.cs" />
     <Compile Include="NotificationRecipient.cs" />
     <Compile Include="Article.cs" />

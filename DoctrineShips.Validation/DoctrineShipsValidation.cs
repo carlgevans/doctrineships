@@ -142,5 +142,10 @@
         {
             return AccountCheck.NotificationRecipient(notificationRecipient);
         }
+
+        public IValidationResult Doctrine(Doctrine doctrine)
+        {
+            return ShipFitCheck.Doctrine(doctrine);
+        }
     }
 }

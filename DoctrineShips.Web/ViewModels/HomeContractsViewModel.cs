@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using DoctrineShips.Entities;
 
-    public class HomeIndexViewModel
+    public class HomeContractsViewModel
     {
         public IEnumerable<Customer> Customers { get; set; }
     }

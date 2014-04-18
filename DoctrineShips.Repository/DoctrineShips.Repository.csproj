@@ -44,6 +44,8 @@
     </Compile>
     <Compile Include="DoctrineShipsRepository.cs" />
     <Compile Include="IDoctrineShipsRepository.cs" />
+    <Compile Include="Operations\DoctrineShipFitOperations.cs" />
+    <Compile Include="Operations\DoctrineOperations.cs" />
     <Compile Include="Operations\ShortUrlOperations.cs" />
     <Compile Include="Operations\NotificationRecipientOperations.cs" />
     <Compile Include="Operations\LogMessageOperations.cs" />
