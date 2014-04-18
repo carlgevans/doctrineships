@@ -1,0 +1,305 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountDoctrinesViewModel
+
+@{
+    ViewBag.Title = "Account Doctrines";
+}
+
+<div class="ds-dialog" id="deletedoctrines" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Confirm Delete</h4>
+            </div>
+            <div class="ds-dialog-body">
+                <p>Are you sure you want to delete the selected doctrines? Related ship fits will not be deleted.</p>
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="deletedoctrines_confirm" data-dismiss="modal">Confirm</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ds-dialog" id="updatedoctrinesettings" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Update Doctrine Settings</h4>
+            </div>
+            <div id="ds-doctrinesettingsloading" class="ds-loading"><br /><p>Fetching Existing Values...</p><img src="@Url.Content("~/Content/images/icons/loading.gif")" alt="Loading" /></div>
+            <div class="ds-dialog-body">
+                @using (Html.BeginForm("UpdateDoctrine", "Account", FormMethod.Post, new { @id = "updatedoctrinesettings_form", @class = "ds-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+                    <input type="hidden" id="doctrineid" name="DoctrineId" />
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.Name)
+                        @Html.TextBoxFor(m => m.Name, new { @id = "doctrinename", @class = "ds-form-textarea" })
+                    </div>
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.Description)
+                        <br />
+                        @Html.TextAreaFor(m => m.Description, new { @id = "doctrinedescription", @class = "ds-form-textarea", @placeholder = "Optional" })
+                    </div>
+                    <div class="ds-form-group">
+                        @Html.LabelFor(m => m.ImageUrl)
+                        @Html.TextBoxFor(m => m.ImageUrl, new { @id = "doctrineimageurl", @placeholder = "Optional" })
+                    </div>
+                    <div class="ds-form-checkbox">
+                        @Html.LabelFor(m => m.IsOfficial)
+                        <br />
+                        @Html.CheckBoxFor(m => m.IsOfficial, new { @id = "doctrineisofficial" })
+                    </div>
+                }
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="updatedoctrinesettings_confirm" data-dismiss="modal"><span class="glyphicon glyphicon-save"></span> Update</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ds-dialog" id="updatedoctrineshipfits" tabindex="-1" role="dialog">
+    <div class="ds-dialog-wrap">
+        <div class="ds-dialog-content">
+            <div class="ds-dialog-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4>Update Doctrine Ship Fits</h4>
+            </div>
+            <div id="ds-doctrineshipfitsloading" class="ds-loading"><br /><p>Fetching Existing Values...</p><img src="@Url.Content("~/Content/images/icons/loading.gif")" alt="Loading" /></div>
+            <div class="ds-dialog-body">
+                @using (Html.BeginForm("UpdateDoctrineShipFits", "Account", FormMethod.Post, new { @id = "updatedoctrineshipfits_form", @class = "ds-form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary()
+                    <input type="hidden" id="doctrineid2" name="DoctrineId" />
+                    <div id="doctrineshipfitserror"></div>
+                    <div class="ds-form-group">
+                        @Html.Label("Account Ship Fits")
+                        <select id="accountshipfits" class="form-control" multiple></select>
+                    </div>
+                    <div class="ds-form-group">
+                        <button type="button" id="doctrineshipfitsadd" onclick="addDoctrineShipFit()"><span class="glyphicon glyphicon-arrow-down"></span></button>
+                        <button type="button" id="doctrineshipfitsremove" onclick="removeDoctrineShipFit()"><span class="glyphicon glyphicon-arrow-up"></span></button>                        
+                    </div>
+                    <div class="ds-form-group">
+                        @Html.Label("Doctrine Ship Fits")
+                        @Html.ListBoxFor(m => m.DoctrineShipFitIds, new MultiSelectList(""), new { @id = "doctrineshipfits", @class = "form-control" })
+                    </div>
+                }
+            </div>
+            <div class="ds-dialog-footer">
+                <button type="button" id="updatedoctrineshipfits_confirm" data-dismiss="modal" onclick="selectAllShipFits()"><span class="glyphicon glyphicon-save"></span> Update</button>
+                <button type="button" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function selectAllShipFits() {
+        $(doctrineshipfits).find("option").attr("selected", true);
+    }
+
+    function addDoctrineShipFit() {
+        var selectedOpts = $("#accountshipfits option:selected");
+        if (selectedOpts.length != 0) {
+            $("#doctrineshipfits").append($(selectedOpts).clone());
+            e.preventDefault();
+        }
+    }
+
+    function removeDoctrineShipFit() {
+        var selectedOpts = $("#doctrineshipfits option:selected");
+        if (selectedOpts.length != 0) {
+            $(selectedOpts).remove();
+            e.preventDefault();
+        }
+    }
+
+    function updateDoctrineSettings(doctrineId) {
+        // Show the loading bar.
+        $("#updatedoctrinesettings_form").hide();
+        $("#ds-doctrinesettingsloading").show();
+
+        $.ajax({
+            url: "/Api/GetDoctrineDetail",
+            type: "post",
+            data: { doctrineId: doctrineId },
+            datatype: 'json',
+            success: function (doctrine) {
+                // Set the form values.
+                $("#doctrineid").val(doctrineId);
+                $("#doctrinename").val(doctrine.Name);
+                $("#doctrinedescription").val(doctrine.Description);
+                $("#doctrineimageurl").val(doctrine.ImageUrl);
+                $("#doctrineisofficial").attr('checked', doctrine.IsOfficial);
+
+                // Hide the loading bar & display the form.
+                $("#ds-doctrinesettingsloading").hide();
+                $("#updatedoctrinesettings_form").show();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#doctrinename").val("Error: " + errorThrown + " - " + jqXHR.responseText);
+                $("#doctrinedescription").val("");
+                $("#doctrineimageurl").val("");
+                $("#doctrineisofficial").attr('checked', false);
+                $("#ds-doctrinesettingsloading").hide();
+                $("#updatedoctrinesettings_form").show();
+            }
+        });
+
+        // Open the dialog.
+        confirmDialog("#updatedoctrinesettings");
+    }
+
+    function updateDoctrineShipFits(doctrineId) {
+        // Show the loading bar.
+        $("#updatedoctrineshipfits_form").hide();
+        $("#ds-doctrineshipfitsloading").show();
+
+        $.ajax({
+            url: "/Api/GetAccountShipFits",
+            type: "post",
+            datatype: 'json',
+            success: function (shipFits) {
+                // Set the form values.
+                $("#doctrineid2").val(doctrineId);
+                var target = $("#accountshipfits");
+                target.empty();
+
+                for (var i = 0; i < shipFits.length; i++) {
+                    var shipFit = shipFits[i];
+                    target.append("<option value=" + shipFit.ShipFitId + ">" + shipFit.Name + "</option>");
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#doctrineshipfitserror").html("Error: " + errorThrown + " - " + jqXHR.responseText);
+            }
+        });
+
+        $.ajax({
+            url: "/Api/GetDoctrineShipFits",
+            type: "post",
+            data: { doctrineId: doctrineId },
+            datatype: 'json',
+            success: function (shipFits) {
+                // Set the form values.
+                var target = $("#doctrineshipfits");
+                target.empty();
+
+                for (var i = 0; i < shipFits.length; i++) {
+                    var shipFit = shipFits[i];
+                    target.append("<option value=" + shipFit.ShipFitId + ">" + shipFit.Name + "</option>");
+                }
+
+                // Hide the loading bar & display the form.
+                $("#ds-doctrineshipfitsloading").hide();
+                $("#updatedoctrineshipfits_form").show();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                $("#doctrineshipfitserror").html("Error: " + errorThrown + " - " + jqXHR.responseText);
+
+                // Hide the loading bar & display the form.
+                $("#ds-doctrineshipfitsloading").hide();
+                $("#updatedoctrineshipfits_form").show();
+            }
+        });
+
+        // Open the dialog.
+        confirmDialog("#updatedoctrineshipfits");
+    }
+</script>
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Account Doctrines<br />
+            <small>Manage Doctrines for the account.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <p>Modifications may not be seen immediately as pages are cached for performance.</p>
+        </div>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @if (Model != null && Model.Doctrines != null && Model.Doctrines.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Doctrines:</strong> @Model.Doctrines.Count()</h5>
+            </div>
+
+            @using (Html.BeginForm("DeleteDoctrine", "Account", FormMethod.Post, new { @id = "deletedoctrines_form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Grid(Model.Doctrines).Columns(columns =>
+                            {
+                                columns.Add(c => c.DoctrineId).Css("hidden-xs").Encoded(false).Sanitized(false).Titled("Id").RenderValueAs(c => @<a href='@Url.Action("EditDoctrine", "Account", new { doctrineId = @c.DoctrineId }, Request.Url.Scheme)'>@c.DoctrineId</a>).Filterable(true).Sortable(true);
+                                columns.Add(c => c.Name).Titled("Name").Filterable(true).Sortable(true);
+                                columns.Add(c => c.LastUpdate).Css("hidden-xs").Titled("Last Update").Filterable(true).Sortable(true);
+                                columns.Add(c => c.IsOfficial).Titled("Official?").RenderValueAs(c => c.IsOfficial == true ? "Yes" : "No").Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("Settings").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateDoctrineSettings('@c.DoctrineId')"><span class="glyphicon glyphicon-cog"></span></a>).Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("Ships").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateDoctrineShipFits('@c.DoctrineId')"><span class="glyphicon glyphicon-plane"></span></a>).Filterable(true).Sortable(true);
+                                columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deletedoctrines')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.DoctrineId" name="RemoveList" value="@c.DoctrineId" />);
+                            }).WithPaging(10, 5).WithMultipleFilters()
+            }
+
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Doctrines Found</b>
+        </div>
+    }
+
+    <br />
+
+    @using (Html.BeginForm("AddDoctrine", "Account", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.Description)
+                <br />
+                @Html.TextAreaFor(m => m.Description, new { @id = "DoctrineDescription", @class = "ds-form-textarea", @placeholder = "Optional" })
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.ImageUrl)
+                @Html.TextBoxFor(m => m.ImageUrl, new { @placeholder = "Optional" })
+            </div>
+            <div class="ds-form-checkbox">
+                @Html.LabelFor(m => m.IsOfficial)
+                <br />
+                @Html.CheckBoxFor(m => m.IsOfficial)
+            </div>
+            <div class="ds-form-group">
+                <br />
+                <button id="submit2" type="submit"><span class="glyphicon glyphicon-plus"></span> Add Doctrine</button>
+            </div>
+        </div>
+    }
+</div>
