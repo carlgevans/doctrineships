@@ -26,18 +26,23 @@
 
             routes.MapRoute(
                   "CustomerContracts",
-                  "Cust/{customerId}",
+                  "Search/Cust/{customerId}",
                   new { controller = "Search", action = "CustomerContracts", customerId = string.Empty });
 
             routes.MapRoute(
                   "CustomerContractsStation",
-                  "CustStation/{stationId}/{customerId}",
+                  "Search/CustStation/{stationId}/{customerId}",
                   new { controller = "Search", action = "CustomerContractsStation", stationId = string.Empty, customerId = string.Empty });
 
             routes.MapRoute(
                   "SalesAgentContracts",
-                  "Agent/{salesAgentId}",
+                  "Search/Agent/{salesAgentId}",
                   new { controller = "Search", action = "SalesAgentContracts", salesAgentId = string.Empty });
+
+            routes.MapRoute(
+                  "ShipFitContracts",
+                  "Search/ShipFit/{shipFitId}",
+                  new { controller = "Search", action = "ShipFitContracts", shipFitId = string.Empty });
 
             routes.MapRoute(
                   "RefreshContracts",
