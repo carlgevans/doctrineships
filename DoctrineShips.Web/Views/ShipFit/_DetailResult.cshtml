@@ -8,9 +8,11 @@
 
         <div class="ds-shipfit-image">
             <a href="javascript:void(0)" onclick="showFitting('@Model.ShipFit.FittingString')"><img src="@Model.ShipFit.RenderImageUrl" alt="Ship Render Image" /></a>
-            <button type="button" onclick="showEftFitting('@Model.ShipFit.ShipFitId')"><span class="glyphicon glyphicon-list"></span> EFT Fit</button>
-            <button type="button" onclick="showFitting('@Model.ShipFit.FittingString')"><span class="glyphicon glyphicon-list-alt"></span> EVE Fit</button>
-            <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Url</span></button>
+            <div class="ds-shipfit-image-tools">
+                <button type="button" onclick="showEftFitting('@Model.ShipFit.ShipFitId')"><span class="glyphicon glyphicon-list"></span> EFT Fit</button>
+                <button type="button" onclick="showFitting('@Model.ShipFit.FittingString')"><span class="glyphicon glyphicon-list-alt"></span> EVE Fit</button>
+                <span class="ds-tooltip" tooltip="Click to see the available contracts for this ship fit."><a href='@Url.Action("ShipFitContracts", "Search", new { shipFitId = @Model.ShipFit.ShipFitId }, Request.Url.Scheme)' role="button"><span class="glyphicon glyphicon-shopping-cart"></span> Contracts</a></span>
+            </div>
         </div>
 
         <div class="ds-shipfit-details">

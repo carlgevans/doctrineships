@@ -70,6 +70,13 @@
         IEnumerable<Contract> GetSalesAgentContracts(int salesAgentId);
 
         /// <summary>
+        /// Returns a list of contracts for a given ship fit.
+        /// </summary>
+        /// <param name="shipFitId">The id of the ship fit for which contracts should be returned.</param>
+        /// <returns>A list of ship fit contract objects.</returns>
+        IEnumerable<Contract> GetShipFitContracts(int shipFitId);
+
+        /// <summary>
         /// Fetches and returns a Doctrine Ships sales agent.
         /// </summary>
         /// <param name="salesAgentId">The id of the sales agent for which a sales agent object should be returned.</param>
@@ -382,5 +389,51 @@
         /// <param name="accountId">The currently logged-in account id for security checking.</param>
         /// <returns>Returns a string containing an EFT fitting or an empty string if an error occurs.</returns>
         string GetEftFittingString(int shipFitId, int accountId);
+
+        /// <summary>
+        /// Returns a list of all doctrines for a given account.
+        /// </summary>
+        /// <param name="accountId">The account for which the doctrines should be returned.</param>
+        /// <returns>A list of doctrine objects.</returns>
+        IEnumerable<Doctrine> GetDoctrineList(int accountId);
+
+        /// <summary>
+        /// Returns a doctrine for a given account and doctrine id.
+        /// </summary>
+        /// <param name="accountId">The currently logged-in account id for security checking.</param>
+        /// <param name="doctrineId">The id for which a doctrine object should be returned.</param>
+        /// <returns>A doctrine object.</returns>
+        Doctrine GetDoctrineDetail(int accountId, int doctrineId);
+
+        /// <summary>
+        /// Deletes a doctrine.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being deleted.</param>
+        /// <param name="doctrineId">The doctrine Id to be deleted.</param>
+        /// <returns>Returns true if the deletion was successful or false if not.</returns>
+        bool DeleteDoctrine(int accountId, int doctrineId);
+
+        /// <summary>
+        /// <para>Adds a Doctrine.</para>
+        /// </summary>
+        /// <param name="doctrine">A populated doctrine object.</param>
+        /// <returns>Returns a validation result object.</returns>
+        IValidationResult AddDoctrine(Doctrine doctrine);
+
+        /// <summary>
+        /// Updates a doctrine for a particular account.
+        /// </summary>
+        /// <param name="doctrine">A partially populated doctrine object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        IValidationResult UpdateDoctrine(Doctrine doctrine);
+
+        /// <summary>
+        /// Updates a doctrine ship fit list for a particular account.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being updated.</param>
+        /// <param name="doctrineId">The doctrine Id to be updated.</param>
+        /// <param name="doctrineShipFitIds">An array of ship fit ids to be assigned to the doctrine.</param>
+        /// <returns>Returns a validation result object.</returns>
+        IValidationResult UpdateDoctrineShipFits(int accountId, int doctrineId, int[] doctrineShipFitIds);
     }
 }

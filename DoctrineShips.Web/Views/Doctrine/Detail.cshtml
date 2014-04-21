@@ -1,0 +1,83 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model DoctrineDetailViewModel
+
+@{
+    ViewBag.Title = "Doctrine Detail";
+}
+
+<div id="ds-main" role="main">
+    @if (Model.Doctrine != null)
+    {
+        <div id="ds-header">
+            <h1>
+                Doctrine Detail <br />
+                <small>@Model.Doctrine.Name</small>
+            </h1>
+            <div class="ds-header-image">
+                
+                @if (@Model.Doctrine.ImageUrl == string.Empty)
+                {
+                    <img class="doctrine" src="@Url.Content("~/Content/images/misc/doctrineicon.png")" alt="@Model.Doctrine.Name">
+                }
+                else
+                {
+                    <img class="doctrine" src="@Url.Content(@Model.Doctrine.ImageUrl)" alt="@Model.Doctrine.Name">
+                }
+
+                <br />
+                <p>@Model.Doctrine.Name</p>
+            </div>
+            <div class="ds-header-detail">
+                <p>@Model.Doctrine.Description</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div id="ds-header">
+            <h1>
+                Doctrine Detail <br />
+                <small>Not Found</small>
+            </h1>
+        </div>
+    }
+    
+    @if (Model.Doctrine != null && Model.Doctrine.DoctrineShipFits != null && Model.Doctrine.DoctrineShipFits.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
+                <h5><strong>Ship Fits:</strong> @Model.Doctrine.DoctrineShipFits.Count()</h5>
+            </div>
+
+            @Html.Grid(Model.Doctrine.DoctrineShipFits).Columns(columns =>
+                        {
+                            columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => @<div><a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFit.ShipFitId }, Request.Url.Scheme)'><img src="@c.ShipFit.ThumbnailImageUrl" /></a><p>&nbsp;&nbsp;@c.ShipFit.Hull</p></div>);
+                            columns.Add(c => c.ShipFit.ShipFitId).Encoded(false).Sanitized(false).Titled("Fit ID").RenderValueAs(c => @<a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFit.ShipFitId }, Request.Url.Scheme)'>@("DS" + @c.ShipFit.ShipFitId)</a>).Filterable(true).Sortable(true);
+                            columns.Add(c => c.ShipFit.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ShipFit.Role).Css("hidden-xs").Titled("Role").Filterable(true).Sortable(true);
+                            columns.Add(c => c.ShipFit.ContractsAvailable).Encoded(false).Sanitized(false).Titled("Contracts").RenderValueAs(c => @<span class="ds-tooltip" tooltip="Only valid contracts are counted.">@(c.ShipFit.ContractsAvailable < 0 ? "Count\nDisabled" : c.ShipFit.ContractsAvailable.ToString())</span>).Filterable(true).Sortable(true);
+                            columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => @<div class="ds-grid-tools"><span class="ds-tooltip" tooltip="Click to open the ship fitting in-game (IGB Only)."><button type="button" onclick="showFitting('@c.ShipFit.FittingString')"><span class="glyphicon glyphicon-list-alt"></span> Eve Fit</button></span><br /><span class="ds-tooltip" tooltip="Click to see market details and a component list for this ship fit."><a href='@Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFit.ShipFitId }, Request.Url.Scheme)' role="button"><span class="glyphicon glyphicon-search"></span> Fit Detail</a></span><br /><span class="ds-tooltip" tooltip="Click to see the available contracts for this ship fit."><a href='@Url.Action("ShipFitContracts", "Search", new { shipFitId = @c.ShipFit.   ShipFitId }, Request.Url.Scheme)' role="button"><span class="glyphicon glyphicon-shopping-cart"></span> Contracts</a></span></div>);
+                        }).WithPaging(20, 5).WithMultipleFilters().SetRowCssClasses(item =>
+                                                                                                                 {
+                                                                                                                     if (item.ShipFit.ContractsAvailable < 0)
+                                                                                                                         return "ds-grid-status-none";
+                                                                                                                     if (item.ShipFit.ContractsAvailable == 0)
+                                                                                                                         return "ds-grid-status-alert";
+                                                                                                                     if (item.ShipFit.ContractsAvailable >= 1 && item.ShipFit.ContractsAvailable <= Model.SettingProfile.AlertThreshold)
+                                                                                                                         return "ds-grid-status-warning";
+                                                                                                                     return "ds-grid-status-ok";
+                                                                                                                 })
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Ship Fits Found</b>
+        </div>
+    }
+
+</div>

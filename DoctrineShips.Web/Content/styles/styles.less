@@ -11,6 +11,7 @@
 @dimmedColour: #e9e7e7;
 @dimmedHoverColour: #b7b7b7;
 @dimmedShadowColour: rgb(146, 144, 144);
+@highlightColour: rgba(203, 183, 89, 0.67);
 @gridColour: rgba(66, 139, 202, 0.15);
 @gridSelectedColour: rgba(66, 139, 202, 0.15);
 @gridHoverColour: rgba(66, 139, 202, 0.15);
@@ -107,12 +108,15 @@ html, body {
         .text-center;
         .text-primary;
         .pull-right;
-        min-width: 140px;
-        min-height: 200px;
-        padding-top: 20px;
         background-color: @dimmedColour;
         border-radius: 20px;
     }
+
+        #ds-header .ds-header-image img {
+            padding-top: 20px;
+            min-width: 128px;
+            height: 148px;
+        }
 
 #ds-customer {
     .wrapper;
@@ -146,11 +150,59 @@ html, body {
         height: 148px;
     }
 
+#ds-doctrine {
+    .wrapper;
+    .make-xs-column(12);
+    .make-sm-column(4);
+    .make-md-column(3);
+}
+
+// Layout changes for small viewport devices.
+@media (max-width: @screen-xs-max) {
+    #ds-doctrine {
+        margin-left: 0px;
+    }
+}
+
+#ds-doctrine > a {
+    .thumbnail;
+    .text-center;
+    background-color: @dimmedColour;
+    border-radius: 20px;
+    padding: 0px;
+}
+
+    #ds-doctrine > a.official {
+        background-color: @highlightColour;
+    }
+
+    #ds-doctrine > a:hover {
+        text-decoration: none;
+        background-color: @dimmedHoverColour;
+    }
+
+    #ds-doctrine > a > img.doctrine {
+        position: relative;
+        padding-top: 20px;
+        min-width: 128px;
+        height: 148px;
+    }
+
+    #ds-doctrine > a > img.tag {
+        position: absolute;
+	    top: 0;
+	    left: 20;
+        z-index: 999;
+        margin: 0px;
+        border-top-left-radius: 20px;
+    }
+
 #ds-grid {
     .wrapper;
     .make-xs-column(12);
     .make-sm-column(12);
     .make-md-column(12);
+    padding-bottom: 20px;
 }
 
 // Layout changes for small viewport devices.
@@ -175,6 +227,20 @@ html, body {
     .btn;
     .btn-default;
     .btn-sm;
+    width: 85px;
+    text-align: left;
+    // Layout changes for small viewport devices.
+    @media (max-width: @screen-xs-max) {
+        .btn-xs;
+    }
+}
+
+#ds-grid .ds-grid-tools a {
+    .btn;
+    .btn-default;
+    .btn-sm;
+    width: 85px;
+    text-align: left;
     // Layout changes for small viewport devices.
     @media (max-width: @screen-xs-max) {
         .btn-xs;
@@ -242,14 +308,23 @@ html, body {
         .wrapper;
         .make-md-column-offset(1);
         .make-xs-column(12);
-        .make-sm-column(5);
+        .make-sm-column(6);
         .make-md-column(4);
         margin-top: 20px;
     }
 
+        #ds-shipfit .ds-shipfit-image .ds-shipfit-image-tools a {
+            .btn;
+            .btn-default;
+            .btn-sm;
+            // Layout changes for small viewport devices.
+            @media (max-width: @screen-xs-max) {
+                .btn-xs;
+            }
+        }
+
     #ds-shipfit .ds-shipfit-details {
         .wrapper;
-        .make-sm-column-offset(1);
         .make-xs-column(12);
         .make-sm-column(6);
         .make-md-column(5);

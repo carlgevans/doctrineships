@@ -72,5 +72,39 @@
 
             return validationResult;
         }
+
+        internal IValidationResult Doctrine(Doctrine doctrine)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            // Check that the doctrine has a valid account id.
+            if (doctrine.AccountId < 0 || doctrine.AccountId > int.MaxValue)
+            {
+                validationResult.AddError("AccountId.Range", "AccountId can not be less than or equal to 0. Also, the upper limit cannot exceed the max value of the int data type.");
+            }
+
+            // Null & empty checks.
+            if (doctrine.Name == null || doctrine.Name == string.Empty )
+            {
+                validationResult.AddError("Name.Null", "Name cannot be null or empty.");
+            }
+
+            if (doctrine.Description == null)
+            {
+                validationResult.AddError("Description.Null", "Description cannot be null.");
+            }
+
+            if (doctrine.ImageUrl == null)
+            {
+                validationResult.AddError("ImageUrl.Null", "ImageUrl cannot be null.");
+            }
+
+            if (doctrine.LastUpdate == null)
+            {
+                validationResult.AddError("LastUpdate.Null", "LastUpdate cannot be null.");
+            }
+
+            return validationResult;
+        }
     }
 }

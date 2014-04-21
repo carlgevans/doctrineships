@@ -75,6 +75,47 @@
         }
 
         /// <summary>
+        /// Returns a list of all doctrines for a given account.
+        /// </summary>
+        /// <param name="accountId">The account for which the doctrines should be returned.</param>
+        /// <returns>A list of doctrine objects.</returns>
+        internal IEnumerable<Doctrine> GetDoctrineList(int accountId)
+        {
+            return this.doctrineShipsRepository.GetDoctrinesForAccount(accountId);
+        }
+
+        /// <summary>
+        /// Returns a doctrine for a given account and doctrine id.
+        /// </summary>
+        /// <param name="accountId">The currently logged-in account id for security checking.</param>
+        /// <param name="doctrineId">The id for which a doctrine object should be returned.</param>
+        /// <returns>A doctrine object.</returns>
+        internal Doctrine GetDoctrineDetail(int accountId, int doctrineId)
+        {
+            Doctrine doctrine = this.doctrineShipsRepository.GetDoctrine(doctrineId);
+
+            if (doctrine != null)
+            {
+                if (accountId == doctrine.AccountId)
+                {
+                    return doctrine;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a list of contracts for a given ship fit.
+        /// </summary>
+        /// <param name="shipFitId">The id of the ship fit for which contracts should be returned.</param>
+        /// <returns>A list of ship fit contract objects.</returns>
+        internal IEnumerable<Contract> GetShipFitContracts(int shipFitId)
+        {
+            return this.doctrineShipsRepository.GetShipFitContracts(shipFitId);
+        }
+
+        /// <summary>
         /// Deletes a ship fit, its components and all related contracts.
         /// </summary>
         /// <param name="accountId">The account Id of the requestor. The account Id should own the ship fit being deleted.</param>
@@ -91,6 +132,9 @@
                 {
                     // Delete any contracts matching this ship fit id.
                     this.doctrineShipsRepository.DeleteContractsByShipFitId(shipFit.ShipFitId);
+
+                    // Delete the ship fit from any doctrines.
+                    this.doctrineShipsRepository.DeleteDoctrineShipFitsByShipFitId(shipFit.ShipFitId);
 
                     // Delete all of the ship fit's components.
                     this.doctrineShipsRepository.DeleteShipFitComponentsByShipFitId(shipFit.ShipFitId);
@@ -786,6 +830,155 @@
                         this.doctrineShipsRepository.Save();
                         logger.LogMessage("Ship Fit '" + existingShipFit.Name + "' Successfully Updated For Account Id: " + existingShipFit.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
                     }
+                }
+            }
+
+            return validationResult;
+        }
+
+        /// <summary>
+        /// Deletes a doctrine.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being deleted.</param>
+        /// <param name="doctrineId">The doctrine Id to be deleted.</param>
+        /// <returns>Returns true if the deletion was successful or false if not.</returns>
+        internal bool DeleteDoctrine(int accountId, int doctrineId)
+        {
+            Doctrine doctrine = this.doctrineShipsRepository.GetDoctrine(doctrineId);
+
+            if (doctrine != null)
+            {
+                // If the account Id matches the account Id of the doctrine being deleted, continue.
+                if (accountId == doctrine.AccountId)
+                {
+                    // Delete all of the doctrine ship fits.
+                    this.doctrineShipsRepository.DeleteDoctrineShipFitsByDoctrineId(doctrine.DoctrineId);
+
+                    // Delete the doctrine and log the event.
+                    this.doctrineShipsRepository.DeleteDoctrine(doctrine.DoctrineId);
+                    this.doctrineShipsRepository.Save();
+                    logger.LogMessage("Doctrine '" + doctrine.Name + "' Successfully Deleted For Account Id: " + doctrine.AccountId, 1, "Message", MethodBase.GetCurrentMethod().Name);
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// <para>Adds a Doctrine.</para>
+        /// </summary>
+        /// <param name="doctrine">A populated doctrine object.</param>
+        /// <returns>Returns a validation result object.</returns>
+        internal IValidationResult AddDoctrine(Doctrine doctrine)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            doctrine.LastUpdate = DateTime.UtcNow;
+
+            // Validate the new doctrine.
+            validationResult = this.doctrineShipsValidation.Doctrine(doctrine);
+            if (validationResult.IsValid == true)
+            {
+                // Add the new doctrine.
+                this.doctrineShipsRepository.CreateDoctrine(doctrine);
+                this.doctrineShipsRepository.Save();
+
+                // Log the addition.
+                logger.LogMessage("Doctrine '" + doctrine.Name + "' Successfully Added.", 2, "Message", MethodBase.GetCurrentMethod().Name);
+            }
+
+            return validationResult;
+        }
+
+        /// <summary>
+        /// Updates a doctrine for a particular account.
+        /// </summary>
+        /// <param name="doctrine">A partially populated doctrine object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        internal IValidationResult UpdateDoctrine(Doctrine doctrine)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            var existingDoctrine = this.doctrineShipsRepository.GetDoctrine(doctrine.DoctrineId);
+
+            if (existingDoctrine != null)
+            {
+                if (existingDoctrine.AccountId != doctrine.AccountId)
+                {
+                    validationResult.AddError("Doctrine.Permission", "The doctrine being modified does not belong to the requesting account.");
+                }
+                else
+                {
+                    // Map the updates to the existing doctrine.
+                    existingDoctrine.Name = doctrine.Name;
+                    existingDoctrine.Description = doctrine.Description;
+                    existingDoctrine.ImageUrl = doctrine.ImageUrl;
+                    existingDoctrine.IsOfficial = doctrine.IsOfficial;
+                    existingDoctrine.LastUpdate = DateTime.UtcNow;
+
+                    // Validate the doctrine updates.
+                    validationResult = this.doctrineShipsValidation.Doctrine(existingDoctrine);
+                    if (validationResult.IsValid == true)
+                    {
+                        // Update the existing record, save and log.
+                        this.doctrineShipsRepository.UpdateDoctrine(existingDoctrine);
+                        this.doctrineShipsRepository.Save();
+                        logger.LogMessage("Doctrine '" + existingDoctrine.Name + "' Successfully Updated For Account Id: " + existingDoctrine.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
+                    }
+                }
+            }
+
+            return validationResult;
+        }
+
+        /// <summary>
+        /// Updates a doctrine ship fit list for a particular account.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being updated.</param>
+        /// <param name="doctrineId">The doctrine Id to be updated.</param>
+        /// <param name="doctrineShipFitIds">An array of ship fit ids to be assigned to the doctrine.</param>
+        /// <returns>Returns a validation result object.</returns>
+        internal IValidationResult UpdateDoctrineShipFits(int accountId, int doctrineId, int[] doctrineShipFitIds)
+        {
+            IValidationResult validationResult = new ValidationResult();
+
+            var existingDoctrine = this.doctrineShipsRepository.GetDoctrine(doctrineId);
+
+            if (existingDoctrine != null)
+            {
+                if (existingDoctrine.AccountId != accountId)
+                {
+                    validationResult.AddError("Doctrine.Permission", "The doctrine ship fit list being modified does not belong to the requesting account.");
+                }
+                else
+                {
+                    // Delete all existing ship fits for this doctrine.
+                    this.doctrineShipsRepository.DeleteDoctrineShipFitsByDoctrineId(doctrineId);
+
+                    if (doctrineShipFitIds != null)
+                    {
+                        // Create a new entry for each ship fit id that was passed.
+                        foreach (int shipFitId in doctrineShipFitIds)
+                        {
+                            DoctrineShipFit doctrineShipFit = new DoctrineShipFit();
+
+                            doctrineShipFit.DoctrineId = doctrineId;
+                            doctrineShipFit.ShipFitId = shipFitId;
+
+                            // Add the new doctrine ship fit.
+                            doctrineShipFit = this.doctrineShipsRepository.CreateDoctrineShipFit(doctrineShipFit);
+                        }
+                    }
+
+                    // Update the last update timestamp of the doctrine.
+                    existingDoctrine.LastUpdate = DateTime.UtcNow;
+                    this.doctrineShipsRepository.UpdateDoctrine(existingDoctrine);
+
+                    // Save the changes to the database and log.
+                    this.doctrineShipsRepository.Save();
+                    logger.LogMessage("Ship Fit List For Doctrine '" + existingDoctrine.Name + "' Successfully Updated For Account Id: " + existingDoctrine.AccountId, 2, "Message", MethodBase.GetCurrentMethod().Name);
                 }
             }
 

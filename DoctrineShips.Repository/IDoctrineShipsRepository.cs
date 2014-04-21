@@ -55,6 +55,7 @@
         IEnumerable<Contract> GetContracts();
         IEnumerable<Contract> GetAssigneeContracts(int assigneeId);
         IEnumerable<Contract> GetIssuerContracts(int salesAgentId);
+        IEnumerable<Contract> GetShipFitContracts(int shipFitId);
         HashSet<long> GetSalesAgentContractIds(int salesAgentId, bool isCorp = false);
         Dictionary<int, int> GetContractShipFitCounts();
         Dictionary<long, int> GetContractSalesAgentCounts();
@@ -141,6 +142,26 @@
         ShortUrl GetShortUrl(string shortUrlId);
         IEnumerable<ShortUrl> GetShortUrls();
         void DeleteShortUrlsOlderThanDate(DateTime olderThanDate);
+
+        // Doctrine Operations.
+        void DeleteDoctrine(int doctrineId);
+        void DeleteDoctrinesByAccountId(int accountId);
+        void UpdateDoctrine(Doctrine doctrine);
+        Doctrine AddDoctrine(Doctrine doctrine);
+        Doctrine CreateDoctrine(Doctrine doctrine);
+        Doctrine GetDoctrine(int doctrineId);
+        IEnumerable<Doctrine> GetDoctrines();
+        IEnumerable<Doctrine> GetDoctrinesForAccount(int accountId);
+
+        // DoctrineShipFit Operations.
+        void DeleteDoctrineShipFit(int doctrineShipFitId);
+        void DeleteDoctrineShipFitsByDoctrineId(int doctrineId);
+        void DeleteDoctrineShipFitsByShipFitId(int shipFitId);
+        void UpdateDoctrineShipFit(DoctrineShipFit doctrineShipFit);
+        DoctrineShipFit AddDoctrineShipFit(DoctrineShipFit doctrineShipFit);
+        DoctrineShipFit CreateDoctrineShipFit(DoctrineShipFit doctrineShipFit);
+        DoctrineShipFit GetDoctrineShipFit(int doctrineShipFitId);
+        IEnumerable<DoctrineShipFit> GetDoctrineShipFits(int doctrineId);
 
         // Misc Operations.
         void Save();
