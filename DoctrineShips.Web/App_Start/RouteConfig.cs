@@ -70,6 +70,11 @@
                   new { controller = "ShipFit", action = "Detail", shipFitId = string.Empty });
 
             routes.MapRoute(
+                  "DoctrineDetail",
+                  "Doctrine/Detail/{doctrineId}",
+                  new { controller = "Doctrine", action = "Detail", doctrineId = string.Empty });
+
+            routes.MapRoute(
                   "ShipFitDetailResult",
                   "ShipFit/DetailResult/{shipFitId}",
                   new { controller = "ShipFit", action = "DetailResult", shipFitId = string.Empty });

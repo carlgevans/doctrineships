@@ -19,6 +19,8 @@
         private ComponentOperations componentOperations;
         private ContractOperations contractOperations;
         private CustomerOperations customerOperations;
+        private DoctrineOperations doctrineOperations;
+        private DoctrineShipFitOperations doctrineShipFitOperations;
         private NotificationRecipientOperations notificationRecipientOperations;
         private LogMessageOperations logMessageOperations;
         private SalesAgentOperations salesAgentOperations;
@@ -121,6 +123,32 @@
                 }
 
                 return this.customerOperations;
+            }
+        }
+
+        internal DoctrineOperations DoctrineOperations
+        {
+            get
+            {
+                if (this.doctrineOperations == null)
+                {
+                    this.doctrineOperations = new DoctrineOperations(unitOfWork);
+                }
+
+                return this.doctrineOperations;
+            }
+        }
+
+        internal DoctrineShipFitOperations DoctrineShipFitOperations
+        {
+            get
+            {
+                if (this.doctrineShipFitOperations == null)
+                {
+                    this.doctrineShipFitOperations = new DoctrineShipFitOperations(unitOfWork);
+                }
+
+                return this.doctrineShipFitOperations;
             }
         }
 
@@ -763,6 +791,86 @@
         public void DeleteShortUrlsOlderThanDate(DateTime olderThanDate)
         {
             ShortUrlOperations.DeleteShortUrlsOlderThanDate(olderThanDate);
+        }
+
+        public void DeleteDoctrine(int doctrineId)
+        {
+            DoctrineOperations.DeleteDoctrine(doctrineId);
+        }
+
+        public void DeleteDoctrinesByAccountId(int accountId)
+        {
+            DoctrineOperations.DeleteDoctrinesByAccountId(accountId);
+        }
+
+        public void UpdateDoctrine(Doctrine doctrine)
+        {
+            DoctrineOperations.UpdateDoctrine(doctrine);
+        }
+
+        public Doctrine AddDoctrine(Doctrine doctrine)
+        {
+            return DoctrineOperations.AddDoctrine(doctrine);
+        }
+
+        public Doctrine CreateDoctrine(Doctrine doctrine)
+        {
+            return DoctrineOperations.CreateDoctrine(doctrine);
+        }
+
+        public Doctrine GetDoctrine(int doctrineId)
+        {
+            return DoctrineOperations.GetDoctrine(doctrineId);
+        }
+
+        public IEnumerable<Doctrine> GetDoctrines()
+        {
+            return DoctrineOperations.GetDoctrines();
+        }
+
+        public IEnumerable<Doctrine> GetDoctrinesForAccount(int accountId)
+        {
+            return DoctrineOperations.GetDoctrinesForAccount(accountId);
+        }
+
+        public void DeleteDoctrineShipFit(int doctrineShipFitId)
+        {
+            DoctrineShipFitOperations.DeleteDoctrineShipFit(doctrineShipFitId);
+        }
+
+        public void DeleteDoctrineShipFitsByDoctrineId(int doctrineId)
+        {
+            DoctrineShipFitOperations.DeleteDoctrineShipFitsByDoctrineId(doctrineId);
+        }
+
+        public void DeleteDoctrineShipFitsByShipFitId(int shipFitId)
+        {
+            DoctrineShipFitOperations.DeleteDoctrineShipFitsByShipFitId(shipFitId);
+        }
+
+        public void UpdateDoctrineShipFit(DoctrineShipFit doctrineShipFit)
+        {
+            DoctrineShipFitOperations.UpdateDoctrineShipFit(doctrineShipFit);
+        }
+
+        public DoctrineShipFit AddDoctrineShipFit(DoctrineShipFit doctrineShipFit)
+        {
+            return DoctrineShipFitOperations.AddDoctrineShipFit(doctrineShipFit);
+        }
+
+        public DoctrineShipFit CreateDoctrineShipFit(DoctrineShipFit doctrineShipFit)
+        {
+            return DoctrineShipFitOperations.CreateDoctrineShipFit(doctrineShipFit);
+        }
+
+        public DoctrineShipFit GetDoctrineShipFit(int doctrineShipFitId)
+        {
+            return DoctrineShipFitOperations.GetDoctrineShipFit(doctrineShipFitId);
+        }
+
+        public IEnumerable<DoctrineShipFit> GetDoctrineShipFits(int doctrineId)
+        {
+            return DoctrineShipFitOperations.GetDoctrineShipFits(doctrineId);
         }
 
         public void Save()

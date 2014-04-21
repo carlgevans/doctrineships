@@ -39,19 +39,19 @@
                 {
                     @Html.AntiForgeryToken()
                     @Html.ValidationSummary()
-                    <input type="hidden" id="ShipFitId" name="ShipFitId" />
+                    <input type="hidden" id="shipfitid" name="ShipFitId" />
                     <div class="ds-form-group">
                         @Html.LabelFor(m => m.Name)
-                        @Html.TextBoxFor(m => m.Name, new { @id = "ShipFitName" })
+                        @Html.TextBoxFor(m => m.Name, new { @id = "shipfitname" })
                     </div>
                     <div class="ds-form-group">
                         @Html.LabelFor(m => m.Role)
-                        @Html.TextBoxFor(m => m.Role, new { @id = "ShipFitRole" })
+                        @Html.TextBoxFor(m => m.Role, new { @id = "shipfitrole" })
                     </div>
                     <div class="ds-form-group">
                         @Html.LabelFor(m => m.Notes)
                         <br />
-                        @Html.TextAreaFor(m => m.Notes, new { @id = "ShipFitNotes", @class = "ds-form-textarea" })
+                        @Html.TextAreaFor(m => m.Notes, new { @id = "shipfitnotes", @class = "ds-form-textarea" })
                     </div>
                 }
             </div>
@@ -70,23 +70,25 @@
         $("#ds-shipfitsettingsloading").show();
 
         $.ajax({
-            url: "/Account/GetShipFitValues",
+            url: "/Api/GetShipFitDetail",
             type: "post",
             data: { shipFitId: shipFitId },
             datatype: 'json',
             success: function (shipFit) {
                 // Set the form values.
-                $("#ShipFitId").val(shipFitId);
-                $("#ShipFitName").val(shipFit.name);
-                $("#ShipFitRole").val(shipFit.role);
-                $("#ShipFitNotes").val(shipFit.notes);
+                $("#shipfitid").val(shipFitId);
+                $("#shipfitname").val(shipFit.Name);
+                $("#shipfitrole").val(shipFit.Role);
+                $("#shipfitnotes").val(shipFit.Notes);
 
                 // Hide the loading bar & display the form.
                 $("#ds-shipfitsettingsloading").hide();
                 $("#updateshipfitsettings_form").show();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $("#ShipFitName").val("An Error Occured: " + textStatus + " - " + errorThrown);
+                $("#shipfitname").val("Error: " + errorThrown + " - " + jqXHR.responseText);
+                $("#shipfitrole").val("");
+                $("#shipfitnotes").val("");
                 $("#ds-shipfitsettingsloading").hide();
                 $("#updateshipfitsettings_form").show();
             }

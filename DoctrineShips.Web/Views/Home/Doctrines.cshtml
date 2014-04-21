@@ -1,0 +1,46 @@
+﻿@using DoctrineShips.Web.ViewModels
+@model HomeDoctrinesViewModel
+
+@{
+    ViewBag.Title = "Doctrines";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Doctrines<br />
+            <small>Select a doctrine to view ship fittings, market data and available contracts.</small>
+        </h1>
+    </div>
+    <br />
+
+    @if (Model != null && Model.Doctrines != null && Model.Doctrines.Count() != 0)
+    {
+        foreach (var doctrine in Model.Doctrines)
+        {
+            <div id="ds-doctrine">                
+                <a class="@(doctrine.IsOfficial == true ? "official" : "")" href='@Url.Action("Detail", "Doctrine", new { doctrineId = @doctrine.DoctrineId }, Request.Url.Scheme)'>
+                    <img class="@(doctrine.IsOfficial == true ? "tag" : "hidden")" src="@Url.Content("~/Content/images/misc/officialtag.png")" />
+                    
+                    @if (@doctrine.ImageUrl == string.Empty)
+                    {
+                        <img class="doctrine" src="@Url.Content("~/Content/images/misc/doctrineicon.png")" alt="@doctrine.Name">
+                    }
+                    else
+                    {
+                        <img class="doctrine" src="@Url.Content(@doctrine.ImageUrl)" alt="@doctrine.Name">
+                    }
+
+                    <br />
+                    <p>@doctrine.Name </p>
+                </a>
+            </div>
+        }
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Doctrines Have Been Defined</b>
+        </div>
+    }
+</div>

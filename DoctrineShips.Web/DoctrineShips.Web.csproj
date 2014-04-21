@@ -161,9 +161,11 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\SalesAgentController.cs" />
+    <Compile Include="Controllers\DoctrineController.cs" />
     <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Controllers\SiteController.cs" />
     <Compile Include="Controllers\KnowledgeBaseController.cs" />
@@ -172,15 +174,18 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\AccountNotificationRecipientsViewModel.cs" />
+    <Compile Include="ViewModels\AccountDoctrinesViewModel.cs" />
     <Compile Include="ViewModels\AccountSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\AccountSettingsViewModel.cs" />
     <Compile Include="ViewModels\AccountSalesAgentsViewModel.cs" />
+    <Compile Include="ViewModels\HomeContractsViewModel.cs" />
     <Compile Include="ViewModels\SearchShipFitContractsViewModel.cs" />
     <Compile Include="ViewModels\SharedMenuViewModel.cs" />
     <Compile Include="ViewModels\HomeSubscriptionsViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomerContractsStationViewModel.cs" />
     <Compile Include="ViewModels\SearchSalesAgentContractsViewModel.cs" />
     <Compile Include="ViewModels\AccountShipFitsViewModel.cs" />
+    <Compile Include="ViewModels\DoctrineDetailViewModel.cs" />
     <Compile Include="ViewModels\SiteSubscriptionPlansViewModel.cs" />
     <Compile Include="ViewModels\SiteLogViewModel.cs" />
     <Compile Include="ViewModels\SiteAccountsViewModel.cs" />
@@ -199,7 +204,7 @@
     <Compile Include="ViewModels\AccountAccessCodesViewModel.cs" />
     <Compile Include="ViewModels\ShipFitListViewModel.cs" />
     <Compile Include="ViewModels\SalesAgentListViewModel.cs" />
-    <Compile Include="ViewModels\HomeIndexViewModel.cs" />
+    <Compile Include="ViewModels\HomeDoctrinesViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomerContractsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -213,9 +218,11 @@
     <Content Include="Content\favicon.ico" />
     <Content Include="Content\images\icons\loading.gif" />
     <Content Include="Content\images\main\doctrineships.png" />
+    <Content Include="Content\images\misc\doctrineicon.png" />
     <Content Include="Content\images\misc\eve.png" />
     <Content Include="Content\images\misc\nomatch.png" />
     <Content Include="Content\images\misc\nomatchrender.png" />
+    <Content Include="Content\images\misc\officialtag.png" />
     <Content Include="Content\images\misc\payment1.png" />
     <Content Include="Content\images\misc\payment2.png" />
     <Content Include="Content\images\misc\payment3.png" />
@@ -257,6 +264,9 @@
     <Content Include="Web.config.sample" />
     <Content Include="Views\ShipFit\_DetailResult.cshtml" />
     <Content Include="Views\Search\ShipFitContracts.cshtml" />
+    <Content Include="Views\Home\Contracts.cshtml" />
+    <Content Include="Views\Doctrine\Detail.cshtml" />
+    <Content Include="Views\Account\Doctrines.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -276,7 +286,7 @@
     <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Doctrines.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DoctrineShips.Data\DoctrineShips.Data.csproj">

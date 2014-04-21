@@ -429,7 +429,17 @@
                     validationResult.AddError(salesAgent.SalesAgentId.ToString(), "Error while deleting sales agent: " + salesAgent.SalesAgentId.ToString());
                 }
             }
-                
+
+            // Delete all account doctrines.
+            var accountDoctrines = ShipFitManager.GetDoctrineList(accountId);
+            foreach (var doctrine in accountDoctrines)
+            {
+                if (ShipFitManager.DeleteDoctrine(accountId, doctrine.DoctrineId) == false)
+                {
+                    validationResult.AddError(doctrine.DoctrineId.ToString(), "Error while deleting doctrine: " + doctrine.DoctrineId.ToString());
+                }
+            }
+
             // Delete all account access codes.
             var accountAccessCodes = AccountManager.GetAccessCodes(accountId);
             foreach (var accessCode in accountAccessCodes)
@@ -792,6 +802,70 @@
         public string GetEftFittingString(int shipFitId, int accountId)
         {
             return ShipFitManager.GetEftFittingString(shipFitId, accountId);
+        }
+
+        /// <summary>
+        /// Returns a list of all doctrines for a given account.
+        /// </summary>
+        /// <param name="accountId">The account for which the doctrines should be returned.</param>
+        /// <returns>A list of doctrine objects.</returns>
+        public IEnumerable<Doctrine> GetDoctrineList(int accountId)
+        {
+            return ShipFitManager.GetDoctrineList(accountId);
+        }
+
+        /// <summary>
+        /// Returns a doctrine for a given account and doctrine id.
+        /// </summary>
+        /// <param name="accountId">The currently logged-in account id for security checking.</param>
+        /// <param name="doctrineId">The id for which a doctrine object should be returned.</param>
+        /// <returns>A doctrine object.</returns>
+        public Doctrine GetDoctrineDetail(int accountId, int doctrineId)
+        {
+            return ShipFitManager.GetDoctrineDetail(accountId, doctrineId);
+        }
+
+        /// <summary>
+        /// Deletes a doctrine.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being deleted.</param>
+        /// <param name="doctrineId">The doctrine Id to be deleted.</param>
+        /// <returns>Returns true if the deletion was successful or false if not.</returns>
+        public bool DeleteDoctrine(int accountId, int doctrineId)
+        {
+            return ShipFitManager.DeleteDoctrine(accountId, doctrineId);
+        }
+
+        /// <summary>
+        /// <para>Adds a Doctrine.</para>
+        /// </summary>
+        /// <param name="doctrine">A populated doctrine object.</param>
+        /// <returns>Returns a validation result object.</returns>
+        public IValidationResult AddDoctrine(Doctrine doctrine)
+        {
+            return ShipFitManager.AddDoctrine(doctrine);
+        }
+
+        /// <summary>
+        /// Updates a doctrine for a particular account.
+        /// </summary>
+        /// <param name="doctrine">A partially populated doctrine object to be updated.</param>
+        /// <returns>Returns a validation result object.</returns>
+        public IValidationResult UpdateDoctrine(Doctrine doctrine)
+        {
+            return ShipFitManager.UpdateDoctrine(doctrine);
+        }
+
+        /// <summary>
+        /// Updates a doctrine ship fit list for a particular account.
+        /// </summary>
+        /// <param name="accountId">The account Id of the requestor. The account Id should own the doctrine being updated.</param>
+        /// <param name="doctrineId">The doctrine Id to be updated.</param>
+        /// <param name="doctrineShipFitIds">An array of ship fit ids to be assigned to the doctrine.</param>
+        /// <returns>Returns a validation result object.</returns>
+        public IValidationResult UpdateDoctrineShipFits(int accountId, int doctrineId, int[] doctrineShipFitIds)
+        {
+            return ShipFitManager.UpdateDoctrineShipFits(accountId, doctrineId, doctrineShipFitIds);
         }
     }
 }
