@@ -132,9 +132,9 @@
         $("#ds-doctrinesettingsloading").show();
 
         $.ajax({
-            url: "/Api/GetDoctrineDetail",
-            type: "post",
-            data: { doctrineId: doctrineId },
+            url: "/Api/DoctrineDetail",
+            type: "get",
+            data: { id: doctrineId },
             datatype: 'json',
             success: function (doctrine) {
                 // Set the form values.
@@ -168,8 +168,8 @@
         $("#ds-doctrineshipfitsloading").show();
 
         $.ajax({
-            url: "/Api/GetAccountShipFits",
-            type: "post",
+            url: "/Api/AccountShipFits",
+            type: "get",
             datatype: 'json',
             success: function (shipFits) {
                 // Set the form values.
@@ -188,9 +188,9 @@
         });
 
         $.ajax({
-            url: "/Api/GetDoctrineShipFits",
-            type: "post",
-            data: { doctrineId: doctrineId },
+            url: "/Api/DoctrineShipFits",
+            type: "get",
+            data: { id: doctrineId },
             datatype: 'json',
             success: function (shipFits) {
                 // Set the form values.

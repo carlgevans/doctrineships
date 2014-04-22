@@ -70,9 +70,9 @@
         $("#ds-shipfitsettingsloading").show();
 
         $.ajax({
-            url: "/Api/GetShipFitDetail",
-            type: "post",
-            data: { shipFitId: shipFitId },
+            url: "/Api/ShipFitDetail",
+            type: "get",
+            data: { id: shipFitId },
             datatype: 'json',
             success: function (shipFit) {
                 // Set the form values.
