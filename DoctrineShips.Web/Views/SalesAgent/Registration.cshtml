@@ -1,0 +1,54 @@
+﻿@using DoctrineShips.Web.ViewModels
+
+@model SalesAgentRegistrationViewModel
+
+@{
+    ViewBag.Title = "Become An Agent";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Become An Agent<br />
+            <small>Register as a sales agent to have your doctrine contracts imported automatically.</small>
+        </h1>
+        <div class="ds-header-detail">
+            <ul>
+                <li>
+                    Only 'Contracts' permission is required on the API Key that you submit. The access mask should be 67108864 for a character or 8388608 for a corporation. Use 
+                    <a href="https://community.eveonline.com/support/api-key/CreatePredefined?accessMask=67108864">this link</a> to generate a key if you are unsure.
+                </li>
+                <li>Ensure that you select the correct character for the API Key. If an account key is used then the first character on the account will be chosen.</li>
+                <li>Your contracts must be <u>identical</u> to at least one ship fit listed for the account. This includes exact quantities of drones and cargo such as ammo, nanite paste and scripts.</li>
+                <li>Once you have registered, it may take up to an hour before you are listed as a sales agent and an initial contract pull is performed.</li>
+            </ul>
+        </div>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+
+    @using (Html.BeginForm("Register", "SalesAgent", FormMethod.Post, new { @class = "ds-form" }))
+    {
+        <div class="ds-form-wrap">
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary()
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.ApiId)
+                @Html.TextBoxFor(m => m.ApiId)
+            </div>
+            <div class="ds-form-group">
+                @Html.LabelFor(m => m.ApiKey)
+                @Html.TextBoxFor(m => m.ApiKey)
+            </div>
+            <div class="ds-form-group">
+                <button id="submit" type="submit"><span class="glyphicon glyphicon-plus"></span> Register</button>
+            </div>
+        </div>
+    }
+</div>

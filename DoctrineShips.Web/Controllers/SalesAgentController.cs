@@ -5,6 +5,7 @@
     using System.Web.UI;
     using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
+    using DoctrineShips.Validation;
     using DoctrineShips.Web.ViewModels;
     using Tools;
 
@@ -45,6 +46,53 @@
             this.doctrineShipsServices.ForceContractRefresh(accountId, cleanSalesAgentId);
 
             return RedirectToAction("List");
+        }
+
+        public ActionResult Registration()
+        {
+            SalesAgentRegistrationViewModel viewModel = new SalesAgentRegistrationViewModel();
+
+            // Set the ViewBag to the TempData status value passed from the Add & Delete methods.
+            ViewBag.Status = TempData["Status"];
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken()]
+        public ActionResult Register(SalesAgentRegistrationViewModel viewModel)
+        {
+            // Convert the currently logged-in account id to an integer.
+            int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+            if (ModelState.IsValid)
+            {
+                // Clean the passed api key.
+                string cleanApiKey = Conversion.StringToSafeString(Server.HtmlEncode(viewModel.ApiKey));
+
+                IValidationResult validationResult = this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
+
+                // If the validationResult is not valid, something did not validate in the service layer.
+                if (validationResult.IsValid)
+                {
+                    TempData["Status"] = "Your registration as a sales agent was successful.";
+                }
+                else
+                {
+                    TempData["Status"] = "Error: Your registration as a sales agent failed, a validation error occured.<br /><b>Error Details: </b>";
+
+                    foreach (var error in validationResult.Errors)
+                    {
+                        TempData["Status"] += error.Value + "<br />";
+                    }
+                }
+
+                return RedirectToAction("Registration");
+            }
+            else
+            {
+                return View("~/Views/SalesAgent/Registration.cshtml", viewModel);
+            }
         }
     }
 }
