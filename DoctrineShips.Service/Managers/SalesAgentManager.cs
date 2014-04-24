@@ -224,5 +224,15 @@
 
             return false;
         }
+
+        /// <summary>
+        /// Deletes active sales agents that have not had a successful contract refresh in the last 7 days.
+        /// </summary>
+        internal void DeleteStaleSalesAgents()
+        {
+            this.doctrineShipsRepository.DeleteStaleSalesAgents(DateTime.UtcNow - TimeSpan.FromDays(7));
+            this.logger.LogMessage("Sales Agents With Contract Refresh Timestamps Older Than 7 Days Deleted.", 2, "Message", MethodBase.GetCurrentMethod().Name);
+            this.doctrineShipsRepository.Save();
+        }
     }
 }

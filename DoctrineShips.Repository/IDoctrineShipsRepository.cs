@@ -67,6 +67,7 @@
         IEnumerable<SalesAgent> GetSalesAgents(int accountId);
         IEnumerable<SalesAgent> GetSalesAgentsForContractCount();
         IEnumerable<SalesAgent> GetSalesAgentsForRefresh(bool force, int batchSize = 10);
+        void DeleteStaleSalesAgents(DateTime olderThanDate);
 
         // Setting Profile Operations.
         void DeleteSettingProfile(int settingProfileId);
