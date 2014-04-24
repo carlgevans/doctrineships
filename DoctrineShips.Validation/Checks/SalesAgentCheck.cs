@@ -38,19 +38,28 @@
         {
             IValidationResult validationResult = new ValidationResult();
 
-            // Check the access mask of the key is correct.
+            // Define the bitwise masks for both character and corporation api keys.
+            const int charContractMask = 67108864;
+            const int corpContractMask = 8388608;
+            int checkResult = 0;
+
+            // Perform a bitwise AND to determine if contract access is available on the api key.
             if (apiKeyInfo.Type == EveDataApiKeyType.Character || apiKeyInfo.Type == EveDataApiKeyType.Account)
             {
-                if (apiKeyInfo.AccessMask != 67108864)
+                checkResult = apiKeyInfo.AccessMask & charContractMask;
+
+                if (checkResult == 0)
                 {
-                    validationResult.AddError("ApiKey.AccessMask", "A character api key must have an access mask of 67108864 ('Contracts' Only).");
+                    validationResult.AddError("ApiKey.AccessMask", "A character api key must have 'Contracts' access enabled.");
                 }
             }
             else if (apiKeyInfo.Type == EveDataApiKeyType.Corporation)
             {
-                if (apiKeyInfo.AccessMask != 8388608)
+                checkResult = apiKeyInfo.AccessMask & corpContractMask;
+
+                if (checkResult == 0)
                 {
-                    validationResult.AddError("ApiKey.AccessMask", "A corporation api key must have an access mask of 8388608 ('Contracts' Only).");
+                    validationResult.AddError("ApiKey.AccessMask", "A corporation api key must have 'Contracts' access enabled.");
                 }
             }
 
