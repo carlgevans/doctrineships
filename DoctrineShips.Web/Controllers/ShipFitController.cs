@@ -8,8 +8,7 @@
     using DoctrineShips.Web.Filters;
     using DoctrineShips.Web.ViewModels;
     using Tools;
-    using System;
-    
+
     [Authorize]
     public class ShipFitController : Controller
     {
@@ -85,29 +84,6 @@
             {
                 return PartialView("_DetailResult");
             }
-        }
-
-        [HttpPost]
-        public ActionResult GetEftFittingString(string shipFitId)
-        {
-            // Cleanse the passed ship fit id string to prevent XSS.
-            int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
-
-            // Convert the currently logged-in account id to an integer.
-            int accountId = Conversion.StringToInt32(User.Identity.Name);
-
-            if (cleanShipFitId != 0)
-            {
-                // Fetch the ship fit. If the user is not authorised to view it, null will be returned.
-                string eftFittingString = this.doctrineShipsServices.GetEftFittingString(cleanShipFitId, accountId);
-
-                if (!String.IsNullOrEmpty(eftFittingString))
-                {
-                    return Content(eftFittingString);
-                }
-            }
-
-            return Content("Operation Failed.");
         }
     }
 }
