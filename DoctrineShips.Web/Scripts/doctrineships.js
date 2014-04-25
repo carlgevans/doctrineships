@@ -121,11 +121,9 @@ function showEftFitting(shipFitId) {
     $("#eftFitting").modal();
 
     $.ajax({
-        url: "/ShipFit/GetEftFittingString",
-        type: 'post',
-        data: {
-            'shipFitId': shipFitId
-        },
+        url: "/Api/EftFittingString",
+        type: 'get',
+        data: { id: shipFitId },
         success: function (eftFittingString) {
             eftFittingStringWithBreaks = eftFittingString.replace(/\r\n/g, '<br />');
 
