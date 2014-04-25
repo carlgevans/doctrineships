@@ -533,6 +533,11 @@
             return SalesAgentOperations.GetSalesAgentsForRefresh(force, batchSize);
         }
 
+        public void DeleteStaleSalesAgents(DateTime olderThanDate)
+        {
+            SalesAgentOperations.DeleteStaleSalesAgents(olderThanDate);
+        }
+
         public void DeleteSettingProfile(int settingProfileId)
         {
             SettingProfileOperations.DeleteSettingProfile(settingProfileId);
