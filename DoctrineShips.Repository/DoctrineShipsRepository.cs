@@ -27,7 +27,6 @@
         private SettingProfileOperations settingProfileOperations;
         private ShipFitOperations shipFitOperations;
         private ShipFitComponentOperations shipFitComponentOperations;
-        private ShortUrlOperations shortUrlOperations;
         private SubscriptionPlanOperations subscriptionPlanOperations;
 
         public DoctrineShipsRepository(IUnitOfWork unitOfWork)
@@ -217,19 +216,6 @@
             }
         }
 
-        internal ShortUrlOperations ShortUrlOperations
-        {
-            get
-            {
-                if (this.shortUrlOperations == null)
-                {
-                    this.shortUrlOperations = new ShortUrlOperations(unitOfWork);
-                }
-
-                return this.shortUrlOperations;
-            }
-        }
-
         internal SubscriptionPlanOperations SubscriptionPlanOperations
         {
             get
@@ -246,6 +232,11 @@
         public void DeleteAccessCode(int accessCodeId)
         {
             AccessCodeOperations.DeleteAccessCode(accessCodeId);
+        }
+
+        public int DeleteExpiredAccessCodes()
+        {
+            return AccessCodeOperations.DeleteExpiredAccessCodes();
         }
 
         public void UpdateAccessCode(AccessCode accessCode)
@@ -761,41 +752,6 @@
         public IEnumerable<SubscriptionPlan> GetSubscriptionPlans()
         {
             return SubscriptionPlanOperations.GetSubscriptionPlans();
-        }
-
-        public void DeleteShortUrl(string shortUrlId)
-        {
-            ShortUrlOperations.DeleteShortUrl(shortUrlId);
-        }
-
-        public void UpdateShortUrl(ShortUrl shortUrl)
-        {
-            ShortUrlOperations.UpdateShortUrl(shortUrl);
-        }
-
-        public ShortUrl AddShortUrl(ShortUrl shortUrl)
-        {
-            return ShortUrlOperations.AddShortUrl(shortUrl);
-        }
-
-        public ShortUrl CreateShortUrl(ShortUrl shortUrl)
-        {
-            return ShortUrlOperations.CreateShortUrl(shortUrl);
-        }
-
-        public ShortUrl GetShortUrl(string shortUrlId)
-        {
-            return ShortUrlOperations.GetShortUrl(shortUrlId);
-        }
-
-        public IEnumerable<ShortUrl> GetShortUrls()
-        {
-            return ShortUrlOperations.GetShortUrls();
-        }
-
-        public void DeleteShortUrlsOlderThanDate(DateTime olderThanDate)
-        {
-            ShortUrlOperations.DeleteShortUrlsOlderThanDate(olderThanDate);
         }
 
         public void DeleteDoctrine(int doctrineId)

@@ -166,7 +166,6 @@
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\SalesAgentController.cs" />
     <Compile Include="Controllers\DoctrineController.cs" />
-    <Compile Include="Controllers\ToolsController.cs" />
     <Compile Include="Controllers\SiteController.cs" />
     <Compile Include="Controllers\KnowledgeBaseController.cs" />
     <Compile Include="Controllers\SharedController.cs" />

@@ -34,7 +34,7 @@
         [AllowAnonymous]
         public ActionResult Authenticate(string accountId, string key, string secondKey, string redir)
         {
-            Role role = Role.None;
+            AccessToken accessToken;
 
             // Cleanse the passed account id and password string to prevent XSS.
             int cleanAccountId = Conversion.StringToInt32(Server.HtmlEncode(accountId));
@@ -46,15 +46,15 @@
             if (cleanSecondKey == this.secondKey)
             {
                 // Bypass the account id checks.
-                role = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
+                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
             }
             else
             {
                 // Authenticate the passed accountId and key.
-                role = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
+                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
             }
 
-            if (role != Role.None)
+            if (accessToken.Role != Role.None)
             {
                 FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
                 1,                            // Version number of the ticket.
@@ -62,7 +62,7 @@
                 DateTime.UtcNow,              // Issue date of the ticket.
                 DateTime.UtcNow.AddDays(30),  // Expiry date of the ticket.
                 true,                         // Persistence enabled for the ticket?
-                role.ToString(),              // User-specific data which in this case is their roles.
+                accessToken.Role.ToString(),  // User-specific data which in this case is their roles.
                 "/");                         // The path for the ticket.
 
                 HttpCookie newCookie = new HttpCookie(FormsAuthentication.FormsCookieName,
@@ -72,6 +72,12 @@
                 newCookie.Expires = DateTime.UtcNow.AddDays(30);
 
                 Response.Cookies.Add(newCookie);
+
+                // If the access token is a short url, set the access token data as the redirect url.
+                if (accessToken.Description == "Short Url")
+                {
+                    cleanRedir = accessToken.Data;
+                }
 
                 // If a local and clean url has been passed as a parameter, redirect to it.
                 if (!String.IsNullOrEmpty(cleanRedir) && Url.IsLocalUrl(cleanRedir))
@@ -325,7 +331,7 @@
             ViewBag.Status = TempData["Status"];
 
             // Retrieve a current list of access codes for the current account.
-            viewModel.AccessCodes = this.doctrineShipsServices.GetAccessCodes(accountId);
+            viewModel.AccessCodes = this.doctrineShipsServices.GetAccessCodes(accountId).Where(x => x.Description != "Short Url"); ;
 
             return View(viewModel);
         }
@@ -349,7 +355,7 @@
                 if (newKey != string.Empty)
                 {
                     // Assign the new key to TempData to be passed to the AccessCodes view.
-                    string authUrl = this.websiteDomain + "/Auth/" + accountId + "/" + newKey;
+                    string authUrl = this.websiteDomain + "/A/" + accountId + "/" + newKey;
                     TempData["Status"] = "Success, the auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                 }
                 else
@@ -362,7 +368,7 @@
             else
             {
                 // Re-populate the view model and return with any validation errors.
-                viewModel.AccessCodes = this.doctrineShipsServices.GetAccessCodes(accountId);
+                viewModel.AccessCodes = this.doctrineShipsServices.GetAccessCodes(accountId).Where(x => x.Description != "Short Url");
                 return View("~/Views/Account/AccessCodes.cshtml", viewModel);
             }
         }

@@ -354,8 +354,8 @@
             // Deletes log entries older than 7 days.
             TaskManager.DeleteOldLogs();
 
-            // Deletes short urls older than 30 days.
-            TaskManager.DeleteOldShortUrls();
+            // Deletes expired access codes.
+            AccountManager.DeleteExpiredAccessCodes();
 
             // Debit any accounts with subscription payments that are due.
             AccountManager.DebitDueAccounts();
@@ -515,8 +515,8 @@
         /// <param name="accountId">The account id to be authenticated.</param>
         /// <param name="key">The passcode to be authenticated against the account id.</param>
         /// <param name="bypassAccountChecks">Bypass account id checking so that any account id may be used.</param>
-        /// <returns>Returns a role. The role will be 'None' if authentication has failed.</returns>
-        public Role Authenticate(int accountId, string key, bool bypassAccountChecks = false)
+        /// <returns>Returns an access token. The role property will be 'None' if authentication has failed.</returns>
+        public AccessToken Authenticate(int accountId, string key, bool bypassAccountChecks = false)
         {
             return AccountManager.Authenticate(accountId, key, bypassAccountChecks);
         }
@@ -527,10 +527,12 @@
         /// <param name="accountId">The id of the account for which an access code should be added.</param>
         /// <param name="description">A short description for the new access code.</param>
         /// <param name="role">The role that.</param>
+        /// <param name="dateExpires">Optional expiry date.</param>
+        /// <param name="data">Optional data to be associated with the access code.</param>
         /// <returns>Returns a randomly generated key.</returns>
-        public string AddAccessCode(int accountId, string description, Role role)
+        public string AddAccessCode(int accountId, string description, Role role, DateTime? dateExpires = null, string data = null)
         {
-            return AccountManager.AddAccessCode(accountId, description, role);
+            return AccountManager.AddAccessCode(accountId, description, role, dateExpires, data);
         }
 
         /// <summary>
@@ -774,26 +776,6 @@
         public IValidationResult UpdateShipFit(ShipFit shipFit)
         {
             return ShipFitManager.UpdateShipFit(shipFit);
-        }
-
-        /// <summary>
-        /// Generate and add a short url from a passed long url.
-        /// <param name="longUrl">A long url to be shortened.</param>
-        /// <returns>Returns a shortUrlId string.</returns>
-        /// </summary>
-        public string AddShortUrl(string longUrl)
-        {
-            return TaskManager.AddShortUrl(longUrl);
-        }
-
-        /// <summary>
-        /// Fetches and returns a long url from a short url id.
-        /// <param name="shortUrlId">A shortUrlId relating to the stored longUrl.</param>
-        /// <returns>Returns a longUrl string.</returns>
-        /// </summary>
-        public string GetLongUrl(string shortUrlId)
-        {
-            return TaskManager.GetLongUrl(shortUrlId);
         }
 
         /// <summary>

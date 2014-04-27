@@ -9,6 +9,7 @@
     {
         // Access Code Operations.
         void DeleteAccessCode(int accessCodeId);
+        int DeleteExpiredAccessCodes();
         void UpdateAccessCode(AccessCode accessCode);
         AccessCode AddAccessCode(AccessCode accessCode);
         AccessCode CreateAccessCode(AccessCode accessCode);
@@ -134,15 +135,6 @@
         SubscriptionPlan GetSubscriptionPlan(int subscriptionPlanId);
         SubscriptionPlan GetSubscriptionPlanReadOnly(int subscriptionPlanId);
         IEnumerable<SubscriptionPlan> GetSubscriptionPlans();
-
-        // ShortUrl Operations.
-        void DeleteShortUrl(string shortUrlId);
-        void UpdateShortUrl(ShortUrl shortUrl);
-        ShortUrl AddShortUrl(ShortUrl shortUrl);
-        ShortUrl CreateShortUrl(ShortUrl shortUrl);
-        ShortUrl GetShortUrl(string shortUrlId);
-        IEnumerable<ShortUrl> GetShortUrls();
-        void DeleteShortUrlsOlderThanDate(DateTime olderThanDate);
 
         // Doctrine Operations.
         void DeleteDoctrine(int doctrineId);

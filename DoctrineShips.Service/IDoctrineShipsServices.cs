@@ -188,8 +188,8 @@
         /// <param name="accountId">The account id to be authenticated.</param>
         /// <param name="key">The passcode to be authenticated against the account id.</param>
         /// <param name="bypassAccountChecks">Bypass account id checking so that any account id may be used.</param>
-        /// <returns>Returns a role. The role will be 'None' if authentication has failed.</returns>
-        Role Authenticate(int accountId, string key, bool bypassAccountChecks = false);
+        /// <returns>Returns an access token. The role property will be 'None' if authentication has failed.</returns>
+        AccessToken Authenticate(int accountId, string key, bool bypassAccountChecks = false);
 
         /// <summary>
         /// Add an access key to an account.
@@ -197,8 +197,10 @@
         /// <param name="accountId">The id of the account for which an access code should be added.</param>
         /// <param name="description">A short description for the new access code.</param>
         /// <param name="role">The role that.</param>
+        /// <param name="dateExpires">Optional expiry date.</param>
+        /// <param name="data">Optional data to be associated with the access code.</param>
         /// <returns>Returns a randomly generated key.</returns>
-        string AddAccessCode(int accountId, string description, Role role);
+        string AddAccessCode(int accountId, string description, Role role, DateTime? dateExpires = null, string data = null);
 
         /// <summary>
         /// <para>Deletes an access code from an accountId and a accessCodeId.</para>
@@ -367,20 +369,6 @@
         /// <param name="shipFit">A partially populated ship fit object to be updated.</param>
         /// <returns>Returns a validation result object.</returns>
         IValidationResult UpdateShipFit(ShipFit shipFit);
-
-        /// <summary>
-        /// Generate and add a short url from a passed long url.
-        /// <param name="longUrl">A long url to be shortened.</param>
-        /// <returns>Returns a shortUrlId string.</returns>
-        /// </summary>
-        string AddShortUrl(string longUrl);
-
-        /// <summary>
-        /// Fetches and returns a long url from a short url id.
-        /// <param name="shortUrlId">A shortUrlId relating to the stored longUrl.</param>
-        /// <returns>Returns a longUrl string.</returns>
-        /// </summary>
-        string GetLongUrl(string shortUrlId);
 
         /// <summary>
         /// Generate and returns an EFT fitting string for a ship fit.

@@ -147,9 +147,12 @@
         /// <param name="accountId">The account id to be authenticated.</param>
         /// <param name="key">The passcode to be authenticated against the account id.</param>
         /// <param name="bypassAccountChecks">Bypass account id checking so that any account id may be used.</param>
-        /// <returns>Returns a role. The role will be 'None' if authentication has failed.</returns>
-        internal Role Authenticate(int accountId, string key, bool bypassAccountChecks = false)
+        /// <returns>Returns an access token. The role property will be 'None' if authentication has failed.</returns>
+        internal AccessToken Authenticate(int accountId, string key, bool bypassAccountChecks = false)
         {
+            // Create a new access token.
+            AccessToken accessToken = new AccessToken();
+
             // Bypass account id checking so that a site admin can log in as any account id.
             if (bypassAccountChecks == true)
             {
@@ -170,8 +173,18 @@
                             this.doctrineShipsRepository.UpdateAccessCode(accessCode);
                             this.doctrineShipsRepository.Save();
 
+                            // Set the access token's properties.
+                            accessToken.AccountId = accessCode.AccountId;
+                            accessToken.Data = accessCode.Data;
+                            accessToken.DateCreated = accessCode.DateCreated;
+                            accessToken.DateExpires = accessCode.DateExpires;
+                            accessToken.Description = accessCode.Description;
+                            accessToken.Role = accessCode.Role;
+
+                            // Log the authentication success.
                             logger.LogMessage("Authentication Success (Bypass Account Check Mode) For Account Id: " + accountId + " With Code: '" + accessCode.Description + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-                            return accessCode.Role;
+
+                            return accessToken;
                         }
                     }
                 }
@@ -205,8 +218,18 @@
                                         this.doctrineShipsRepository.UpdateAccessCode(accessCode);
                                         this.doctrineShipsRepository.Save();
 
+                                        // Set the access token's properties.
+                                        accessToken.AccountId = accessCode.AccountId;
+                                        accessToken.Data = accessCode.Data;
+                                        accessToken.DateCreated = accessCode.DateCreated;
+                                        accessToken.DateExpires = accessCode.DateExpires;
+                                        accessToken.Description = accessCode.Description;
+                                        accessToken.Role = accessCode.Role;
+
+                                        // Log the authentication success.
                                         logger.LogMessage("Authentication Success For Account Id: " + accountId + " With Code: '" + accessCode.Description +"'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-                                        return accessCode.Role;
+
+                                        return accessToken;
                                     }
                                 }
                             }
@@ -215,8 +238,13 @@
                 }
             }
 
+            // Set the access token's role to none.
+            accessToken.Role = Role.None;
+
+            // Log the authentication failure.
             logger.LogMessage("Authentication Attempt Failed For Account Id: " + accountId, 0, "Message", MethodBase.GetCurrentMethod().Name);
-            return Role.None;
+
+            return accessToken;
         }
 
         /// <summary>
@@ -342,9 +370,11 @@
         /// </summary>
         /// <param name="accountId">The id of the account for which an access code should be added.</param>
         /// <param name="description">A short description for the new access code.</param>
-        /// <param name="role">The role that.</param>
+        /// <param name="role">The role for the new access code.</param>
+        /// <param name="dateExpires">Optional expiry date.</param>
+        /// <param name="data">Optional data to be associated with the access code.</param>
         /// <returns>Returns a randomly generated key.</returns>
-        internal string AddAccessCode(int accountId, string description, Role role)
+        internal string AddAccessCode(int accountId, string description, Role role, DateTime? dateExpires = null, string data = null)
         {
             AccessCode accessCode = null;
             string generatedKey = string.Empty;
@@ -375,6 +405,10 @@
                 accessCode.LastLogin = DateTime.UtcNow;
                 accessCode.DateCreated = DateTime.UtcNow;
                 accessCode.IsActive = true;
+
+                // Optional values.
+                accessCode.DateExpires = dateExpires ?? DateTime.MaxValue;
+                accessCode.Data = data ?? string.Empty;
 
                 // Validate the new access code.
                 if (this.doctrineShipsValidation.AccessCode(accessCode).IsValid == true)
@@ -795,6 +829,21 @@
             }
 
             return validationResult;
+        }
+
+        /// <summary>
+        /// Deletes expired access codes.
+        /// </summary>
+        internal void DeleteExpiredAccessCodes()
+        {
+            var expiredCount = this.doctrineShipsRepository.DeleteExpiredAccessCodes();
+
+            if (expiredCount > 0)
+            {
+                this.logger.LogMessage("Deleted Expired Access Codes: " + expiredCount, 2, "Message", MethodBase.GetCurrentMethod().Name);
+            }
+
+            this.doctrineShipsRepository.Save();
         }
     }
 }
