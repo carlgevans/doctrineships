@@ -221,6 +221,36 @@
             }
         }
 
+        public ActionResult EftFittingString(string id)
+        {
+            try
+            {
+                // Cleanse the passed ship fit id string to prevent XSS.
+                int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(id));
+
+                // Convert the currently logged-in account id to an integer.
+                int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+                if (cleanShipFitId != 0)
+                {
+                    // Fetch the ship fit. If the user is not authorised to view it, null will be returned.
+                    string eftFittingString = this.doctrineShipsServices.GetEftFittingString(cleanShipFitId, accountId);
+
+                    if (!String.IsNullOrEmpty(eftFittingString))
+                    {
+                        return Content(eftFittingString);
+                    }
+                }
+
+                return Content("Ship Fit Not Found Or Not Authorised");
+            }
+            catch (System.Exception)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Content("An Error Occured");
+            }
+        }
+
         [HttpPost]
         public ActionResult ShortenUrl(string longUrl)
         {

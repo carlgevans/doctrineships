@@ -5,7 +5,7 @@ An EVE Online ship fitting management and contract validation system.
 
 © 2014 Carl G. Evans and contributors.
 
-https://github.com/DoctrineShips/DoctrineShips
+https://github.com/carlgevans/doctrineships/
 
 Written in C# MVC.
 
@@ -35,6 +35,7 @@ Here are some of the features and tools currently available with the system:
 * Ship fit buying tool.
 * Account-level control over settings such as profit percentages.
 * Manage sales agents, ship fittings and account permissions/access codes.
+* Create & manage doctrines, grouping complementary ship fits together.
 
 ##3. Application Design
 
@@ -68,13 +69,26 @@ Packages are not included in the repository, so be sure to enable NuGet Package 
 * Bootstrap
 * jQuery
 
-##4. License
+##4. Installation
+
+* Fork and/or checkout the latest development or master branch.
+* Download all files from http://goo.gl/jaNMmS.
+* Copy the sample Web.config file from the above location and place it in the root of the DoctrineShips.Web project. By default this will configure a database file in the App_Data
+  folder of the web project.
+* Ensure that Nuget Package Restore is enabled.
+* Uncomment line 12 as shown here https://github.com/carlgevans/doctrineships/blob/master/DoctrineShips.Data/DoctrineShipsContext.cs#L12-13 and comment line 13 below it. This will tell Entity Framework to create you a blank database from the classes in project DoctrineShips.Entities.
+* Build the application. This should download the required Nuget packages and create a blank database.
+* Import the sample sql data downloaded earlier into the database.
+* Switch the previously commented Database.SetInitializer lines back to prevent the database being recreated on the next build.
+* You may now log in as a site admin with the key found in the file SiteAdminKey.txt downloaded earlier.
+
+##5. License
 
 Doctrine Ships has been released under the MIT Open Source license. All contributors agree to transfer ownership of their code to Carl G. Evans for release under this license.
 
-###4.1 The MIT License (MIT)
+###5.1 The MIT License (MIT)
 
-Copyright (c) 2014 DoctrineShips
+Copyright (c) 2014 Carl G. Evans
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

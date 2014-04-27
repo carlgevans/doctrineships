@@ -360,6 +360,9 @@
             // Debit any accounts with subscription payments that are due.
             AccountManager.DebitDueAccounts();
 
+            // Deletes active sales agents that have not had a successful contract refresh in the last 7 days.
+            SalesAgentManager.DeleteStaleSalesAgents();
+
             // Send out daily ship fit availability summaries for all accounts.
             await TaskManager.SendDailySummary(twitterContext);
         }

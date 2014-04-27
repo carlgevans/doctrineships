@@ -89,5 +89,21 @@
 
             return salesAgents;
         }
+
+        internal void DeleteStaleSalesAgents(DateTime olderThanDate)
+        {
+            IEnumerable<SalesAgent> salesAgents = null;
+
+            salesAgents = this.unitOfWork.Repository<SalesAgent>()
+                      .Query()
+                      .Filter(x => x.LastContractRefresh < olderThanDate && x.IsActive == true)
+                      .Get()
+                      .ToList();
+
+            foreach (var item in salesAgents)
+            {
+                this.unitOfWork.Repository<SalesAgent>().Delete(item);
+            }
+        }
     }
 }
