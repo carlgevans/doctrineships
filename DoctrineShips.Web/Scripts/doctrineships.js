@@ -92,7 +92,7 @@ function shortenUrl(urlToShorten) {
     var encodedUrl = encodeURIComponent(urlToShorten);
 
     $.ajax({
-        url: "/Tools/ShortenUrl",
+        url: "/Api/ShortenUrl",
         type: 'post',
         data: {
             'longUrl': encodedUrl

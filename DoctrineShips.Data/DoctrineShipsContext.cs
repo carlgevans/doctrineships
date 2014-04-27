@@ -37,7 +37,6 @@
             modelBuilder.Configurations.Add(new SettingProfileMap());
             modelBuilder.Configurations.Add(new ShipFitComponentMap());
             modelBuilder.Configurations.Add(new ShipFitMap());
-            modelBuilder.Configurations.Add(new ShortUrlMap());
             modelBuilder.Configurations.Add(new SubscriptionPlanMap());
         }
     }

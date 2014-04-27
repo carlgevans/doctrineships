@@ -8,8 +8,8 @@
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
     using DoctrineShips.Validation;
-    using LinqToTwitter = LinqToTwitter;
     using Tools;
+    using LinqToTwitter = LinqToTwitter;
 
     /// <summary>
     /// A class dealing with Doctrine Ships scheduled, maintenance or site related tasks.
@@ -230,67 +230,6 @@
                 logger.LogMessage(e.ToString(), 0, "Exception", MethodBase.GetCurrentMethod().Name);
                 return false;
             }
-        }
-
-        /// <summary>
-        /// Generate and add a short url from a passed long url.
-        /// <param name="longUrl">A long url to be shortened.</param>
-        /// <returns>Returns a shortUrlId string.</returns>
-        /// </summary>
-        internal string AddShortUrl(string longUrl)
-        {
-            if (!String.IsNullOrEmpty(longUrl))
-            {
-                // Populate a new ShortUrl object.
-                ShortUrl newShortUrl = new ShortUrl();
-
-                // Populate the remaining properties.
-                newShortUrl.ShortUrlId = Security.GenerateRandomString(6); // 44,261,653,680 Permutations.
-                newShortUrl.LongUrl = longUrl;
-                newShortUrl.DateCreated = DateTime.UtcNow;
-
-                // Add the new short url and log the event. 
-                // An exception will be thrown if the key already exists. 1 in 44 billion chance and users will just request it again.
-                this.doctrineShipsRepository.CreateShortUrl(newShortUrl);
-                this.doctrineShipsRepository.Save();
-                logger.LogMessage("Short Url '" + newShortUrl.ShortUrlId + "' Generated.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-
-                // Return the value.
-                return newShortUrl.ShortUrlId;
-            }
-            else
-            {
-                return "Error";
-            }
-        }
-
-        /// <summary>
-        /// Fetches and returns a long url from a short url id.
-        /// <param name="shortUrlId">A shortUrlId relating to the stored longUrl.</param>
-        /// <returns>Returns a longUrl string.</returns>
-        /// </summary>
-        internal string GetLongUrl(string shortUrlId)
-        {
-            ShortUrl shortUrl = this.doctrineShipsRepository.GetShortUrl(shortUrlId);
-
-            if (shortUrl != null)
-            {
-                return shortUrl.LongUrl;
-            }
-            else
-            {
-                return string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Deletes short url entries older than 30 days.
-        /// </summary>
-        internal void DeleteOldShortUrls()
-        {
-            this.doctrineShipsRepository.DeleteShortUrlsOlderThanDate(DateTime.UtcNow - TimeSpan.FromDays(30));
-            this.logger.LogMessage("Short Urls Older Than 30 Days Deleted.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-            this.doctrineShipsRepository.Save();
         }
     }
 }

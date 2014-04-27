@@ -1,20 +1,24 @@
 ﻿namespace DoctrineShips.Web.Controllers
 {
+    using System;
     using System.Linq;
     using System.Net;
+    using System.Web.Configuration;
     using System.Web.Mvc;
+    using DoctrineShips.Entities;
     using DoctrineShips.Service;
-    using DoctrineShips.Web.Filters;
     using Tools;
 
     [Authorize]
     public class ApiController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
+        private readonly string websiteDomain;
 
         public ApiController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
+            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         public ActionResult ShipFitDetail(string id)
@@ -214,6 +218,28 @@
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { error = "An Error Occured" }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ShortenUrl(string longUrl)
+        {
+            string decodedUrl = System.Uri.UnescapeDataString(longUrl);
+
+            // Ensure that the url being shortened is not for another website.
+            if (!String.IsNullOrEmpty(decodedUrl) && Url.IsLocalUrl(decodedUrl))
+            {
+                // Convert the currently logged-in account id to an integer.
+                int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+                // Create a new temporary access code, setting the data field to the long url.
+                var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddDays(30), decodedUrl);
+
+                return Content(this.websiteDomain + "/A/" + accountId + "/" + newKey);
+            }
+            else
+            {
+                return Content("Operation Failed.");
             }
         }
     }

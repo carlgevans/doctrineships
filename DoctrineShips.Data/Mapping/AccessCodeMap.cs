@@ -35,8 +35,14 @@
 
             this.Property(t => t.LastLogin)
                 .IsRequired();
-
+            
+            this.Property(t => t.Data)
+                .IsRequired();
+            
             this.Property(t => t.DateCreated)
+                .IsRequired();
+
+            this.Property(t => t.DateExpires)
                 .IsRequired();
 
             // Table & Column Mappings
@@ -49,7 +55,9 @@
             this.Property(t => t.Role).HasColumnName("Role");
             this.Property(t => t.IsActive).HasColumnName("IsActive");
             this.Property(t => t.LastLogin).HasColumnName("LastLogin");
+            this.Property(t => t.Data).HasColumnName("Data");
             this.Property(t => t.DateCreated).HasColumnName("DateCreated");
+            this.Property(t => t.DateExpires).HasColumnName("DateExpires");
         }
     }
 }

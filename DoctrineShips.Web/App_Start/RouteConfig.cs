@@ -20,11 +20,6 @@
                   new { controller = "Account", action = "Authenticate", accountId = string.Empty, key = string.Empty, secondKey = string.Empty });
 
             routes.MapRoute(
-                  "S",
-                  "S/{shortUrlId}",
-                  new { controller = "Tools", action = "ShortUrlRedirect", shortUrlId = string.Empty });
-
-            routes.MapRoute(
                   "CustomerContracts",
                   "Search/Cust/{customerId}",
                   new { controller = "Search", action = "CustomerContracts", customerId = string.Empty });

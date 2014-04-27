@@ -4,6 +4,7 @@
     using System.Linq;
     using DoctrineShips.Entities;
     using GenericRepository;
+    using System;
 
     internal sealed class AccessCodeOperations
     {
@@ -17,6 +18,26 @@
         internal void DeleteAccessCode(int accessCodeId)
         {
             this.unitOfWork.Repository<AccessCode>().Delete(accessCodeId);
+        }
+
+        internal int DeleteExpiredAccessCodes()
+        {
+            int expiredCount = 0;
+
+            var expiredAccessCodes = this.unitOfWork.Repository<AccessCode>()
+                                   .Query()
+                                   .Filter(q => q.DateExpires <= DateTime.UtcNow)
+                                   .Get()
+                                   .ToList();
+
+            expiredCount = expiredAccessCodes.Count();
+
+            foreach (var accessCode in expiredAccessCodes)
+            {
+                this.unitOfWork.Repository<AccessCode>().Delete(accessCode.AccessCodeId);
+            }
+
+            return expiredCount;
         }
 
         internal void UpdateAccessCode(AccessCode accessCode)

@@ -42,9 +42,9 @@
     <Compile Include="..\SolutionInfo.cs">
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
+    <Compile Include="AccessToken.cs" />
     <Compile Include="Doctrine.cs" />
     <Compile Include="DoctrineShipFit.cs" />
-    <Compile Include="ShortUrl.cs" />
     <Compile Include="NotificationRecipient.cs" />
     <Compile Include="SubscriptionPlan.cs" />
     <Compile Include="Article.cs" />
