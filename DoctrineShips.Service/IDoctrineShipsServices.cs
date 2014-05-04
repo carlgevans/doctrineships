@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using DoctrineShips.Entities;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
-    using LinqToTwitter = LinqToTwitter;
     using Tools;
 
     /// <summary>
@@ -13,6 +13,11 @@
     /// </summary>
     public interface IDoctrineShipsServices
     {
+        /// <summary>
+        /// Doctrine Ships application settings.
+        /// </summary>
+        IDoctrineShipsSettings Settings { get; }
+
         /// <summary>
         /// Fetches and returns a Doctrine Ships customer.
         /// </summary>
@@ -135,15 +140,12 @@
         /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        /// <returns>A Task boolean value.</returns>
-        Task DailyMaintenance(LinqToTwitter::TwitterContext twitterContext);
+        Task DailyMaintenance();
 
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        Task HourlyMaintenance(LinqToTwitter::TwitterContext twitterContext);
+        Task HourlyMaintenance();
 
         /// <summary>
         /// Fetches and returns a Doctrine Ships account.

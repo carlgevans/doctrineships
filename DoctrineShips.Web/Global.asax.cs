@@ -25,7 +25,7 @@
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             // Set a global application brand.
-            Application["Brand"] = WebConfigurationManager.AppSettings["Brand"];
+            Application["Brand"] = WebConfigurationManager.AppSettings["Brand"] ?? string.Empty;
         }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)

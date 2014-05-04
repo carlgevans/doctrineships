@@ -5,9 +5,11 @@ namespace DoctrineShips.Web.App_Start
 {
     using System;
     using System.Web;
+    using System.Web.Configuration;
     using DoctrineShips.Data;
     using DoctrineShips.Repository;
     using DoctrineShips.Service;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
     using EveData;
     using GenericRepository;
@@ -45,6 +47,20 @@ namespace DoctrineShips.Web.App_Start
         /// <returns>The created kernel.</returns>
         private static IKernel CreateKernel()
         {
+            // Fetch application settings and instantiate a DoctrineShipsSettings object.
+            DoctrineShipsSettings doctrineShipsSettings = new DoctrineShipsSettings(
+                WebConfigurationManager.AppSettings["TaskKey"],
+                WebConfigurationManager.AppSettings["SecondKey"],
+                WebConfigurationManager.AppSettings["WebsiteDomain"],
+                Conversion.StringToInt32(WebConfigurationManager.AppSettings["CorpApiId"]),
+                WebConfigurationManager.AppSettings["CorpApiKey"],
+                WebConfigurationManager.AppSettings["TwitterConsumerKey"],
+                WebConfigurationManager.AppSettings["TwitterConsumerSecret"],
+                WebConfigurationManager.AppSettings["TwitterAccessToken"],
+                WebConfigurationManager.AppSettings["TwitterAccessTokenSecret"],
+                WebConfigurationManager.AppSettings["Brand"]
+            );
+
             var kernel = new StandardKernel();
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
@@ -56,6 +72,7 @@ namespace DoctrineShips.Web.App_Start
             kernel.Bind<IDoctrineShipsValidation>().To<DoctrineShipsValidation>();
             kernel.Bind<ISystemLogger>().To<SystemLogger>();
             kernel.Bind<ISystemLoggerStore>().To<DoctrineShipsRepository>();
+            kernel.Bind<IDoctrineShipsSettings>().ToConstant(doctrineShipsSettings);
             
             RegisterServices(kernel);
             return kernel;

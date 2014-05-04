@@ -477,8 +477,8 @@
                     logger.LogMessage("Account '" + account.Description + "' Successfully Disabled.", 2, "Message", MethodBase.GetCurrentMethod().Name);
                 }
 
-                return true;
-            }
+                    return true;
+                }
 
             return false;
         }

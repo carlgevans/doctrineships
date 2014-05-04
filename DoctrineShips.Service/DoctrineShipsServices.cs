@@ -2,14 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Threading.Tasks;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Service.Managers;
     using DoctrineShips.Validation;
     using EveData;
-    using LinqToTwitter = LinqToTwitter;
     using Tools;
 
     /// <summary>
@@ -21,6 +20,7 @@
         private readonly IDoctrineShipsRepository doctrineShipsRepository;
         private readonly IEveDataSource eveDataSource;
         private readonly IDoctrineShipsValidation doctrineShipsValidation;
+        private readonly IDoctrineShipsSettings doctrineShipsSettings;
         private readonly ISystemLogger logger;
 
         // Internal Dependencies (Instantiated On-Demand By Accessors).
@@ -39,12 +39,24 @@
         /// <param name="eveDataSource">An IEveDataSource instance.</param>
         /// <param name="doctrineShipsValidation">An IDoctrineShips Validation instance.</param>
         /// <param name="logger">An ISystemLogger logger instance.</param>
-        public DoctrineShipsServices(IDoctrineShipsRepository doctrineShipsRepository, IEveDataSource eveDataSource, IDoctrineShipsValidation doctrineShipsValidation, ISystemLogger logger)
+        public DoctrineShipsServices(IDoctrineShipsRepository doctrineShipsRepository, IEveDataSource eveDataSource, IDoctrineShipsValidation doctrineShipsValidation, IDoctrineShipsSettings doctrineShipsSettings, ISystemLogger logger)
         {
             this.doctrineShipsRepository = doctrineShipsRepository;
             this.eveDataSource = eveDataSource;
             this.doctrineShipsValidation = doctrineShipsValidation;
+            this.doctrineShipsSettings = doctrineShipsSettings;
             this.logger = logger;
+        }
+
+        /// <summary>
+        /// Doctrine Ships application settings.
+        /// </summary>
+        public IDoctrineShipsSettings Settings 
+        { 
+            get
+            {
+                return this.doctrineShipsSettings;
+            }
         }
 
         /// <summary>
@@ -345,8 +357,7 @@
         /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        public async Task DailyMaintenance(LinqToTwitter::TwitterContext twitterContext)
+        public async Task DailyMaintenance()
         {
             // Delete any contracts where the expired date has passed.
             ContractManager.DeleteExpiredContracts();
@@ -361,17 +372,16 @@
             SalesAgentManager.DeleteStaleSalesAgents();
 
             // Send out daily ship fit availability summaries for all accounts.
-            await TaskManager.SendDailySummary(twitterContext);
+            await TaskManager.SendDailySummary(doctrineShipsSettings.TwitterContext);
         }
 
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        public async Task HourlyMaintenance(LinqToTwitter::TwitterContext twitterContext)
+        public async Task HourlyMaintenance()
         {
             // Send out any ship fit availability alerts for all accounts.
-            await TaskManager.SendAvailabilityAlert(twitterContext);
+            await TaskManager.SendAvailabilityAlert(doctrineShipsSettings.TwitterContext);
         }
 
         /// <summary>

@@ -16,12 +16,10 @@
     public class SiteController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
-        private readonly string websiteDomain;
 
         public SiteController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
-            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         public ActionResult Accounts()
@@ -57,7 +55,7 @@
                     if (generatedKey != string.Empty && newAccountId != 0)
                     {
                         // Assign the new key to TempData to be passed to the accounts view.
-                        string authUrl = this.websiteDomain + "/Auth/" + newAccountId + "/" + generatedKey;
+                        string authUrl = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + newAccountId + "/" + generatedKey;
                         TempData["Status"] += " The account admin auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                     }
                 }

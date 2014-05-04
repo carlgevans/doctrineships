@@ -1,39 +1,21 @@
 ﻿namespace DoctrineShips.Web.Controllers
 {
-    using System;
     using System.Diagnostics;
     using System.Reflection;
     using System.Threading.Tasks;
-    using System.Web.Configuration;
     using System.Web.Mvc;
     using DoctrineShips.Service;
-    using LinqToTwitter;
     using Tools;
     
     public class TaskController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
         private readonly ISystemLogger logger;
-        private readonly string taskKey;
-        private readonly SingleUserAuthorizer twitterAuth;
-        private readonly TwitterContext twitterContext;
         
         public TaskController(IDoctrineShipsServices doctrineShipsServices, ISystemLogger logger)
         {
             this.doctrineShipsServices = doctrineShipsServices;
             this.logger = logger;
-            this.taskKey = WebConfigurationManager.AppSettings["TaskKey"];
-            this.twitterAuth = new SingleUserAuthorizer
-            {
-                CredentialStore = new SingleUserInMemoryCredentialStore
-                {
-                    ConsumerKey = WebConfigurationManager.AppSettings["TwitterConsumerKey"],
-                    ConsumerSecret = WebConfigurationManager.AppSettings["TwitterConsumerSecret"],
-                    AccessToken = WebConfigurationManager.AppSettings["TwitterAccessToken"],
-                    AccessTokenSecret = WebConfigurationManager.AppSettings["TwitterAccessTokenSecret"]
-                }
-            };
-            this.twitterContext = new TwitterContext(this.twitterAuth);
         }
 
         [OutputCache(Duration = 5)]
@@ -46,7 +28,7 @@
             bool cleanForce = Conversion.StringToBool(Server.HtmlEncode(force), false);
             int cleanBatchSize = Conversion.StringToInt32(Server.HtmlEncode(batchSize), 10);
 
-            if (cleanKey == this.taskKey)
+            if (cleanKey == doctrineShipsServices.Settings.TaskKey)
             {
                 // Time the execution of the contract refresh.
                 stopWatch.Reset();
@@ -76,14 +58,14 @@
             // Cleanse the passed string parameters to prevent XSS.
             string cleanKey = Server.HtmlEncode(key);
 
-            if (cleanKey == this.taskKey)
+            if (cleanKey == doctrineShipsServices.Settings.TaskKey)
             {
                 // Time the execution of the hourly maintenance.
                 stopWatch.Reset();
                 stopWatch.Start();
 
                 // Run hourly maintenance tasks.
-                await this.doctrineShipsServices.HourlyMaintenance(twitterContext);
+                await this.doctrineShipsServices.HourlyMaintenance();
 
                 // Stop the clock.
                 stopWatch.Stop();
@@ -106,14 +88,14 @@
             // Cleanse the passed string parameters to prevent XSS.
             string cleanKey = Server.HtmlEncode(key);
 
-            if (cleanKey == this.taskKey)
+            if (cleanKey == doctrineShipsServices.Settings.TaskKey)
             {
                 // Time the execution of the daily maintenance.
                 stopWatch.Reset();
                 stopWatch.Start();
 
                 // Run daily maintenance tasks.
-                await this.doctrineShipsServices.DailyMaintenance(twitterContext);
+                await this.doctrineShipsServices.DailyMaintenance();
 
                 // Stop the clock.
                 stopWatch.Stop();
@@ -136,7 +118,7 @@
             // Cleanse the passed string parameters to prevent XSS.
             string cleanKey = Server.HtmlEncode(key);
 
-            if (cleanKey == this.taskKey)
+            if (cleanKey == doctrineShipsServices.Settings.TaskKey)
             {
                 // Time the execution of the daily maintenance.
                 stopWatch.Reset();

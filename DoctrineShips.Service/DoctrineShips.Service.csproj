@@ -65,6 +65,8 @@
       <Link>Properties\SolutionInfo.cs</Link>
     </Compile>
     <Compile Include="DoctrineShipsServices.cs" />
+    <Compile Include="Entities\DoctrineShipsSettings.cs" />
+    <Compile Include="Entities\IDoctrineShipsSettings.cs" />
     <Compile Include="IDoctrineShipsServices.cs" />
     <Compile Include="Managers\TaskManager.cs" />
     <Compile Include="Managers\ArticleManager.cs" />
