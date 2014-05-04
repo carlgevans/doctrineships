@@ -593,9 +593,23 @@
         /// <param name="apiKey">A valid eve api key (vCode).</param>
         /// <param name="accountId">The id of the account for which a sales agent should be added.</param>
         /// <returns>Returns a validation result object.</returns>
-        public IValidationResult AddSalesAgent(int apiId, string apiKey, int accountId)
+        public async Task<IValidationResult> AddSalesAgent(int apiId, string apiKey, int accountId)
         {
-            return SalesAgentManager.AddSalesAgent(apiId, apiKey, accountId);
+            IValidationResult validationResult;
+
+            validationResult = SalesAgentManager.AddSalesAgent(apiId, apiKey, accountId);
+            
+            // If the sales agent addition was successful, notify the account twitter account.
+            if (validationResult.IsValid)
+            {
+                SettingProfile settingProfile = AccountManager.GetAccountSettingProfile(accountId);
+
+                await TaskManager.SendDirectMessage(this.doctrineShipsSettings.TwitterContext, 
+                                                    settingProfile.TwitterHandle, 
+                                                    "A Sales Agent Was Added To Account: " + accountId);
+            }
+
+            return validationResult;
         }
 
         /// <summary>

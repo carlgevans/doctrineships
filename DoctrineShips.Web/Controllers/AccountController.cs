@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web;
-    using System.Web.Configuration;
     using System.Web.Mvc;
     using System.Web.Security;
     using System.Web.UI;
@@ -192,7 +192,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken()]
-        public ActionResult AddSalesAgent(AccountSalesAgentsViewModel viewModel)
+        public async Task<ActionResult> AddSalesAgent(AccountSalesAgentsViewModel viewModel)
         {
             // Convert the currently logged-in account id to an integer.
             int accountId = Conversion.StringToInt32(User.Identity.Name);
@@ -202,7 +202,7 @@
                 // Clean the passed api key.
                 string cleanApiKey = Conversion.StringToSafeString(Server.HtmlEncode(viewModel.ApiKey));
 
-                IValidationResult validationResult = this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
+                IValidationResult validationResult = await this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
                 
                 // If the validationResult is not valid, something did not validate in the service layer.
                 if (validationResult.IsValid)

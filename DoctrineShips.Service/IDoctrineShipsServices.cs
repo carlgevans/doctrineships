@@ -243,7 +243,7 @@
         /// <param name="apiKey">A valid eve api key (vCode).</param>
         /// <param name="accountId">The id of the account for which a sales agent should be added.</param>
         /// <returns>Returns a validation result object.</returns>
-        IValidationResult AddSalesAgent(int apiId, string apiKey, int accountId);
+        Task<IValidationResult> AddSalesAgent(int apiId, string apiKey, int accountId);
 
         /// <summary>
         /// <para>Deletes a sales agent from an accountId and a salesAgentId.</para>
