@@ -493,6 +493,8 @@
         /// <summary>
         /// Credit any accounts where payments have been made to the corporate wallet.
         /// </summary>
+        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
+        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
         internal void CreditAccountPayments(int corpApiId, string corpApiKey)
         {
             // Fetch any recent wallet entries and sort them by oldest transaction first.

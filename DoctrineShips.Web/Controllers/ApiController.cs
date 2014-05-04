@@ -13,12 +13,10 @@
     public class ApiController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
-        private readonly string websiteDomain;
 
         public ApiController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
-            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         public ActionResult ShipFitDetail(string id)
@@ -265,7 +263,7 @@
                 // Create a new temporary access code, setting the data field to the long url.
                 var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddDays(30), decodedUrl);
 
-                return Content(this.websiteDomain + "/A/" + accountId + "/" + newKey);
+                return Content(this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey);
             }
             else
             {

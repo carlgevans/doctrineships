@@ -13,6 +13,7 @@
     using DevTrends.MvcDonutCaching;
     using DoctrineShips.Entities;
     using DoctrineShips.Service;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -21,14 +22,10 @@
     public class AccountController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
-        private readonly string secondKey;
-        private readonly string websiteDomain;
 
         public AccountController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
-            this.secondKey = WebConfigurationManager.AppSettings["SecondKey"];
-            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         [AllowAnonymous]
@@ -43,15 +40,15 @@
             string cleanRedir = Server.HtmlEncode(redir);
 
             // Was the second key passed and is it correct?
-            if (cleanSecondKey == this.secondKey)
+            if (cleanSecondKey == this.doctrineShipsServices.Settings.SecondKey)
             {
                 // Bypass the account id checks.
-                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
+                accessToken = this.doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
             }
             else
             {
                 // Authenticate the passed accountId and key.
-                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
+                accessToken = this.doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
             }
 
             if (accessToken.Role != Role.None)
@@ -355,7 +352,7 @@
                 if (newKey != string.Empty)
                 {
                     // Assign the new key to TempData to be passed to the AccessCodes view.
-                    string authUrl = this.websiteDomain + "/A/" + accountId + "/" + newKey;
+                    string authUrl = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey;
                     TempData["Status"] = "Success, the auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                 }
                 else
