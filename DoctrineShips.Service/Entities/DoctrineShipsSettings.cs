@@ -7,8 +7,6 @@
         private readonly string taskKey;
         private readonly string secondKey;
         private readonly string websiteDomain;
-        private readonly int corpApiId;
-        private readonly string corpApiKey;
         private readonly string twitterConsumerKey;
         private readonly string twitterConsumerSecret;
         private readonly string twitterAccessToken;
@@ -19,8 +17,6 @@
         public string TaskKey { get { return this.taskKey; } }
         public string SecondKey { get { return this.secondKey; } }
         public string WebsiteDomain { get { return this.websiteDomain; } }
-        public int CorpApiId { get { return this.corpApiId; } }
-        public string CorpApiKey { get { return this.corpApiKey; } }
         public string TwitterConsumerKey { get { return this.twitterConsumerKey; } }
         public string TwitterConsumerSecret { get { return this.twitterConsumerSecret; } }
         public string TwitterAccessToken { get { return this.twitterAccessToken; } }
@@ -54,8 +50,6 @@
         public DoctrineShipsSettings(string taskKey, 
                                      string secondKey,
                                      string websiteDomain,
-                                     int corpApiId,
-                                     string corpApiKey,
                                      string twitterConsumerKey,
                                      string twitterConsumerSecret,
                                      string twitterAccessToken,
@@ -65,8 +59,6 @@
             this.taskKey = taskKey ?? string.Empty;
             this.secondKey = secondKey ?? string.Empty;
             this.websiteDomain = websiteDomain ?? string.Empty;
-            this.corpApiId = corpApiId;
-            this.corpApiKey = corpApiKey ?? string.Empty;
             this.twitterConsumerKey = twitterConsumerKey ?? string.Empty;
             this.twitterConsumerSecret = twitterConsumerSecret ?? string.Empty;
             this.twitterAccessToken = twitterAccessToken ?? string.Empty;

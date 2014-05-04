@@ -7,8 +7,6 @@
         string TaskKey { get; }
         string SecondKey { get; }
         string WebsiteDomain { get; }
-        int CorpApiId { get; }
-        string CorpApiKey { get; }
         string TwitterConsumerKey { get; }
         string TwitterConsumerSecret { get; }
         string TwitterAccessToken { get; }

@@ -52,8 +52,6 @@ namespace DoctrineShips.Web.App_Start
                 WebConfigurationManager.AppSettings["TaskKey"],
                 WebConfigurationManager.AppSettings["SecondKey"],
                 WebConfigurationManager.AppSettings["WebsiteDomain"],
-                Conversion.StringToInt32(WebConfigurationManager.AppSettings["CorpApiId"]),
-                WebConfigurationManager.AppSettings["CorpApiKey"],
                 WebConfigurationManager.AppSettings["TwitterConsumerKey"],
                 WebConfigurationManager.AppSettings["TwitterConsumerSecret"],
                 WebConfigurationManager.AppSettings["TwitterAccessToken"],
