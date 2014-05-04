@@ -8,6 +8,7 @@
     using AutoMapper;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
     using EveData;
     using EveData.Entities;
