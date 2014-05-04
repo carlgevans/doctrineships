@@ -66,6 +66,8 @@
     </Compile>
     <Compile Include="DoctrineShipsServices.cs" />
     <Compile Include="Entities\AccessToken.cs" />
+    <Compile Include="Entities\CachedObject.cs" />
+    <Compile Include="Entities\CachedObjects.cs" />
     <Compile Include="Entities\DoctrineShipsSettings.cs" />
     <Compile Include="Entities\IDoctrineShipsSettings.cs" />
     <Compile Include="IDoctrineShipsServices.cs" />
