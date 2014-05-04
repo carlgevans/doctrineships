@@ -25,7 +25,7 @@
 
         public void AddCachedObject(TKey key, TValue value, TimeSpan ttl)
         {
-            this.cachedObjects.Add(key, new CachedObject<TValue>(value, DateTime.Now + ttl));
+            this.cachedObjects.Add(key, new CachedObject<TValue>(value, DateTime.UtcNow + ttl));
         }
 
         public TValue GetCachedObject(TKey key)

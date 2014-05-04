@@ -19,7 +19,7 @@
         {
             get
             {
-                return DateTime.Now >= this.expires;
+                return DateTime.UtcNow >= this.expires;
             }
         }
 
