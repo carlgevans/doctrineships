@@ -56,6 +56,11 @@
         [Range(0, Int32.MaxValue, ErrorMessage = "That does not look like a valid Alert Threshold.")]
         public int AlertThreshold { get; set; }
 
+        [Required(ErrorMessage = "A Short Url Expiry Value Is Required.")]
+        [DisplayName("Short/Fleet Ping Url Expiry (Hours)")]
+        [Range(1, 744, ErrorMessage = "The Short Url Expiry Value Should Be Between 1 & 744 Hours.")]
+        public int ShortUrlExpiryHours { get; set; }
+
         [Required(ErrorMessage = "A Twitter Handle is required. Leave it as @DoctrineShips if you do not wish to specify a handle.")]
         [DisplayName("Account Twitter Handle")]
         [RegularExpression("^@(\\w){1,15}$", ErrorMessage = "That does not look like a valid Twitter @Handle.")]

@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web;
-    using System.Web.Configuration;
     using System.Web.Mvc;
     using System.Web.Security;
     using System.Web.UI;
@@ -13,6 +13,7 @@
     using DevTrends.MvcDonutCaching;
     using DoctrineShips.Entities;
     using DoctrineShips.Service;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -21,14 +22,10 @@
     public class AccountController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
-        private readonly string secondKey;
-        private readonly string websiteDomain;
 
         public AccountController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
-            this.secondKey = WebConfigurationManager.AppSettings["SecondKey"];
-            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         [AllowAnonymous]
@@ -43,33 +40,33 @@
             string cleanRedir = Server.HtmlEncode(redir);
 
             // Was the second key passed and is it correct?
-            if (cleanSecondKey == this.secondKey)
+            if (cleanSecondKey == this.doctrineShipsServices.Settings.SecondKey)
             {
                 // Bypass the account id checks.
-                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
+                accessToken = this.doctrineShipsServices.Authenticate(cleanAccountId, cleanKey, bypassAccountChecks: true);
             }
             else
             {
                 // Authenticate the passed accountId and key.
-                accessToken = doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
+                accessToken = this.doctrineShipsServices.Authenticate(cleanAccountId, cleanKey);
             }
 
             if (accessToken.Role != Role.None)
             {
                 FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-                1,                            // Version number of the ticket.
-                cleanAccountId.ToString(),    // Username for the ticket.
-                DateTime.UtcNow,              // Issue date of the ticket.
-                DateTime.UtcNow.AddDays(30),  // Expiry date of the ticket.
-                true,                         // Persistence enabled for the ticket?
-                accessToken.Role.ToString(),  // User-specific data which in this case is their roles.
-                "/");                         // The path for the ticket.
+                1,                                                                    // Version number of the ticket.
+                cleanAccountId.ToString(),                                            // Username for the ticket.
+                DateTime.UtcNow,                                                      // Issue date of the ticket.
+                DateTime.SpecifyKind(accessToken.DateExpires, DateTimeKind.Utc),      // Expiry date of the ticket.
+                true,                                                                 // Persistence enabled for the ticket?
+                accessToken.Role.ToString(),                                          // User-specific data which in this case is their roles.
+                "/");                                                                 // The path for the ticket.
 
                 HttpCookie newCookie = new HttpCookie(FormsAuthentication.FormsCookieName,
                                                     FormsAuthentication.Encrypt(authTicket));
 
-                // Set the expiry date of the new cookie to 30 days.
-                newCookie.Expires = DateTime.UtcNow.AddDays(30);
+                // Set the expiry date of the new cookie.
+                newCookie.Expires = DateTime.SpecifyKind(accessToken.DateExpires, DateTimeKind.Utc);
 
                 Response.Cookies.Add(newCookie);
 
@@ -201,7 +198,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken()]
-        public ActionResult AddSalesAgent(AccountSalesAgentsViewModel viewModel)
+        public async Task<ActionResult> AddSalesAgent(AccountSalesAgentsViewModel viewModel)
         {
             // Convert the currently logged-in account id to an integer.
             int accountId = Conversion.StringToInt32(User.Identity.Name);
@@ -211,7 +208,7 @@
                 // Clean the passed api key.
                 string cleanApiKey = Conversion.StringToSafeString(Server.HtmlEncode(viewModel.ApiKey));
 
-                IValidationResult validationResult = this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
+                IValidationResult validationResult = await this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
                 
                 // If the validationResult is not valid, something did not validate in the service layer.
                 if (validationResult.IsValid)
@@ -355,7 +352,7 @@
                 if (newKey != string.Empty)
                 {
                     // Assign the new key to TempData to be passed to the AccessCodes view.
-                    string authUrl = this.websiteDomain + "/A/" + accountId + "/" + newKey;
+                    string authUrl = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey;
                     TempData["Status"] = "Success, the auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                 }
                 else

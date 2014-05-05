@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using DoctrineShips.Entities;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
-    using LinqToTwitter = LinqToTwitter;
     using Tools;
 
     /// <summary>
@@ -13,6 +13,11 @@
     /// </summary>
     public interface IDoctrineShipsServices
     {
+        /// <summary>
+        /// Doctrine Ships application settings.
+        /// </summary>
+        IDoctrineShipsSettings Settings { get; }
+
         /// <summary>
         /// Fetches and returns a Doctrine Ships customer.
         /// </summary>
@@ -135,17 +140,12 @@
         /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        /// <returns>A Task boolean value.</returns>
-        Task DailyMaintenance(LinqToTwitter::TwitterContext twitterContext);
+        Task DailyMaintenance();
 
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        Task HourlyMaintenance(int corpApiId, string corpApiKey, LinqToTwitter::TwitterContext twitterContext);
+        Task HourlyMaintenance();
 
         /// <summary>
         /// Fetches and returns a Doctrine Ships account.
@@ -252,7 +252,7 @@
         /// <param name="apiKey">A valid eve api key (vCode).</param>
         /// <param name="accountId">The id of the account for which a sales agent should be added.</param>
         /// <returns>Returns a validation result object.</returns>
-        IValidationResult AddSalesAgent(int apiId, string apiKey, int accountId);
+        Task<IValidationResult> AddSalesAgent(int apiId, string apiKey, int accountId);
 
         /// <summary>
         /// <para>Deletes a sales agent from an accountId and a salesAgentId.</para>

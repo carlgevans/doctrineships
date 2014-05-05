@@ -13,12 +13,10 @@
     public class ApiController : Controller
     {
         private readonly IDoctrineShipsServices doctrineShipsServices;
-        private readonly string websiteDomain;
 
         public ApiController(IDoctrineShipsServices doctrineShipsServices)
         {
             this.doctrineShipsServices = doctrineShipsServices;
-            this.websiteDomain = WebConfigurationManager.AppSettings["WebsiteDomain"];
         }
 
         public ActionResult ShipFitDetail(string id)
@@ -96,6 +94,7 @@
                         Description = doctrine.Description,
                         ImageUrl = doctrine.ImageUrl,
                         IsOfficial = doctrine.IsOfficial,
+                        IsDormant = doctrine.IsDormant,
                         LastUpdate = doctrine.LastUpdate
                     }, JsonRequestBehavior.AllowGet);
                 }
@@ -262,10 +261,13 @@
                 // Convert the currently logged-in account id to an integer.
                 int accountId = Conversion.StringToInt32(User.Identity.Name);
 
-                // Create a new temporary access code, setting the data field to the long url.
-                var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddDays(30), decodedUrl);
+                // Fetch the setting profile for the account.
+                var settingProfile = this.doctrineShipsServices.GetAccountSettingProfile(accountId);
 
-                return Content(this.websiteDomain + "/A/" + accountId + "/" + newKey);
+                // Create a new temporary access code, setting the data field to the long url.
+                var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddHours(settingProfile.ShortUrlExpiryHours), decodedUrl);
+
+                return Content(this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey);
             }
             else
             {

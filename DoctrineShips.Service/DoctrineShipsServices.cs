@@ -2,14 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Threading.Tasks;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Service.Managers;
     using DoctrineShips.Validation;
     using EveData;
-    using LinqToTwitter = LinqToTwitter;
     using Tools;
 
     /// <summary>
@@ -21,6 +20,7 @@
         private readonly IDoctrineShipsRepository doctrineShipsRepository;
         private readonly IEveDataSource eveDataSource;
         private readonly IDoctrineShipsValidation doctrineShipsValidation;
+        private readonly IDoctrineShipsSettings doctrineShipsSettings;
         private readonly ISystemLogger logger;
 
         // Internal Dependencies (Instantiated On-Demand By Accessors).
@@ -39,12 +39,24 @@
         /// <param name="eveDataSource">An IEveDataSource instance.</param>
         /// <param name="doctrineShipsValidation">An IDoctrineShips Validation instance.</param>
         /// <param name="logger">An ISystemLogger logger instance.</param>
-        public DoctrineShipsServices(IDoctrineShipsRepository doctrineShipsRepository, IEveDataSource eveDataSource, IDoctrineShipsValidation doctrineShipsValidation, ISystemLogger logger)
+        public DoctrineShipsServices(IDoctrineShipsRepository doctrineShipsRepository, IEveDataSource eveDataSource, IDoctrineShipsValidation doctrineShipsValidation, IDoctrineShipsSettings doctrineShipsSettings, ISystemLogger logger)
         {
             this.doctrineShipsRepository = doctrineShipsRepository;
             this.eveDataSource = eveDataSource;
             this.doctrineShipsValidation = doctrineShipsValidation;
+            this.doctrineShipsSettings = doctrineShipsSettings;
             this.logger = logger;
+        }
+
+        /// <summary>
+        /// Doctrine Ships application settings.
+        /// </summary>
+        public IDoctrineShipsSettings Settings 
+        { 
+            get
+            {
+                return this.doctrineShipsSettings;
+            }
         }
 
         /// <summary>
@@ -345,8 +357,7 @@
         /// <summary>
         /// Perform daily maintenance tasks.
         /// </summary>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        public async Task DailyMaintenance(LinqToTwitter::TwitterContext twitterContext)
+        public async Task DailyMaintenance()
         {
             // Delete any contracts where the expired date has passed.
             ContractManager.DeleteExpiredContracts();
@@ -364,22 +375,19 @@
             SalesAgentManager.DeleteStaleSalesAgents();
 
             // Send out daily ship fit availability summaries for all accounts.
-            await TaskManager.SendDailySummary(twitterContext);
+            await TaskManager.SendDailySummary(doctrineShipsSettings.TwitterContext);
         }
 
         /// <summary>
         /// Perform hourly maintenance tasks.
         /// </summary>
-        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
-        /// <param name="twitterContext">A twitter context for the sending of messages.</param>
-        public async Task HourlyMaintenance(int corpApiId, string corpApiKey, LinqToTwitter::TwitterContext twitterContext)
+        public async Task HourlyMaintenance()
         {
             // Credit any accounts where payments have been made to the corporate wallet.
-            AccountManager.CreditAccountPayments(corpApiId, corpApiKey);
+            AccountManager.CreditAccountPayments(doctrineShipsSettings.CorpApiId, doctrineShipsSettings.CorpApiKey);
 
             // Send out any ship fit availability alerts for all accounts.
-            await TaskManager.SendAvailabilityAlert(twitterContext);
+            await TaskManager.SendAvailabilityAlert(doctrineShipsSettings.TwitterContext);
         }
 
         /// <summary>
@@ -603,9 +611,23 @@
         /// <param name="apiKey">A valid eve api key (vCode).</param>
         /// <param name="accountId">The id of the account for which a sales agent should be added.</param>
         /// <returns>Returns a validation result object.</returns>
-        public IValidationResult AddSalesAgent(int apiId, string apiKey, int accountId)
+        public async Task<IValidationResult> AddSalesAgent(int apiId, string apiKey, int accountId)
         {
-            return SalesAgentManager.AddSalesAgent(apiId, apiKey, accountId);
+            IValidationResult validationResult;
+
+            validationResult = SalesAgentManager.AddSalesAgent(apiId, apiKey, accountId);
+            
+            // If the sales agent addition was successful, notify the account twitter account.
+            if (validationResult.IsValid)
+            {
+                SettingProfile settingProfile = AccountManager.GetAccountSettingProfile(accountId);
+
+                await TaskManager.SendDirectMessage(this.doctrineShipsSettings.TwitterContext, 
+                                                    settingProfile.TwitterHandle, 
+                                                    "A Sales Agent Was Added To Account: " + accountId);
+            }
+
+            return validationResult;
         }
 
         /// <summary>

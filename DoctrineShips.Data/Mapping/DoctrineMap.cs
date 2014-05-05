@@ -30,6 +30,9 @@
             this.Property(t => t.IsOfficial)
                 .IsRequired();
 
+            this.Property(t => t.IsDormant)
+                .IsRequired();
+
             this.Property(t => t.LastUpdate)
                 .IsRequired();
 
@@ -41,6 +44,7 @@
             this.Property(t => t.Description).HasColumnName("Description");
             this.Property(t => t.ImageUrl).HasColumnName("ImageUrl");
             this.Property(t => t.IsOfficial).HasColumnName("IsOfficial");
+            this.Property(t => t.IsDormant).HasColumnName("IsDormant");
             this.Property(t => t.LastUpdate).HasColumnName("LastUpdate");
 
             // Relationships

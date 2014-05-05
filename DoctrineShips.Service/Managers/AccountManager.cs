@@ -8,6 +8,7 @@
     using AutoMapper;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
+    using DoctrineShips.Service.Entities;
     using DoctrineShips.Validation;
     using EveData;
     using EveData.Entities;
@@ -22,6 +23,7 @@
         private readonly IEveDataSource eveDataSource;
         private readonly IDoctrineShipsValidation doctrineShipsValidation;
         private readonly ISystemLogger logger;
+        private static CachedObjects<string, AccessToken> accessTokenCache = new CachedObjects<string, AccessToken>();  
 
         /// <summary>
         /// Initialises a new instance of an Account Manager.
@@ -150,101 +152,126 @@
         /// <returns>Returns an access token. The role property will be 'None' if authentication has failed.</returns>
         internal AccessToken Authenticate(int accountId, string key, bool bypassAccountChecks = false)
         {
-            // Create a new access token.
-            AccessToken accessToken = new AccessToken();
+            // A salt for the in-memory cache hashes.
+            const string cacheSalt = "o9982yd!@p{qaswcF£Fwe23r4gsf";
 
-            // Bypass account id checking so that a site admin can log in as any account id.
-            if (bypassAccountChecks == true)
+            // Has an access token already been cached for this key?
+            var cachedAccessToken = accessTokenCache.GetCachedObject(Security.GenerateHash(key, cacheSalt));
+
+            if (cachedAccessToken != null)
             {
-                var siteAdmins = this.doctrineShipsRepository.GetSiteAdminAccessCodes();
-
-                if (siteAdmins != null)
-                {
-                    // Compare each site admin access code returned.
-                    foreach (var accessCode in siteAdmins)
-                    {
-                        var hashedKey = Security.GenerateHash(key, accessCode.Salt);
-
-                        // Compare the hashed key to the hash retrieved from the database.
-                        if (hashedKey == accessCode.Key)
-                        {
-                            // Update the access code LastLogin timestamp, save and log.
-                            accessCode.LastLogin = DateTime.UtcNow;
-                            this.doctrineShipsRepository.UpdateAccessCode(accessCode);
-                            this.doctrineShipsRepository.Save();
-
-                            // Set the access token's properties.
-                            accessToken.AccountId = accessCode.AccountId;
-                            accessToken.Data = accessCode.Data;
-                            accessToken.DateCreated = accessCode.DateCreated;
-                            accessToken.DateExpires = accessCode.DateExpires;
-                            accessToken.Description = accessCode.Description;
-                            accessToken.Role = accessCode.Role;
-
-                            // Log the authentication success.
-                            logger.LogMessage("Authentication Success (Bypass Account Check Mode) For Account Id: " + accountId + " With Code: '" + accessCode.Description + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
-
-                            return accessToken;
-                        }
-                    }
-                }
+                return cachedAccessToken;
             }
             else
             {
-                // Retrieve the account (which also includes its access codes).
-                var account = this.doctrineShipsRepository.GetAccount(accountId);
+                // Create a new access token.
+                AccessToken accessToken = new AccessToken();
 
-                if (account != null)
+                // Bypass account id checking so that a site admin can log in as any account id.
+                if (bypassAccountChecks == true)
                 {
-                    // Is the account active?
-                    if (account.IsActive == true)
+                    var siteAdmins = this.doctrineShipsRepository.GetSiteAdminAccessCodes();
+
+                    if (siteAdmins != null)
                     {
-                        // Are there any access codes for the account?
-                        if (account.AccessCodes != null && account.AccessCodes.Count != 0)
+                        // Compare each site admin access code returned.
+                        foreach (var accessCode in siteAdmins)
                         {
-                            // Compare each access code returned for this account.
-                            foreach (var accessCode in account.AccessCodes)
+                            var hashedKey = Security.GenerateHash(key, accessCode.Salt);
+
+                            // Compare the hashed key to the hash retrieved from the database.
+                            if (hashedKey == accessCode.Key)
                             {
-                                // Is this particular access key active?
-                                if (accessCode.IsActive == true)
+                                // Update the access code LastLogin timestamp, save and log.
+                                accessCode.LastLogin = DateTime.UtcNow;
+                                this.doctrineShipsRepository.UpdateAccessCode(accessCode);
+                                this.doctrineShipsRepository.Save();
+
+                                // Set the access token's properties.
+                                accessToken.AccountId = accessCode.AccountId;
+                                accessToken.Data = accessCode.Data;
+                                accessToken.DateCreated = accessCode.DateCreated;
+                                accessToken.DateExpires = accessCode.DateExpires;
+                                accessToken.Description = accessCode.Description;
+                                accessToken.Role = accessCode.Role;
+
+                                // Log the authentication success.
+                                logger.LogMessage("Authentication Success (Bypass Account Check Mode) For Account Id: " + accountId + " With Code: '" + accessCode.Description + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
+
+                                // Cache the access code if it is a standard account.
+                                if (accessToken.Role == Role.User)
                                 {
-                                    var hashedKey = Security.GenerateHash(key, accessCode.Salt);
+                                    accessTokenCache.AddCachedObject(Security.GenerateHash(key, cacheSalt), accessToken, TimeSpan.FromMinutes(10));
+                                }
 
-                                    // Compare the hashed key to the hash retrieved from the database.
-                                    if (hashedKey == accessCode.Key)
+                                return accessToken;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    // Retrieve the account (which also includes its access codes).
+                    var account = this.doctrineShipsRepository.GetAccount(accountId);
+
+                    if (account != null)
+                    {
+                        // Is the account active?
+                        if (account.IsActive == true)
+                        {
+                            // Are there any access codes for the account?
+                            if (account.AccessCodes != null && account.AccessCodes.Count != 0)
+                            {
+                                // Compare each access code returned for this account.
+                                foreach (var accessCode in account.AccessCodes)
+                                {
+                                    // Is this particular access key active?
+                                    if (accessCode.IsActive == true)
                                     {
-                                        // Update the access code LastLogin timestamp, save and log.
-                                        accessCode.LastLogin = DateTime.UtcNow;
-                                        this.doctrineShipsRepository.UpdateAccessCode(accessCode);
-                                        this.doctrineShipsRepository.Save();
+                                        var hashedKey = Security.GenerateHash(key, accessCode.Salt);
 
-                                        // Set the access token's properties.
-                                        accessToken.AccountId = accessCode.AccountId;
-                                        accessToken.Data = accessCode.Data;
-                                        accessToken.DateCreated = accessCode.DateCreated;
-                                        accessToken.DateExpires = accessCode.DateExpires;
-                                        accessToken.Description = accessCode.Description;
-                                        accessToken.Role = accessCode.Role;
+                                        // Compare the hashed key to the hash retrieved from the database.
+                                        if (hashedKey == accessCode.Key)
+                                        {
+                                            // Update the access code LastLogin timestamp, save and log.
+                                            accessCode.LastLogin = DateTime.UtcNow;
+                                            this.doctrineShipsRepository.UpdateAccessCode(accessCode);
+                                            this.doctrineShipsRepository.Save();
 
-                                        // Log the authentication success.
-                                        logger.LogMessage("Authentication Success For Account Id: " + accountId + " With Code: '" + accessCode.Description +"'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
+                                            // Set the access token's properties.
+                                            accessToken.AccountId = accessCode.AccountId;
+                                            accessToken.Data = accessCode.Data;
+                                            accessToken.DateCreated = accessCode.DateCreated;
+                                            accessToken.DateExpires = accessCode.DateExpires;
+                                            accessToken.Description = accessCode.Description;
+                                            accessToken.Role = accessCode.Role;
 
-                                        return accessToken;
+                                            // Log the authentication success.
+                                            logger.LogMessage("Authentication Success For Account Id: " + accountId + " With Code: '" + accessCode.Description + "'.", 2, "Message", MethodBase.GetCurrentMethod().Name);
+
+                                            // Cache the access code if it is a standard account.
+                                            if (accessToken.Role == Role.User)
+                                            {
+                                                accessTokenCache.AddCachedObject(Security.GenerateHash(key, cacheSalt), accessToken, TimeSpan.FromMinutes(10));
+                                            }
+                                            
+                                            return accessToken;
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
+
+                // Set the access token's role to none.
+                accessToken.Role = Role.None;
+
+                // Log the authentication failure.
+                logger.LogMessage("Authentication Attempt Failed For Account Id: " + accountId, 0, "Message", MethodBase.GetCurrentMethod().Name);
+
+                return accessToken;
             }
-
-            // Set the access token's role to none.
-            accessToken.Role = Role.None;
-
-            // Log the authentication failure.
-            logger.LogMessage("Authentication Attempt Failed For Account Id: " + accountId, 0, "Message", MethodBase.GetCurrentMethod().Name);
-
-            return accessToken;
         }
 
         /// <summary>
@@ -493,6 +520,8 @@
         /// <summary>
         /// Credit any accounts where payments have been made to the corporate wallet.
         /// </summary>
+        /// <param name="corpApiId">A valid eve api id (keyID) for the Doctrine Ships in-game corporation.</param>
+        /// <param name="corpApiKey">A valid eve api key (vCode) for the Doctrine Ships in-game corporation.</param>
         internal void CreditAccountPayments(int corpApiId, string corpApiKey)
         {
             // Fetch any recent wallet entries and sort them by oldest transaction first.

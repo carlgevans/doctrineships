@@ -916,6 +916,7 @@
                     existingDoctrine.Description = doctrine.Description;
                     existingDoctrine.ImageUrl = doctrine.ImageUrl;
                     existingDoctrine.IsOfficial = doctrine.IsOfficial;
+                    existingDoctrine.IsDormant = doctrine.IsDormant;
                     existingDoctrine.LastUpdate = DateTime.UtcNow;
 
                     // Validate the doctrine updates.

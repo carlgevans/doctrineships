@@ -19,5 +19,6 @@
         public double ShippingCostPerM3 { get; set; }
         public string TwitterHandle { get; set; }
         public int AlertThreshold { get; set; }
+        public int ShortUrlExpiryHours { get; set; }
     }
 }

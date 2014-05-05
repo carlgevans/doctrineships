@@ -1,6 +1,7 @@
 ﻿namespace DoctrineShips.Web.Controllers
 {
     using System.Linq;
+    using System.Threading.Tasks;
     using System.Web.Mvc;
     using System.Web.UI;
     using DevTrends.MvcDonutCaching;
@@ -8,7 +9,7 @@
     using DoctrineShips.Validation;
     using DoctrineShips.Web.ViewModels;
     using Tools;
-
+    
     [Authorize]
     public class SalesAgentController : Controller
     {
@@ -60,7 +61,7 @@
 
         [HttpPost]
         [ValidateAntiForgeryToken()]
-        public ActionResult Register(SalesAgentRegistrationViewModel viewModel)
+        public async Task<ActionResult> Register(SalesAgentRegistrationViewModel viewModel)
         {
             // Convert the currently logged-in account id to an integer.
             int accountId = Conversion.StringToInt32(User.Identity.Name);
@@ -70,7 +71,7 @@
                 // Clean the passed api key.
                 string cleanApiKey = Conversion.StringToSafeString(Server.HtmlEncode(viewModel.ApiKey));
 
-                IValidationResult validationResult = this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
+                IValidationResult validationResult = await this.doctrineShipsServices.AddSalesAgent(viewModel.ApiId, cleanApiKey, accountId);
 
                 // If the validationResult is not valid, something did not validate in the service layer.
                 if (validationResult.IsValid)

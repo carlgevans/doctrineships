@@ -1,7 +1,8 @@
-﻿namespace DoctrineShips.Entities
+﻿namespace DoctrineShips.Service.Entities
 {
     using System;
     using GenericRepository;
+    using DoctrineShips.Entities;
 
     /// <summary>
     /// A Doctrine Ships access token.

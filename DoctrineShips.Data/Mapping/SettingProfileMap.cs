@@ -45,6 +45,9 @@
             this.Property(t => t.AlertThreshold)
                 .IsRequired();
 
+            this.Property(t => t.ShortUrlExpiryHours)
+                .IsRequired();
+
             // Table & Column Mappings
             this.ToTable("SettingProfiles");
             this.Property(t => t.SettingProfileId).HasColumnName("SettingProfileId");
@@ -58,6 +61,7 @@
             this.Property(t => t.ShippingCostPerM3).HasColumnName("ShippingCostPerM3");
             this.Property(t => t.TwitterHandle).HasColumnName("TwitterHandle");
             this.Property(t => t.AlertThreshold).HasColumnName("AlertThreshold");
+            this.Property(t => t.ShortUrlExpiryHours).HasColumnName("ShortUrlExpiryHours");
         }
     }
 }
