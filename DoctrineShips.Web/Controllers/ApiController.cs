@@ -260,8 +260,11 @@
                 // Convert the currently logged-in account id to an integer.
                 int accountId = Conversion.StringToInt32(User.Identity.Name);
 
+                // Fetch the setting profile for the account.
+                var settingProfile = this.doctrineShipsServices.GetAccountSettingProfile(accountId);
+
                 // Create a new temporary access code, setting the data field to the long url.
-                var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddDays(30), decodedUrl);
+                var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddHours(settingProfile.ShortUrlExpiryHours), decodedUrl);
 
                 return Content(this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey);
             }

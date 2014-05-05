@@ -54,19 +54,19 @@
             if (accessToken.Role != Role.None)
             {
                 FormsAuthenticationTicket authTicket = new FormsAuthenticationTicket(
-                1,                            // Version number of the ticket.
-                cleanAccountId.ToString(),    // Username for the ticket.
-                DateTime.UtcNow,              // Issue date of the ticket.
-                DateTime.UtcNow.AddDays(30),  // Expiry date of the ticket.
-                true,                         // Persistence enabled for the ticket?
-                accessToken.Role.ToString(),  // User-specific data which in this case is their roles.
-                "/");                         // The path for the ticket.
+                1,                                                                    // Version number of the ticket.
+                cleanAccountId.ToString(),                                            // Username for the ticket.
+                DateTime.UtcNow,                                                      // Issue date of the ticket.
+                DateTime.SpecifyKind(accessToken.DateExpires, DateTimeKind.Utc),      // Expiry date of the ticket.
+                true,                                                                 // Persistence enabled for the ticket?
+                accessToken.Role.ToString(),                                          // User-specific data which in this case is their roles.
+                "/");                                                                 // The path for the ticket.
 
                 HttpCookie newCookie = new HttpCookie(FormsAuthentication.FormsCookieName,
                                                     FormsAuthentication.Encrypt(authTicket));
 
-                // Set the expiry date of the new cookie to 30 days.
-                newCookie.Expires = DateTime.UtcNow.AddDays(30);
+                // Set the expiry date of the new cookie.
+                newCookie.Expires = DateTime.SpecifyKind(accessToken.DateExpires, DateTimeKind.Utc);
 
                 Response.Cookies.Add(newCookie);
 

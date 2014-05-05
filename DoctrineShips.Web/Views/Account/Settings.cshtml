@@ -78,6 +78,11 @@
                         <td>@Html.TextBoxFor(m => m.AlertThreshold)</td>
                     </tr>
                     <tr>
+                        <td><span class="ds-tooltip" tooltip="The short url expiry period in hours from the time it is initially generated."><span class="glyphicon glyphicon-info-sign"></span></span></td>
+                        <th>@Html.LabelFor(m => m.ShortUrlExpiryHours)</th>
+                        <td>@Html.TextBoxFor(m => m.ShortUrlExpiryHours)</td>
+                    </tr>
+                    <tr>
                         <td><span class="ds-tooltip" tooltip="The twitter handle to which account-level alerts are to be sent.&#10;&#10;The recipient must follow DoctrineShips in order to receive messages."><span class="glyphicon glyphicon-info-sign"></span></span></td>
                         <th>@Html.LabelFor(m => m.TwitterHandle)</th>
                         <td>@Html.TextBoxFor(m => m.TwitterHandle)</td>
