@@ -93,6 +93,7 @@
                         Description = doctrine.Description,
                         ImageUrl = doctrine.ImageUrl,
                         IsOfficial = doctrine.IsOfficial,
+                        IsDormant = doctrine.IsDormant,
                         LastUpdate = doctrine.LastUpdate
                     }, JsonRequestBehavior.AllowGet);
                 }

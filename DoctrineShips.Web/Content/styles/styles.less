@@ -176,6 +176,11 @@ html, body {
         background-color: @highlightColour;
     }
 
+    #ds-doctrine > a.dormant {
+        opacity: 0.4;
+        filter: alpha(opacity=40); /* msie */
+    }
+
     #ds-doctrine > a:hover {
         text-decoration: none;
         background-color: @dimmedHoverColour;

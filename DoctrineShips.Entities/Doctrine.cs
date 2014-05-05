@@ -15,6 +15,7 @@
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public bool IsOfficial { get; set; }
+        public bool IsDormant { get; set; }
         public DateTime LastUpdate { get; set; }
         public virtual ICollection<DoctrineShipFit> DoctrineShipFits { get; set; }
         public virtual Account Account { get; set; }

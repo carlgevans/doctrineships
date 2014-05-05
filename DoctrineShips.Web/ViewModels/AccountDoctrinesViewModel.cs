@@ -28,5 +28,9 @@
         [DisplayName("Official?")]
         [Range(0, 1, ErrorMessage = "That isn't a valid value.")]
         public bool IsOfficial { get; set; }
+
+        [DisplayName("Dormant?")]
+        [Range(0, 1, ErrorMessage = "That isn't a valid value.")]
+        public bool IsDormant { get; set; }
     }
 }
