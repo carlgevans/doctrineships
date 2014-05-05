@@ -66,7 +66,8 @@
             var doctrines = this.unitOfWork.Repository<Doctrine>()
                             .Query()
                             .Get()
-                            .OrderByDescending(x => x.IsOfficial)
+                            .OrderBy(x => x.IsDormant)
+                            .ThenByDescending(x => x.IsOfficial)
                             .ThenBy(x => x.Name)
                             .ToList();
 
@@ -79,7 +80,8 @@
                             .Query()
                             .Filter(x => x.AccountId == accountId)
                             .Get()
-                            .OrderByDescending(x => x.IsOfficial)
+                            .OrderBy(x => x.IsDormant)
+                            .ThenByDescending(x => x.IsOfficial)
                             .ThenBy(x => x.Name)
                             .ToList();
 

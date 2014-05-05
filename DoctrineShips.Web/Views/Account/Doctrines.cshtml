@@ -58,6 +58,11 @@
                         <br />
                         @Html.CheckBoxFor(m => m.IsOfficial, new { @id = "doctrineisofficial" })
                     </div>
+                    <div class="ds-form-checkbox">
+                        @Html.LabelFor(m => m.IsDormant)
+                        <br />
+                        @Html.CheckBoxFor(m => m.IsDormant, new { @id = "doctrineisdormant" })
+                    </div>
                 }
             </div>
             <div class="ds-dialog-footer">
@@ -143,6 +148,7 @@
                 $("#doctrinedescription").val(doctrine.Description);
                 $("#doctrineimageurl").val(doctrine.ImageUrl);
                 $("#doctrineisofficial").attr('checked', doctrine.IsOfficial);
+                $("#doctrineisdormant").attr('checked', doctrine.IsDormant);
 
                 // Hide the loading bar & display the form.
                 $("#ds-doctrinesettingsloading").hide();
@@ -153,6 +159,7 @@
                 $("#doctrinedescription").val("");
                 $("#doctrineimageurl").val("");
                 $("#doctrineisofficial").attr('checked', false);
+                $("#doctrineisdormant").attr('checked', false);
                 $("#ds-doctrinesettingsloading").hide();
                 $("#updatedoctrinesettings_form").show();
             }
@@ -256,6 +263,7 @@
                                 columns.Add(c => c.Name).Titled("Name").Filterable(true).Sortable(true);
                                 columns.Add(c => c.LastUpdate).Css("hidden-xs").Titled("Last Update").Filterable(true).Sortable(true);
                                 columns.Add(c => c.IsOfficial).Titled("Official?").RenderValueAs(c => c.IsOfficial == true ? "Yes" : "No").Filterable(true).Sortable(true);
+                                columns.Add(c => c.IsDormant).Titled("Dormant?").RenderValueAs(c => c.IsDormant == true ? "Yes" : "No").Filterable(true).Sortable(true);
                                 columns.Add().Encoded(false).Sanitized(false).Titled("Settings").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateDoctrineSettings('@c.DoctrineId')"><span class="glyphicon glyphicon-cog"></span></a>).Filterable(true).Sortable(true);
                                 columns.Add().Encoded(false).Sanitized(false).Titled("Ships").RenderValueAs(c => @<a href="javascript:void(0)" onclick="updateDoctrineShipFits('@c.DoctrineId')"><span class="glyphicon glyphicon-plane"></span></a>).Filterable(true).Sortable(true);
                                 columns.Add().Encoded(false).Sanitized(false).Titled("<div class=\"ds-grid-tools\"><button type=\"button\" onclick=\"confirmDialog('deletedoctrines')\"><span class=\"glyphicon glyphicon-trash\"></span> Delete</button></div>").RenderValueAs(c => @<input type="checkbox" id="@c.DoctrineId" name="RemoveList" value="@c.DoctrineId" />);
