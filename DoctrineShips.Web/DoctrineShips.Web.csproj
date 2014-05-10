@@ -179,6 +179,7 @@
     <Compile Include="ViewModels\AccountSettingsViewModel.cs" />
     <Compile Include="ViewModels\AccountSalesAgentsViewModel.cs" />
     <Compile Include="ViewModels\HomeContractsViewModel.cs" />
+    <Compile Include="ViewModels\SearchShipFitContractsStationViewModel.cs" />
     <Compile Include="ViewModels\SearchShipFitContractsViewModel.cs" />
     <Compile Include="ViewModels\SharedMenuViewModel.cs" />
     <Compile Include="ViewModels\SearchCustomerContractsStationViewModel.cs" />
@@ -266,6 +267,7 @@
     <Content Include="Views\Doctrine\Detail.cshtml" />
     <Content Include="Views\Account\Doctrines.cshtml" />
     <Content Include="Views\SalesAgent\Registration.cshtml" />
+    <Content Include="Views\Search\ShipFitContractsStation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
