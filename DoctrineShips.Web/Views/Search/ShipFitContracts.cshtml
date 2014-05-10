@@ -34,6 +34,7 @@
                 @foreach (var group in Model.Contracts)
                 {
                     <div class="ds-grid-header">
+                        <button type="button" onclick="location.href='@Url.Action("ShipFitContractsStation", "Search", new { stationId = @group.First().StartStationId, shipFitId = @Model.ShipFit.ShipFitId }, Request.Url.Scheme)'"><span class="glyphicon glyphicon-th-list"></span> Single-Station View</button>
                         @if (Request.IsAuthenticated)
                         {
                             <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls have a fixed duration, specified in the account settings."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>

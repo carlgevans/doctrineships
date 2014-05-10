@@ -40,6 +40,11 @@
                   new { controller = "Search", action = "ShipFitContracts", shipFitId = string.Empty });
 
             routes.MapRoute(
+                  "ShipFitContractsStation",
+                  "Search/ShipFitStation/{stationId}/{shipFitId}",
+                  new { controller = "Search", action = "ShipFitContractsStation", stationId = string.Empty, shipFitId = string.Empty });
+
+            routes.MapRoute(
                   "RefreshContracts",
                   "Task/RefreshContracts/{key}/{force}/{batchSize}",
                   new { controller = "Task", action = "RefreshContracts", key = string.Empty, force = string.Empty, batchSize = string.Empty });
