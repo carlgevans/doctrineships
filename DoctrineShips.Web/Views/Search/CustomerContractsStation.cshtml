@@ -30,7 +30,7 @@
                     <button type="button" onclick="location.href='@Url.Action("CustomerContracts", "Search", new { customerId = @Model.Customer.CustomerId }, Request.Url.Scheme)'"><span class="glyphicon glyphicon-th-list"></span> Multi-Station View</button>
                     @if (Request.IsAuthenticated)
                     {
-                        <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
+                        <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls have a fixed duration, specified in the account settings."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
                     }
                     <strong>Contracts:</strong> @Model.Contracts.Count()<br />
                     <strong>Solar System:</strong><span class="ds-tooltip" tooltip="Click to set destination. IGB only and the website must be trusted."><a href="javascript:void(0)" onclick="setDestination(@Model.Contracts.First().SolarSystemId)"> @Model.Contracts.First().SolarSystemName</a></span><br />
