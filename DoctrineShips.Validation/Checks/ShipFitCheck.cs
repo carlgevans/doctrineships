@@ -104,6 +104,12 @@
                 validationResult.AddError("LastUpdate.Null", "LastUpdate cannot be null.");
             }
 
+            // Is this a https url?
+            if (doctrine.ImageUrl.Substring(0, 5) != "https")
+            {
+                validationResult.AddError("ImageUrl.Https", "ImageUrl must start with https. Please use an image hosting service such as imgur that supports https.");
+            }
+
             return validationResult;
         }
     }
