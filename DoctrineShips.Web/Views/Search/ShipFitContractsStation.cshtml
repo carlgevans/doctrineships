@@ -1,33 +1,38 @@
 ﻿@using DoctrineShips.Web.ViewModels
 @using GridMvc.Html
 @using Tools;
-@model SearchCustomerContractsStationViewModel
+@model SearchShipFitContractsStationViewModel
 
 @{
     ViewBag.Title = "Available Contracts";
 }
 
 <div id="ds-main" role="main">
+
     <div id="ds-header">
         <h1>
             Available Contracts<br />
-            <small>Current contracts for the selected corporation or alliance.</small>
+            <small>Current contracts for the selected ship fit.</small>
         </h1>
-        <div class="ds-header-image">
-            <img src="@Model.Customer.ImageUrl" alt="@Model.Customer.Name" />
-            <br />
-            <p>@Model.Customer.Name</p>
-        </div>
+        @if (Model.ShipFit != null)
+        {
+            <div class="ds-header-image">
+                <img src="@Model.ShipFit.RenderImageUrl" alt="@Model.ShipFit.Name" />
+                <br />
+                <p>@Model.ShipFit.Name</p>
+            </div>
+        }
         <div class="ds-header-detail">
             <p>Click on the purchase button to open the contract in-game. Unless the contract is a public listing, you will need to be a member of the corporation or alliance to view it.</p>
         </div>
     </div>
 
     @if (Model != null && Model.Contracts != null && Model.Contracts.Count() != 0)
-    {
-        <div id="ds-grid">
+        {
+            <div id="ds-grid">
+
                 <div class="ds-grid-header">
-                    <button type="button" onclick="location.href='@Url.Action("CustomerContracts", "Search", new { customerId = @Model.Customer.CustomerId }, Request.Url.Scheme)'"><span class="glyphicon glyphicon-th-list"></span> Multi-Station View</button>
+                    <button type="button" onclick="location.href='@Url.Action("ShipFitContracts", "Search", new { shipFitId = @Model.ShipFit.ShipFitId }, Request.Url.Scheme)'"><span class="glyphicon glyphicon-th-list"></span> Multi-Station View</button>
                     @if (Request.IsAuthenticated)
                     {
                         <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls have a fixed duration, specified in the account settings."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
@@ -47,23 +52,22 @@
                                     columns.Add(c => c.IsValid).Css("hidden-xs").Titled("Valid?").RenderValueAs(c => c.IsValid == true ? "Yes" : "No").Filterable(true).Sortable(true);
                                     columns.Add().Css("hidden-xs").Encoded(false).Sanitized(false).RenderValueAs(c => @c.ShipFit.AccountId == Conversion.StringToInt32(User.Identity.Name) ? "<div class=\"ds-grid-tools\"><span class=\"ds-tooltip\" tooltip=\"Click to open the ship fitting in-game (IGB Only).\"><button type=\"button\" onclick=\"showFitting('" + @c.ShipFit.FittingString + "')\"><span class=\"glyphicon glyphicon-list-alt\"></span> Eve Fit</button></span><br /><span class=\"ds-tooltip\" tooltip=\"Click to see market details and a component list for this ship fit.\"><a href='" + @Url.Action("Detail", "ShipFit", new { shipFitId = @c.ShipFitId }, Request.Url.Scheme) + "' role=\"button\"><span class=\"glyphicon glyphicon-search\"></span> Fit Detail</a></span><br /><span class=\"ds-tooltip\" tooltip=\"Click to open this contract in-game (IGB Only).\"><a href=\"javascript:void(0)\" onclick=\"showContract(" + @c.SolarSystemId + "," + @c.ContractId + ")\" role=\"button\"><span class=\"glyphicon glyphicon-shopping-cart\"></span> Purchase</a></span></div>" : "<div class=\"ds-grid-tools\"><span class=\"ds-tooltip\" tooltip=\"Click to open this contract in-game (IGB Only).\"><a href=\"javascript:void(0)\" onclick=\"showContract(" + @c.SolarSystemId + "," + @c.ContractId + ")\" role=\"button\"><span class=\"glyphicon glyphicon-shopping-cart\"></span> Purchase</a></span></div>");
                                 }).WithPaging(20, 5).WithMultipleFilters().SetRowCssClasses(item =>
-                                                                                                                                 {
-                                                                                                                                     if (item.IsValid == false)
-                                                                                                                                     {
-                                                                                                                                         return "ds-grid-status-alert";
-                                                                                                                                     }
-                                                                                                                                     else
-                                                                                                                                     {
-                                                                                                                                         return "ds-grid-status-none";
-                                                                                                                                     }
-                                                                                                                                 })
-        </div>
-    }
-    else
-    {
-        <div id="ds-message">
-            <b>No Contracts Found</b>
-        </div>
-    }
-
+                                                                                                                                    {
+                                                                                                                                        if (item.IsValid == false)
+                                                                                                                                        {
+                                                                                                                                            return "ds-grid-status-alert";
+                                                                                                                                        }
+                                                                                                                                        else
+                                                                                                                                        {
+                                                                                                                                            return "ds-grid-status-none";
+                                                                                                                                        }
+                                                                                                                                    })
+            </div>
+        }
+        else
+        {
+            <div id="ds-message">
+                <b>No Contracts Found</b>
+            </div>
+        }
 </div>

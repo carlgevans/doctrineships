@@ -97,8 +97,9 @@ function shortenUrl(urlToShorten) {
         data: {
             'longUrl': encodedUrl
         },
+        datatype: 'json',
         success: function (shortUrl) {
-            $("#shortenUrlResult").html(shortUrl);
+            $("#shortenUrlResult").html("<p>" + shortUrl.url + "</p><p>Expires: " + shortUrl.expiry + "</p>");
             $("#shortenUrlGenerating").hide();
             $("#shortenUrlResult").show();
         },

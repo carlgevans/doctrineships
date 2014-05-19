@@ -7,6 +7,7 @@
 }
 
 <div id="ds-main" role="main">
+    <a href="https://github.com/carlgevans/doctrineships" target="_blank"><img style="position: absolute; top: 50px; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
     <div id="ds-header">
         <h1>
             Service Subscriptions<br />
@@ -19,7 +20,7 @@
         <p>Line members can be sure that they are flying the most up-to-date fitting and that the contracts they are buying have all of the valid components; including ammunition, drones, scripts and repair paste. Invalid contracts are shown in red and can be filtered out.</p>
         <p>Move the control of the contracts market back to your corporation or alliance management. If sales agents consistently add invalid contracts or attempt to extort members they can be disabled.</p>
         <p>Standardise on contract pricing with account-wide profit margin calculations based upon current market data.</p>
-        <p>Send out fleet pings with a Doctrine Ships URL for the doctrine you wish members to use. The URL can contain various parameters to filter only valid contracts for the current station and for all ships in a particular doctrine.</p>
+        <p>Send out fleet pings with an authenticating shortened URL for the doctrine you wish members to use.</p>
         <p>Manage contract availability levels and receive alerts when custom thresholds are reached.</p>
         <h3>For Individuals</h3>
         <p>If your corporation or alliance doesn't use Doctrine Ships, don't worry! You can subscribe as an individual or a group. Perhaps you are an industrialist looking to improve the service to your customers or give yourself an edge over the competition.</p>
@@ -27,16 +28,81 @@
         <h3>Features</h3>
         <p>Here are some of the features and tools available with Doctrine Ships:</p>
         <ul>
-            <li>Contract validity checking.</li>
-            <li>Contract sorting/filtering with custom URLs for fleet pings.</li>
-            <li>Contract availability monitoring and twitter alerts.</li>
             <li>Ship fit imports from EVE XML format (supports bulk import).</li>
-            <li>Ship fit details with up-to-date market data.</li>
+            <li>Ship fit details with up-to-date market data, custom notes and eft export.</li>
+            <li>Group ship fits into doctrines. Create and manage doctrines with custom images and notes. Mark doctrines as official and/or dormant.</li>
+            <li>Link directly to a doctrine in a fleet ping with authenticating shortened urls.</li>
+            <li>Contract validity checking. Automatically matches market contracts to ship fits when components and quantities are identical.</li>
+            <li>Contract availability monitoring and twitter alerts. Automatically notify your sales agents when contracts are running low for your main doctrines.</li>
             <li>Ship fit buying tool.</li>
             <li>Account-level control over settings such as profit percentages.</li>
             <li>Manage sales agents, ship fittings and account permissions/access codes.</li>
         </ul>
-        <h3>Pricing</h3>
+        <h3>Screenshots</h3>
+        <div id="ds-gallery" class="slide" data-ride="carousel">
+            <div class="ds-gallery-inner">
+                <div class="item active">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery1.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery2.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery3.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery4.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery5.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery6.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery7.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery8.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery9.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery10.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery11.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery12.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery13.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery14.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery15.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery16.png")" alt="Gallery Image">
+                </div>
+                <div class="item">
+                    <img src="@Url.Content("~/Content/images/gallery/gallery17.png")" alt="Gallery Image">
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <a class="ds-gallery-control left" href="#ds-gallery" data-slide="prev">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </a>
+            <a class="ds-gallery-control right" href="#ds-gallery" data-slide="next">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+        </div>
+        <h3>Subscriptions & Pricing</h3>
         <p>Custom subscription plans are available if your requirements are not met by one of the standard plans shown below.</p>
         <div class="wrapper">
             @Html.Grid(Model.SubscriptionPlans).Columns(columns =>
@@ -47,9 +113,23 @@
                         columns.Add(c => c.PricePerMonth).Titled("Price (Per Month)").RenderValueAs(c => @String.Format("{0:N2} ISK", @c.PricePerMonth)).Filterable(true).Sortable(true);
                     }).WithPaging(10, 5).WithMultipleFilters()
         </div>
-        <h3>Subscribe</h3>
-        <p>Please contact one of the Doctrine Ships staff listed below in-game, tweet <a href="https://twitter.com/DoctrineShips">@@DoctrineShips</a> or email <a href="mailto:info@doctrineships.com" />info@doctrineships.com</a> to subscribe.</p>
-        <div class="ds-subscriptions-staff"><a href="javascript:void(0)" onclick="CCPEVE.showInfo(1377, 90768946)"><img src="https://image.eveonline.com/Character/90768946_128.jpg" /></a><p>Lupercus Anninen</p></div>
-        <div class="ds-subscriptions-staff"><a href="javascript:void(0)" onclick="CCPEVE.showInfo(1377, 979584747)"><img src="https://image.eveonline.com/Character/979584747_128.jpg" /></a><p>Grintaken</p></div>
+        <div class="wrapper">
+            <p>
+                Please contact one of the Doctrine Ships staff listed below in-game, tweet <a href="https://twitter.com/DoctrineShips">@@DoctrineShips</a> or email <a href="mailto:info@doctrineships.com" />info@doctrineships.com</a> to subscribe.
+            </p>
+            <div class="ds-subscriptions-staff"><a href="javascript:void(0)" onclick="CCPEVE.showInfo(1377, 90768946)"><img src="https://image.eveonline.com/Character/90768946_128.jpg" /></a><p>Lupercus Anninen</p></div>
+            <div class="ds-subscriptions-staff"><a href="javascript:void(0)" onclick="CCPEVE.showInfo(1377, 979584747)"><img src="https://image.eveonline.com/Character/979584747_128.jpg" /></a><p>Grintaken</p></div>
+        </div>
+        <div class="wrapper">
+            <h3>Self-Hosting</h3>
+            <p>
+                Doctrine Ships is open source and has been released under the MIT license. The subscription plans above are an attempt to cover some of our hosting costs.
+                If you want to host the service for your alliance or integrate it with your own authentication system, then feel free to fork the source code on GitHub.
+                If you come up with some nice generic features then please consider contributing back by issuing a pull request to the development branch.
+            </p>
+            <p>We don't expect anything in return, but ISK donations are always welcome!</p>
+            <a href="https://github.com/carlgevans/doctrineships" target="_blank"><img src="@Url.Content("~/Content/images/misc/github.png")" /></a>
+            <br />
+        </div>
     </div>
 </div>

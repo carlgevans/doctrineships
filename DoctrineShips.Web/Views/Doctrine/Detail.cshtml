@@ -49,7 +49,7 @@
     {
         <div id="ds-grid">
             <div class="ds-grid-header">
-                <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls will stay active for 30 days."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
+                <button type="button" onclick="shortenUrl('@Request.RawUrl')"><span class="ds-tooltip" tooltip="A shortened url will be created for this page with the current filters and ordering.&#10;&#10;Urls have a fixed duration, specified in the account settings."><span class="glyphicon glyphicon-pushpin"></span> Fleet Ping Url</span></button>
                 <h5><strong>Ship Fits:</strong> @Model.Doctrine.DoctrineShipFits.Count()</h5>
             </div>
 

@@ -124,5 +124,34 @@
 
             return View(viewModel);
         }
+
+        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        public ActionResult ShipFitContractsStation(string stationId, string shipFitId)
+        {
+            // Cleanse the passed station and customer id strings to prevent XSS.
+            int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
+            int cleanStationId = Conversion.StringToInt32(Server.HtmlEncode(stationId));
+
+            // Convert the currently logged-in account id to an integer.
+            int accountId = Conversion.StringToInt32(User.Identity.Name);
+
+            // Instantiate a new view model to populate the view.
+            SearchShipFitContractsStationViewModel viewModel = new SearchShipFitContractsStationViewModel();
+
+            // Fetch the shipFit details.
+            viewModel.ShipFit = this.doctrineShipsServices.GetShipFitDetail(cleanShipFitId, accountId);
+
+            // Get a list of outstanding item exchange contracts for the passed shipFit.
+            var unsortedContracts = this.doctrineShipsServices.GetShipFitContracts(cleanShipFitId);
+
+            // Filter the list by the station id.
+            viewModel.Contracts = unsortedContracts
+                                    .Where(x => x.StartStationId == cleanStationId)
+                                    .OrderBy(o => o.DateExpired)
+                                    .OrderByDescending(o => o.IsValid)
+                                    .ToList();
+
+            return View(viewModel);
+        }
     }
 }

@@ -10,6 +10,11 @@
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                  "Info",
+                  "Info",
+                  new { controller = "Home", action = "Subscriptions" });
+
+            routes.MapRoute(
                   "Auth",
                   "Auth/{accountId}/{key}/{secondKey}",
                   new { controller = "Account", action = "Authenticate", accountId = string.Empty, key = string.Empty, secondKey = string.Empty });
@@ -38,6 +43,11 @@
                   "ShipFitContracts",
                   "Search/ShipFit/{shipFitId}",
                   new { controller = "Search", action = "ShipFitContracts", shipFitId = string.Empty });
+
+            routes.MapRoute(
+                  "ShipFitContractsStation",
+                  "Search/ShipFitStation/{stationId}/{shipFitId}",
+                  new { controller = "Search", action = "ShipFitContractsStation", stationId = string.Empty, shipFitId = string.Empty });
 
             routes.MapRoute(
                   "RefreshContracts",
