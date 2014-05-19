@@ -179,7 +179,7 @@
             type: "get",
             datatype: 'json',
             success: function (shipFits) {
-                // Set the form values.
+                // Set the list box values.
                 $("#doctrineid2").val(doctrineId);
                 var target = $("#accountshipfits");
                 target.empty();
@@ -190,7 +190,9 @@
                 }
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $("#doctrineshipfitserror").html("Error: " + errorThrown + " - " + jqXHR.responseText);
+                // Clear any list box values.
+                var target = $("#accountshipfits");
+                target.empty();
             }
         });
 
@@ -200,7 +202,7 @@
             data: { id: doctrineId },
             datatype: 'json',
             success: function (shipFits) {
-                // Set the form values.
+                // Set the list box values.
                 var target = $("#doctrineshipfits");
                 target.empty();
 
@@ -214,7 +216,9 @@
                 $("#updatedoctrineshipfits_form").show();
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                $("#doctrineshipfitserror").html("Error: " + errorThrown + " - " + jqXHR.responseText);
+                // Clear any list box values.
+                var target = $("#doctrineshipfits");
+                target.empty();
 
                 // Hide the loading bar & display the form.
                 $("#ds-doctrineshipfitsloading").hide();
