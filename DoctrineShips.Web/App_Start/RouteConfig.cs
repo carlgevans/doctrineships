@@ -10,6 +10,11 @@
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                  "Info",
+                  "Info",
+                  new { controller = "Home", action = "Subscriptions" });
+
+            routes.MapRoute(
                   "Auth",
                   "Auth/{accountId}/{key}/{secondKey}",
                   new { controller = "Account", action = "Authenticate", accountId = string.Empty, key = string.Empty, secondKey = string.Empty });

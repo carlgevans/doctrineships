@@ -217,10 +217,28 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\favicon.ico" />
+    <Content Include="Content\images\gallery\gallery1.png" />
+    <Content Include="Content\images\gallery\gallery10.png" />
+    <Content Include="Content\images\gallery\gallery11.png" />
+    <Content Include="Content\images\gallery\gallery12.png" />
+    <Content Include="Content\images\gallery\gallery13.png" />
+    <Content Include="Content\images\gallery\gallery14.png" />
+    <Content Include="Content\images\gallery\gallery15.png" />
+    <Content Include="Content\images\gallery\gallery16.png" />
+    <Content Include="Content\images\gallery\gallery17.png" />
+    <Content Include="Content\images\gallery\gallery2.png" />
+    <Content Include="Content\images\gallery\gallery3.png" />
+    <Content Include="Content\images\gallery\gallery4.png" />
+    <Content Include="Content\images\gallery\gallery5.png" />
+    <Content Include="Content\images\gallery\gallery6.png" />
+    <Content Include="Content\images\gallery\gallery7.png" />
+    <Content Include="Content\images\gallery\gallery8.png" />
+    <Content Include="Content\images\gallery\gallery9.png" />
     <Content Include="Content\images\icons\loading.gif" />
     <Content Include="Content\images\main\doctrineships.png" />
     <Content Include="Content\images\misc\doctrineicon.png" />
     <Content Include="Content\images\misc\eve.png" />
+    <Content Include="Content\images\misc\github.png" />
     <Content Include="Content\images\misc\nomatch.png" />
     <Content Include="Content\images\misc\nomatchrender.png" />
     <Content Include="Content\images\misc\officialtag.png" />
