@@ -14,4 +14,4 @@ using System.Runtime.InteropServices;
 //      Hotfix Version
 //      Automatic Build Number
 //
-[assembly: AssemblyVersion("4.7.0.*")]
+[assembly: AssemblyVersion("4.7.1.*")]
