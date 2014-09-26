@@ -794,6 +794,11 @@
             return DoctrineOperations.GetDoctrinesForAccount(accountId);
         }
 
+        public IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId)
+        {
+            return DoctrineOperations.GetDoctrinesByShipFit(shipFitId);
+        }
+
         public void DeleteDoctrineShipFit(int doctrineShipFitId)
         {
             DoctrineShipFitOperations.DeleteDoctrineShipFit(doctrineShipFitId);

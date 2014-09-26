@@ -145,6 +145,7 @@
         Doctrine GetDoctrine(int doctrineId);
         IEnumerable<Doctrine> GetDoctrines();
         IEnumerable<Doctrine> GetDoctrinesForAccount(int accountId);
+        IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId);
 
         // DoctrineShipFit Operations.
         void DeleteDoctrineShipFit(int doctrineShipFitId);

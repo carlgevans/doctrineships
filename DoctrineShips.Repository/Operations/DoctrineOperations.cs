@@ -87,5 +87,28 @@
 
             return doctrines;
         }
+
+        internal IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId)
+        {
+            List<Doctrine> mydoctrines = new List<Doctrine>();
+            var doctrines = this.unitOfWork.Repository<Doctrine>()
+                            .Query()
+                            .Include(x => x.DoctrineShipFits.Select(c => c.ShipFit))
+                            .Get()
+                            .ToList();
+            foreach (Doctrine doctrine in doctrines)
+            {
+                foreach (DoctrineShipFit sf in doctrine.DoctrineShipFits)
+                {
+                    if (sf.ShipFitId == shipFitId)
+                    {
+                        mydoctrines.Add(doctrine);
+                        break;
+                    }
+                }
+            }
+            
+            return doctrines;
+        }
     }
 }

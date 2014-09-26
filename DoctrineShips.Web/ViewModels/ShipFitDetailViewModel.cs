@@ -7,6 +7,7 @@
     {
         public ShipFit ShipFit { get; set; }
         public IEnumerable<IEnumerable<ShipFitComponent>> ShipFitComponents { get; set; }
+        public IEnumerable<Doctrine> ShipFitDoctrines { get; set; }
         public SettingProfile SettingProfile { get; set; }
     }
 }

@@ -836,6 +836,10 @@
             return validationResult;
         }
 
+        internal List<Doctrine> GetDoctrines(int shipfitid)
+        {
+            return this.doctrineShipsRepository.GetDoctrinesByShipFit(shipfitid).ToList();
+        }
         /// <summary>
         /// Deletes a doctrine.
         /// </summary>

@@ -60,6 +60,16 @@
                         <td class="ds-status-ok">@Model.ShipFit.ContractsAvailable</td>
                     }
                 </tr>
+                <tr>
+                    <th>Doctrines</th>
+                    <td>
+                        @foreach (DoctrineShips.Entities.Doctrine doctrine in Model.ShipFitDoctrines)
+                        {
+                            @doctrine.Name
+                            <br />
+                        }
+                    </td>
+                </tr>
             </table>
         </div>
 

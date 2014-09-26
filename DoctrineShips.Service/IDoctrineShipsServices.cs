@@ -386,6 +386,13 @@
         IEnumerable<Doctrine> GetDoctrineList(int accountId);
 
         /// <summary>
+        /// Returns a list of all doctrines for a given shipfitid.
+        /// </summary>
+        /// <param name="accountId">The shipfit for which the doctrines should be returned.</param>
+        /// <returns>A list of doctrine objects.</returns>
+        IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId);
+
+        /// <summary>
         /// Returns a doctrine for a given account and doctrine id.
         /// </summary>
         /// <param name="accountId">The currently logged-in account id for security checking.</param>

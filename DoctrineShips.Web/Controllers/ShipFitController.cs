@@ -38,6 +38,21 @@
         }
 
         [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        public ActionResult Doctrines(string shipFitId)
+        {
+            // Instantiate a new view model to populate the view.
+            ShipFitDetailViewModel viewModel = new ShipFitDetailViewModel();
+
+            // Cleanse the passed ship fit id string to prevent XSS.
+            int cleanShipFitId = Conversion.StringToInt32(Server.HtmlEncode(shipFitId));
+
+            // Get a list of all ship fits for the current ship fit.
+            viewModel.ShipFitDoctrines = this.doctrineShipsServices.GetDoctrinesByShipFit(cleanShipFitId);
+
+            return View(viewModel);
+        }
+
+        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         public ActionResult Detail(string shipFitId)
         {
             // Cleanse the passed ship fit id string to prevent XSS.
@@ -78,6 +93,7 @@
                                               .Select(grp => grp.ToList())
                                               .ToList();
 
+                viewModel.ShipFitDoctrines = this.doctrineShipsServices.GetDoctrinesByShipFit(cleanShipFitId);
                 return PartialView("_DetailResult", viewModel);
             }
             else

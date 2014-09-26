@@ -822,6 +822,15 @@
         }
 
         /// <summary>
+        /// Returns a list of doctrines that include a particular ship fit.
+        /// </summary>
+        /// <param name="shipFitId">The shipfit for which the doctrines should be returned.</param>
+        /// <returns>A list of doctrine objects.</returns>
+        public IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId)
+        {
+            return ShipFitManager.GetDoctrines(shipFitId);
+        }
+        /// <summary>
         /// Returns a doctrine for a given account and doctrine id.
         /// </summary>
         /// <param name="accountId">The currently logged-in account id for security checking.</param>
