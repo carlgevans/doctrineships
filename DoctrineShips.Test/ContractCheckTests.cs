@@ -13,6 +13,7 @@
     using GenericRepository;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Tools;
+    using DoctrineShips.Service.Entities;
 
     [TestClass]
     public class ContractCheckTests
@@ -31,7 +32,7 @@
         public ContractCheckTests()
         {
             this.dateNow = DateTime.UtcNow;
-            this.doctrineShipsServices = new DoctrineShipsServices(this.doctrineShipsRepository, this.eveDataSource, this.doctrineShipsValidation, this.logger);
+            this.doctrineShipsServices = new DoctrineShipsServices(this.doctrineShipsRepository, this.eveDataSource, this.doctrineShipsValidation, null, this.logger);
             this.controller = new SearchController(this.doctrineShipsServices);
             this.unitOfWork = new UnitOfWork(new DoctrineShipsContext());
             this.eveDataSource = new EveDataSourceCached(this.logger);

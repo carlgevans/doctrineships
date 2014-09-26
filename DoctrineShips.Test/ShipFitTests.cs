@@ -10,6 +10,9 @@
     using EveData;
     using GenericRepository;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Web.Mvc;
     using Tools;
 
@@ -28,7 +31,7 @@
 
         public ShipFitTests()
         {
-            this.doctrineShipsServices = new DoctrineShipsServices(doctrineShipsRepository, eveDataSource, doctrineShipsValidation, logger);
+            //this.doctrineShipsServices = new DoctrineShipsServices(doctrineShipsRepository, eveDataSource, doctrineShipsValidation, logger);
             this.controller = new SearchController(doctrineShipsServices);
             this.unitOfWork = new UnitOfWork(new DoctrineShipsContext());
             this.eveDataSource = new EveDataSourceCached(logger);
@@ -77,6 +80,16 @@
             component = this.shipFitManager.AddComponent(typeName);
 
             Assert.IsNull(component);
+        }
+
+        [TestMethod]
+        public void ExportShipFit()
+        {
+            List<Doctrine> doctrines = (List<Doctrine>)doctrineShipsRepository.GetDoctrines();
+            if (doctrines.Count == 0) throw new Exception("No Doctrines Available.");
+            if (doctrines[0].DoctrineShipFits.Count == 0) throw new Exception("No ship fits available in the first doctrine.");
+            List<DoctrineShipFit> fits = (List<DoctrineShipFit>)doctrines[0].DoctrineShipFits;
+            Debug.WriteLine(fits[0].ShipFit.ToXML());
         }
     }
 }
