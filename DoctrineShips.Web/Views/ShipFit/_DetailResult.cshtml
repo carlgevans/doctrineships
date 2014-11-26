@@ -65,8 +65,14 @@
                     <td>
                         @foreach (DoctrineShips.Entities.Doctrine doctrine in Model.ShipFitDoctrines)
                         {
-                            @doctrine.Name
-                            <br />
+                            foreach (var fit in doctrine.DoctrineShipFits)
+                            {
+                                if (fit.ShipFitId == Model.ShipFit.ShipFitId)
+                                {
+                                    @doctrine.Name
+                                    <br />
+                                }
+                            }
                         }
                     </td>
                 </tr>

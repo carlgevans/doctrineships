@@ -1,7 +1,6 @@
 ﻿namespace DoctrineShips.Test
 {
     using System;
-    using System.Web.Mvc;
     using DoctrineShips.Data;
     using DoctrineShips.Entities;
     using DoctrineShips.Repository;
@@ -14,6 +13,7 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Tools;
     using DoctrineShips.Service.Entities;
+    using System.Web.Mvc;
 
     [TestClass]
     public class ContractCheckTests
