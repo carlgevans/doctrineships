@@ -646,7 +646,7 @@
                 viewModel.AccountId = accountId;
                 viewModel.Name = Conversion.StringToSafeString(viewModel.Name);
                 viewModel.Role = Conversion.StringToSafeString(viewModel.Role);
-                viewModel.Notes = Conversion.StringToSafeString(viewModel.Notes);
+                viewModel.Notes = viewModel.Notes;
 
                 // Populate a ship fit with automapper and pass it back to the service layer for update.
                 ShipFit shipFit = Mapper.Map<AccountShipFitsViewModel, ShipFit>(viewModel);
@@ -786,7 +786,7 @@
                 // Sanitise the form values.
                 viewModel.AccountId = accountId;
                 viewModel.Name = Conversion.StringToSafeString(viewModel.Name);
-                viewModel.Description = Conversion.StringToSafeString(viewModel.Description);
+                viewModel.Description = viewModel.Description;
                 viewModel.ImageUrl = Server.HtmlEncode(viewModel.ImageUrl) ?? string.Empty;
 
                 // Populate a doctrine with automapper and pass it back to the service layer for update.
