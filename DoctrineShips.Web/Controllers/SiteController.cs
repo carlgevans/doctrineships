@@ -64,7 +64,7 @@
                     if (generatedKey != string.Empty && newAccountId != 0)
                     {
                         // Assign the new key to TempData to be passed to the accounts view.
-                        string authUrl = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + newAccountId + "/" + generatedKey;
+                        string authUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/A/" + newAccountId + "/" + generatedKey;
                         TempData["Status"] += " The account admin auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                     }
                 }
