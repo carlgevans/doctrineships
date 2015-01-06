@@ -682,21 +682,23 @@
                     // Generate the fitting string.
                     eftFitting += "[" + shipFit.Hull + ", " + shipFit.Name + "]" + Environment.NewLine;
 
-                    foreach (var item in shipFit.ShipFitComponents.OrderBy(x => x.SlotType))
+                    List<SlotType> expectedSlotTypes = new List<SlotType>();
+                    expectedSlotTypes.Add(SlotType.Low);
+                    expectedSlotTypes.Add(SlotType.Medium);
+                    expectedSlotTypes.Add(SlotType.High);
+                    expectedSlotTypes.Add(SlotType.Rig);
+                    expectedSlotTypes.Add(SlotType.Subsystem);
+                    expectedSlotTypes.Add(SlotType.Drone);
+                    expectedSlotTypes.Add(SlotType.Cargo);
+
+                    foreach (SlotType slot in expectedSlotTypes)
                     {
-                        if (item.SlotType == SlotType.Cargo || item.SlotType == SlotType.Drone)
+                        var itemsInSlot = shipFit.ShipFitComponents.Where(component => component.SlotType == slot);
+                        foreach (var item in itemsInSlot)
                         {
-                            // This is a cargo or drone slot, so append the quantity.
-                            eftFitting += item.Component.Name + " x" + item.Quantity + Environment.NewLine;
+                            eftFitting += GenerateModuleEFTLine(item);
                         }
-                        else if (item.SlotType != SlotType.Hull)
-                        {
-                            for (int i = 1; i <= item.Quantity; i++)
-                            {
-                                // This is a module, so add each of the items as a separate line.
-                                eftFitting += item.Component.Name + Environment.NewLine;
-                            }
-                        }
+                        if (itemsInSlot.Count() > 0) eftFitting += Environment.NewLine;
                     }
                 }
             }
@@ -704,6 +706,24 @@
             return eftFitting;
         }
 
+        private string GenerateModuleEFTLine(ShipFitComponent item)
+        {
+            string moduleLine = string.Empty;
+            if (item.SlotType == SlotType.Cargo || item.SlotType == SlotType.Drone)
+            {
+                // This is a cargo or drone slot, so append the quantity.
+                moduleLine += item.Component.Name + " x" + item.Quantity + Environment.NewLine;
+            }
+            else if (item.SlotType != SlotType.Hull)
+            {
+                for (int i = 1; i <= item.Quantity; i++)
+                {
+                    // This is a module, so add each of the items as a separate line.
+                    moduleLine += item.Component.Name + Environment.NewLine;
+                }
+            }
+            return moduleLine;
+        }
         /// <summary>
         /// Generate and refresh all fitting strings.
         /// </summary>
