@@ -107,5 +107,15 @@
 
             return cachedValue;
         }
+
+        public void ClearCache()
+        {
+            cachedValues_GetSolarSystemName.Clear();
+            cachedValues_GetStationName.Clear();
+            cachedValues_GetStationSolarSystemId.Clear();
+            cachedValues_GetTypeId.Clear();
+            cachedValues_GetTypeName.Clear();
+            cachedValues_GetTypeVolume.Clear();
+        }
     }
 }

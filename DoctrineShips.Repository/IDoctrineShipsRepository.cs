@@ -43,6 +43,7 @@
         Component AddComponent(Component component);
         Component CreateComponent(Component component);
         Component GetComponent(int componentId);
+        Component GetComponent(string componentName);
         IEnumerable<Component> GetComponents();
 
         // Contract Operations.

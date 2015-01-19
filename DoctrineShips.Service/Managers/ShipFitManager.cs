@@ -424,33 +424,7 @@
             Component component = null;
 
             // Does the component name successfully resolve to an id? 
-            componentId = eveDataSource.GetTypeId(componentName);
-
-            if (componentId != 0)
-            {
-                // Does the component already exist in the database? If not, add it.
-                component = this.doctrineShipsRepository.GetComponent(componentId);
-
-                if (component == null)
-                {
-                    component = new Component();
-
-                    component.ComponentId = componentId;
-
-                    // Resolve the id back to the name to get correct capitalisation etc 
-                    component.Name = eveDataSource.GetTypeName(componentId);
-                    component.ImageUrl = eveDataSource.GetTypeImageUrl(componentId);
-                    component.Volume = eveDataSource.GetTypeVolume(componentId);
-
-                    // Validate the new component.
-                    if (this.doctrineShipsValidation.Component(component).IsValid == true)
-                    {
-                        // Add the new component and read it back.
-                        component = this.doctrineShipsRepository.CreateComponent(component);
-                        this.doctrineShipsRepository.Save();
-                    }
-                }
-            }
+            component = this.doctrineShipsRepository.GetComponent(componentName);
 
             return component;
         }

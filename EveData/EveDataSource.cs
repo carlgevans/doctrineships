@@ -26,6 +26,7 @@
 
         #endregion
 
+        public static string ConnectionString = string.Empty;
         /// <summary>
         /// Initialises a new instance of an EveDataSource.
         /// </summary>

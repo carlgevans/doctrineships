@@ -89,7 +89,7 @@
             if (doctrines.Count == 0) throw new Exception("No Doctrines Available.");
             if (doctrines[0].DoctrineShipFits.Count == 0) throw new Exception("No ship fits available in the first doctrine.");
             List<DoctrineShipFit> fits = (List<DoctrineShipFit>)doctrines[0].DoctrineShipFits;
-            Debug.WriteLine(fits[0].ShipFit.ToXML());
+            Debug.WriteLine(fits[0].ShipFit.ToXML);
         }
     }
 }

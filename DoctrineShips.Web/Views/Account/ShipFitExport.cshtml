@@ -1,0 +1,58 @@
+﻿@using DoctrineShips.Web.ViewModels
+@using DoctrineShips.Entities
+@using GridMvc.Html
+
+@model AccountShipFitsViewModel
+
+@{
+    ViewBag.Title = "Ship Fit Export";
+}
+
+<div id="ds-main" role="main">
+    <div id="ds-header">
+        <h1>
+            Export Ship Fits<br />
+            <small>Import a ship fit from an EVE ship fitting xml file.</small>
+        </h1>
+    </div>
+    <div class="ds-header-detail">
+        <p>The import tool must be used from an out-of-game browser.</p>
+    </div>
+
+    @if (ViewBag.Status != null)
+    {
+        <div id="ds-message">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <b>Status: </b>@Html.Raw(@ViewBag.Status)
+        </div>
+    }
+    
+    @if (Model != null && Model.ShipFits != null && Model.ShipFits.Count() != 0)
+    {
+        <div id="ds-grid">
+            <div class="ds-grid-header">
+                <h5><strong>Ship Fits:</strong> @Model.ShipFits.Count()</h5>
+            </div>
+
+            @using (Html.BeginForm("DeleteShipFit", "Account", FormMethod.Post, new { @id = "deleteshipfits_form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.Grid(Model.ShipFits).Columns(columns =>
+                            {
+                                columns.Add(c => c.ToXML).Encoded(false).Sanitized(false).Titled("Fit XML").Filterable(true).Sortable(true);
+                                columns.Add(c => c.Name).Titled("Fit Name").Filterable(true).Sortable(true);
+                            }).WithMultipleFilters()
+            }
+        </div>
+    }
+    else
+    {
+        <div id="ds-message">
+            <b>No Ship Fits Found</b>
+        </div>
+    }
+
+</div>
+
+<script src="@Url.Content("~/Scripts/jquery-1.11.0.min.js")" type="text/javascript"></script>
