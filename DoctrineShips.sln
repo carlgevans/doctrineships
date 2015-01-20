@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Documentation", "_Document
 	ProjectSection(SolutionItems) = preProject
 		_Documentation\CreateTestDatabase.sql = _Documentation\CreateTestDatabase.sql
 		_Documentation\SiteAdminKey.txt = _Documentation\SiteAdminKey.txt
+		_Documentation\UsefulSql.txt = _Documentation\UsefulSql.txt
 	EndProjectSection
 EndProject
 Global

@@ -1,0 +1,10 @@
+select 
+	   componentid, isnumeric(substring(ImageUrl, 43, charindex('32.png', ImageUrl) - 43)) as isanumber, 
+       substring(ImageUrl, 43, charindex('32.png', ImageUrl) - 43) as sql, ImageUrl, 
+	   charindex('32.png', ImageUrl) as location,
+	   'https://image.eveonline.com/InventoryType/' + substring(ImageUrl, 43, charindex('32.png', ImageUrl) - 43) + '_32.png' as newimageurl,
+       'update dbo.Components set ImageUrl = ''https://image.eveonline.com/InventoryType/' + substring(ImageUrl, 43, charindex('32.png', ImageUrl) - 43) + '_32.png'' where componentid = ' + Convert(nvarchar(6), ComponentID) + ';' as updatesql
+from dbo.Components
+where substring(ImageUrl, 43, 5) not like '%.%'
+and  imageurl not like '%!_32.png%' ESCAPE '!'
+and  isnumeric(substring(ImageUrl, 43, 5)) = 1;
