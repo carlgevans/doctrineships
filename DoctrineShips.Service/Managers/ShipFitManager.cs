@@ -582,7 +582,10 @@
 
             foreach (var item in shipFit.ShipFitComponents)
             {
-                fittingString += item.ComponentId + ";" + item.Quantity + ":";
+                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster"))
+                    fittingString += string.Empty;
+                else
+                    fittingString += item.ComponentId + ";" + item.Quantity + ":";
             }
 
             fittingString += ":";
@@ -685,8 +688,14 @@
             string moduleLine = string.Empty;
             if (item.SlotType == SlotType.Cargo || item.SlotType == SlotType.Drone)
             {
-                // This is a cargo or drone slot, so append the quantity.
-                moduleLine += item.Component.Name + " x" + item.Quantity + Environment.NewLine;
+                List<double> excludedVolumes = new List<double>();
+                excludedVolumes.Add(5);
+                excludedVolumes.Add(10);
+                excludedVolumes.Add(50);
+                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster"))
+                    moduleLine = string.Empty;
+                else // This is a cargo or drone slot, so append the quantity.
+                    moduleLine += item.Component.Name + " x" + item.Quantity + Environment.NewLine;
             }
             else if (item.SlotType != SlotType.Hull)
             {
