@@ -582,7 +582,7 @@
 
             foreach (var item in shipFit.ShipFitComponents)
             {
-                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster"))
+                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster") && !item.Component.Name.Contains("Warp Disrupt Probe"))
                     fittingString += string.Empty;
                 else
                     fittingString += item.ComponentId + ";" + item.Quantity + ":";
