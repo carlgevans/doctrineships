@@ -558,11 +558,16 @@
 
                 foreach (var item in shipFit.ShipFitComponents)
                 {
-                    buyPrices.TryGetValue(item.ComponentId, out buyPrice);
-                    sellPrices.TryGetValue(item.ComponentId, out sellPrice);
-
-                    item.BuyPrice = buyPrice * settingProfile.BrokerPercentage;
-                    item.SellPrice = sellPrice;
+                    if (buyPrices != null)
+                    {
+                        buyPrices.TryGetValue(item.ComponentId, out buyPrice);
+                        item.BuyPrice = buyPrice * settingProfile.BrokerPercentage;
+                    }
+                    if (sellPrices != null)
+                    {
+                        sellPrices.TryGetValue(item.ComponentId, out sellPrice);
+                        item.SellPrice = sellPrice;
+                    }
 
                     item.ObjectState = ObjectState.Modified;
                 }
@@ -582,7 +587,7 @@
 
             foreach (var item in shipFit.ShipFitComponents)
             {
-                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster") && !item.Component.Name.Contains("Warp Disrupt Probe"))
+                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster") && !item.Component.Name.ToLower().Contains("warp disrupt probe"))
                     fittingString += string.Empty;
                 else
                     fittingString += item.ComponentId + ";" + item.Quantity + ":";
@@ -692,7 +697,7 @@
                 excludedVolumes.Add(5);
                 excludedVolumes.Add(10);
                 excludedVolumes.Add(50);
-                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster"))
+                if (item.SlotType == SlotType.Cargo && item.Component.Volume >= 5.0 && !item.Component.Name.Contains("Cap Booster") && !item.Component.Name.ToLower().Contains("warp disrupt probe"))
                     moduleLine = string.Empty;
                 else // This is a cargo or drone slot, so append the quantity.
                     moduleLine += item.Component.Name + " x" + item.Quantity + Environment.NewLine;
