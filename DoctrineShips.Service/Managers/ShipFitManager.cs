@@ -324,6 +324,7 @@
 
             // Does the hull name successfully resolve to an id? 
             hullId = eveDataSource.GetTypeId(hull);
+            if (hullId == 0) hullId = doctrineShipsRepository.GetComponent(hull).ComponentId;
 
             if (hullId != 0)
             {
