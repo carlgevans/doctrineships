@@ -3,7 +3,6 @@
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.UI;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -29,7 +28,6 @@
             }
         }
 
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         [Authorize]
         public ActionResult Doctrines()
         {
@@ -44,7 +42,6 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         public ActionResult Contracts()
         {
             HomeContractsViewModel viewModel = new HomeContractsViewModel();
@@ -54,7 +51,6 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         public ActionResult Subscriptions()
         {
             HomeSubscriptionsViewModel viewModel = new HomeSubscriptionsViewModel();

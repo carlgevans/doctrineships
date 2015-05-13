@@ -3,7 +3,6 @@
     using System.Linq;
     using System.Web.Mvc;
     using System.Web.UI;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -17,7 +16,7 @@
             this.doctrineShipsServices = doctrineShipsServices;
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult CustomerContracts(string customerId)
         {
             // Cleanse the passed customer id string to prevent XSS.
@@ -43,7 +42,7 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult CustomerContractsStation(string stationId, string customerId)
         {
             // Cleanse the passed station and customer id strings to prevent XSS.
@@ -69,7 +68,7 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult SalesAgentContracts(string salesAgentId)
         {
             // Cleanse the passed salesAgent id string to prevent XSS.
@@ -95,7 +94,7 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         [Authorize]
         public ActionResult ShipFitContracts(string shipFitId)
         {
@@ -125,7 +124,7 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult ShipFitContractsStation(string stationId, string shipFitId)
         {
             // Cleanse the passed station and customer id strings to prevent XSS.

@@ -2,7 +2,6 @@
 {
     using System.Web.Mvc;
     using System.Web.UI;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -17,7 +16,6 @@
             this.doctrineShipsServices = doctrineShipsServices;
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", VaryByParam = "*", Location = OutputCacheLocation.Server)]
         public ActionResult Detail(string doctrineId)
         {
             // Cleanse the passed doctrine id string to prevent XSS.

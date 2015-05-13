@@ -10,7 +10,6 @@
     using System.Web.Security;
     using System.Web.UI;
     using AutoMapper;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Entities;
     using DoctrineShips.Service;
     using DoctrineShips.Service.Entities;
@@ -100,7 +99,6 @@
             return RedirectToAction("Index", "Home");
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         [AllowAnonymous]
         public ActionResult AccessDenied()
         {

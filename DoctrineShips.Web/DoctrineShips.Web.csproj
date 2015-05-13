@@ -240,6 +240,7 @@
     <Content Include="Content\images\gallery\gallery8.png" />
     <Content Include="Content\images\gallery\gallery9.png" />
     <Content Include="Content\images\icons\loading.gif" />
+    <Content Include="Content\images\main\bravelogo.png" />
     <Content Include="Content\images\main\doctrineships.png" />
     <Content Include="Content\images\misc\doctrineicon.png" />
     <Content Include="Content\images\misc\eve.png" />
