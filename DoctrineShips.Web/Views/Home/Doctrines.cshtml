@@ -19,7 +19,7 @@
         foreach (var doctrine in Model.Doctrines)
         {
             <div id="ds-doctrine">                
-                <a class="@(doctrine.IsOfficial == true ? "official" : "") @(doctrine.IsDormant == true ? "dormant" : "")" href='@Url.Action("Detail", "Doctrine", new { doctrineId = @doctrine.DoctrineId }, Request.Url.Scheme)'>
+                <a class="@(doctrine.IsOfficial == true ? "official" : "") @(doctrine.IsDormant == true ? "dormant" : "")" href='@string.Format("{2}://{0}/Doctrine/Detail/{1}", Request.Url.Host, doctrine.DoctrineId, Request.Url.Scheme)'>
                     <img class="@(doctrine.IsOfficial == true ? "tag" : "hidden")" src="@Url.Content("~/Content/images/misc/officialtag.png")" />
                     
                     @if (@doctrine.ImageUrl == string.Empty)

@@ -267,7 +267,8 @@
                 // Create a new temporary access code, setting the data field to the long url.
                 var newKey = this.doctrineShipsServices.AddAccessCode(accountId, "Short Url", Role.User, DateTime.UtcNow.AddHours(settingProfile.ShortUrlExpiryHours), decodedUrl);
 
-                return Json(new { url = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey,
+                
+                return Json(new { url = Request.Url.Scheme + "://" + Request.Url.Host +  "/A/" + accountId + "/" + newKey,
                                   expiry = DateTime.UtcNow.AddHours(settingProfile.ShortUrlExpiryHours) + " (UTC)"
                             });
             }

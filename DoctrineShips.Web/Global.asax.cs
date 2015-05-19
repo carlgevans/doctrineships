@@ -13,6 +13,7 @@
     using DoctrineShips.Web.Controllers;
     using GenericRepository;
     using Tools;
+    using EveData;
     
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, visit http://go.microsoft.com/?LinkId=9394801
     public class MvcApplication : System.Web.HttpApplication
@@ -26,6 +27,8 @@
 
             // Set a global application brand.
             Application["Brand"] = WebConfigurationManager.AppSettings["Brand"] ?? string.Empty;
+            EveDataSource.ConnectionString = WebConfigurationManager.ConnectionStrings["DoctrineShipsDb"].ConnectionString;
+            DoctrineShipsRepository.ConnectionString = EveDataSource.ConnectionString;
         }
 
         protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)

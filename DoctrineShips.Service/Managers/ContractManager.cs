@@ -127,7 +127,7 @@
                     if (existingContractIds.Contains(eveDataContract.ContractId))
                     {
                         // If the status of the Eve contract is no longer 'Outstanding', delete it from the database.
-                        if (eveDataContract.Status != EveDataContractStatus.Outstanding)
+                        if (eveDataContract.Status != EveDataContractStatus.Outstanding || eveDataContract.DateExpired < DateTime.UtcNow)
                         {
                             this.doctrineShipsRepository.DeleteContract(eveDataContract.ContractId);
                         }
@@ -135,7 +135,7 @@
                     else
                     {
                         // Only attempt to add a contract if it is currently of status 'Outstanding'.
-                        if (eveDataContract.Status == EveDataContractStatus.Outstanding)
+                        if (eveDataContract.Status == EveDataContractStatus.Outstanding && !(eveDataContract.DateExpired < DateTime.UtcNow))
                         {
                             this.AddContract(eveDataContract, salesAgent, batch: true);
                         }
@@ -237,7 +237,7 @@
             if (contractItems != null && contractItems.Any() == true)
             {
                 string concatComponents = string.Empty;
-                IEnumerable<ShipFitComponent> compressedContractItems = new List<ShipFitComponent>();
+                List<ShipFitComponent> compressedContractItems = new List<ShipFitComponent>();
 
                 // Compress the contract items components list, removing duplicates but adding the quantities.
                 compressedContractItems = contractItems
@@ -247,7 +247,29 @@
                     {
                         ComponentId = x.Key,
                         Quantity = x.Sum(p => p.Quantity)
-                    });
+                    }).ToList<ShipFitComponent>();
+
+
+                // Support packages of multiple shipfits in one contract (i.e. 3 frigate packs)
+                long hullcount = compressedContractItems.Min(item => item.Quantity);
+
+                // Divide the contract items by the number of hulls.  If any don't divide evenly, this is not a valid contract.
+                if (hullcount > 1)
+                {
+                    foreach (var item in compressedContractItems)
+                    {
+                        try
+                        {
+                            item.Quantity = item.Quantity / hullcount;
+                        }
+                        catch
+                        {
+                            shipFitId = 0;
+
+                            return shipFitId;
+                        }
+                    }
+                }
 
                 // Concatenate all components and their quantities into a single string.
                 foreach (var item in compressedContractItems)

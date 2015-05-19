@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DoctrineShips.Web", "DoctrineShips.Web\DoctrineShips.Web.csproj", "{2138AA94-A145-4060-9D03-47FBC9353B50}"
 EndProject
@@ -37,6 +37,14 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5F343055-7ABA-4214-91B7-9AB08F314A3A}"
 	ProjectSection(SolutionItems) = preProject
 		SolutionInfo.cs = SolutionInfo.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Documentation", "_Documentation", "{07FB894D-22B6-4388-8241-9BBA95203DF3}"
+	ProjectSection(SolutionItems) = preProject
+		_Documentation\CreateTestDatabase.sql = _Documentation\CreateTestDatabase.sql
+		_Documentation\SiteAdminKey.txt = _Documentation\SiteAdminKey.txt
+		_Documentation\UpdateItems.sql = _Documentation\UpdateItems.sql
+		_Documentation\UsefulSql.txt = _Documentation\UsefulSql.txt
 	EndProjectSection
 EndProject
 Global
@@ -120,9 +128,9 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{4B2BAA3C-EE4E-4239-86F4-E658C2A23376} = {2526A415-4F5B-4EFC-848A-1361BFF3A6A8}
 		{A761C0AB-443E-4B58-8107-9FB52DA525A6} = {2526A415-4F5B-4EFC-848A-1361BFF3A6A8}
 		{858226A4-1D3A-47D3-89A4-B760E0A2FEEE} = {2526A415-4F5B-4EFC-848A-1361BFF3A6A8}
 		{6E682A14-C872-4813-B620-76E108DEA683} = {2526A415-4F5B-4EFC-848A-1361BFF3A6A8}
-		{4B2BAA3C-EE4E-4239-86F4-E658C2A23376} = {2526A415-4F5B-4EFC-848A-1361BFF3A6A8}
 	EndGlobalSection
 EndGlobal

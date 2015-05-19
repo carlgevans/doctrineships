@@ -13,15 +13,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">@System.Web.HttpContext.Current.Application["Brand"]</a>
+            <a class="navbar-brand" href="/"><img src="~/Content/images/main/doctrineships.png" /></a>
         </div>
         <div class="navbar-collapse collapse pull-right">
             <ul class="nav navbar-nav">
 
                 @if (!Request.IsAuthenticated)
                 {
-                    <li><a href="/Home/Contracts"><span class="glyphicon glyphicon-shopping-cart"></span> All Contracts</a></li>
-                    <li><a href='/Home/Subscriptions'><span class="glyphicon glyphicon-info-sign"></span> Service Subscriptions</a></li>
+                    Response.Redirect("/Account/AccessDenied");
                 }
 
                 @if (Request.IsAuthenticated && User.IsInAnyRole("User", "Admin", "SiteAdmin"))

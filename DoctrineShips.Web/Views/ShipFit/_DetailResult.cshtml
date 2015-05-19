@@ -60,6 +60,22 @@
                         <td class="ds-status-ok">@Model.ShipFit.ContractsAvailable</td>
                     }
                 </tr>
+                <tr>
+                    <th>Doctrines</th>
+                    <td>
+                        @foreach (DoctrineShips.Entities.Doctrine doctrine in Model.ShipFitDoctrines)
+                        {
+                            foreach (var fit in doctrine.DoctrineShipFits)
+                            {
+                                if (fit.ShipFitId == Model.ShipFit.ShipFitId)
+                                {
+                                    @doctrine.Name
+                                    <br />
+                                }
+                            }
+                        }
+                    </td>
+                </tr>
             </table>
         </div>
 
@@ -83,36 +99,20 @@
                     <th class="ds-shipfit-heading" colspan="4">Market Details</th>
                 </tr>
                 <tr>
-                    <th colspan="2">Hub Buy Price</th>
+                    <th colspan="2">Last API Price Update</th>
                     <th colspan="2">Hub Sell Price</th>
                 </tr>
                 <tr>
-                    <td colspan="2"><span class="ds-tooltip" tooltip="(Component Buy Prices * Broker Fee Percentage [@Model.SettingProfile.BrokerPercentage]) * Quantities">@String.Format("{0:N2}", @Model.ShipFit.BuyPrice) ISK</span></td>
+                    <td colspan="2">@Model.ShipFit.LastPriceRefresh</td>
                     <td colspan="2"><span class="ds-tooltip" tooltip="Component Sell Prices * Quantities">@String.Format("{0:N2}", @Model.ShipFit.SellPrice) ISK</span></td>
                 </tr>
                 <tr>
                     <th colspan="2">Estimated Shipping</th>
-                    <th colspan="2">Contract Reward</th>
+                    <th colspan="2">Suggested Retail Price</th>
                 </tr>
                 <tr>
                     <td colspan="2"><span class="ds-tooltip" tooltip="Fit Packaged Volume [@Model.ShipFit.FitPackagedVolume] * Shipping Cost Per m3 [@Model.SettingProfile.ShippingCostPerM3]">@String.Format("{0:N2}", @Model.ShipFit.ShippingCost) ISK</span></td>
                     <td colspan="2"><span class="ds-tooltip" tooltip="(Hub Sell Price * Markup Percentage [@Model.SettingProfile.ContractMarkupPercentage]) + Estimated Shipping Cost + Contract Broker Fee [@Model.SettingProfile.ContractBrokerFee]">@String.Format("{0:N2}", @Model.ShipFit.ContractReward) ISK</span></td>
-                </tr>
-                <tr>
-                    <th colspan="2">Estimated Profit (From Buy Orders)</th>
-                    <th colspan="2">Estimated Profit (From Sell Orders)</th>
-                </tr>
-                <tr>
-                    <td colspan="2"><span class="ds-tooltip" tooltip="Contract Reward - Hub Buy Price">@String.Format("{0:N2}", @Model.ShipFit.BuyOrderProfit) ISK</span></td>
-                    <td colspan="2"><span class="ds-tooltip" tooltip="Contract Reward - Hub Sell Price">@String.Format("{0:N2}", @Model.ShipFit.SellOrderProfit) ISK</span></td>
-                </tr>
-                <tr>
-                    <th colspan="2">Last API Price Update</th>
-                    <th colspan="2">Next API Price Update</th>
-                </tr>
-                <tr>
-                    <td colspan="2">@Model.ShipFit.LastPriceRefresh</td>
-                    <td colspan="2">@(Model.ShipFit.LastPriceRefresh + @TimeSpan.FromMinutes(5))</td>
                 </tr>
             </table>
         </div>

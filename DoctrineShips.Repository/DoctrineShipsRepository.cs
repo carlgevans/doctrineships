@@ -11,6 +11,7 @@
     {
         // External Dependencies.
         private readonly IUnitOfWork unitOfWork;
+        public static string ConnectionString;
 
         // Internal Dependencies (Instantiated On-Demand By Accessors).
         private AccessCodeOperations accessCodeOperations;
@@ -374,6 +375,10 @@
             return ComponentOperations.GetComponent(componentId);
         }
 
+        public Component GetComponent(string componentName)
+        {
+            return ComponentOperations.GetComponent(componentName);
+        }
         public IEnumerable<Component> GetComponents()
         {
             return ComponentOperations.GetComponents();
@@ -792,6 +797,11 @@
         public IEnumerable<Doctrine> GetDoctrinesForAccount(int accountId)
         {
             return DoctrineOperations.GetDoctrinesForAccount(accountId);
+        }
+
+        public IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId)
+        {
+            return DoctrineOperations.GetDoctrinesByShipFit(shipFitId);
         }
 
         public void DeleteDoctrineShipFit(int doctrineShipFitId)

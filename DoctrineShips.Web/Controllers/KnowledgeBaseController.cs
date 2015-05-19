@@ -2,7 +2,6 @@
 {
     using System.Web.Mvc;
     using System.Web.UI;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
     using DoctrineShips.Web.ViewModels;
     using Tools;
@@ -17,7 +16,6 @@
             this.doctrineShipsServices = doctrineShipsServices;
         }
 
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         public ActionResult List()
         {
             KnowledgeBaseListViewModel viewModel = new KnowledgeBaseListViewModel();
@@ -27,7 +25,7 @@
             return View(viewModel);
         }
 
-        [DonutOutputCache(Duration = 600, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult Article(string articleId)
         {
             // Cleanse the passed article id string to prevent XSS.

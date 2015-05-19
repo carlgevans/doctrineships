@@ -43,6 +43,7 @@
         Component AddComponent(Component component);
         Component CreateComponent(Component component);
         Component GetComponent(int componentId);
+        Component GetComponent(string componentName);
         IEnumerable<Component> GetComponents();
 
         // Contract Operations.
@@ -145,6 +146,7 @@
         Doctrine GetDoctrine(int doctrineId);
         IEnumerable<Doctrine> GetDoctrines();
         IEnumerable<Doctrine> GetDoctrinesForAccount(int accountId);
+        IEnumerable<Doctrine> GetDoctrinesByShipFit(int shipFitId);
 
         // DoctrineShipFit Operations.
         void DeleteDoctrineShipFit(int doctrineShipFitId);

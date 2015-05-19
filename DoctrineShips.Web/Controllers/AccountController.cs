@@ -10,7 +10,6 @@
     using System.Web.Security;
     using System.Web.UI;
     using AutoMapper;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Entities;
     using DoctrineShips.Service;
     using DoctrineShips.Service.Entities;
@@ -100,7 +99,6 @@
             return RedirectToAction("Index", "Home");
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
         [AllowAnonymous]
         public ActionResult AccessDenied()
         {
@@ -352,7 +350,8 @@
                 if (newKey != string.Empty)
                 {
                     // Assign the new key to TempData to be passed to the AccessCodes view.
-                    string authUrl = this.doctrineShipsServices.Settings.WebsiteDomain + "/A/" + accountId + "/" + newKey;
+
+                    string authUrl = Request.Url.Scheme + "://" + Request.Url.Host + "/A/" + accountId + "/" + newKey;
                     TempData["Status"] = "Success, the auth url is: <a href=\"" + authUrl + "\">" + authUrl + "</a>";
                 }
                 else
@@ -646,7 +645,7 @@
                 viewModel.AccountId = accountId;
                 viewModel.Name = Conversion.StringToSafeString(viewModel.Name);
                 viewModel.Role = Conversion.StringToSafeString(viewModel.Role);
-                viewModel.Notes = Conversion.StringToSafeString(viewModel.Notes);
+                viewModel.Notes = viewModel.Notes;
 
                 // Populate a ship fit with automapper and pass it back to the service layer for update.
                 ShipFit shipFit = Mapper.Map<AccountShipFitsViewModel, ShipFit>(viewModel);
@@ -786,7 +785,7 @@
                 // Sanitise the form values.
                 viewModel.AccountId = accountId;
                 viewModel.Name = Conversion.StringToSafeString(viewModel.Name);
-                viewModel.Description = Conversion.StringToSafeString(viewModel.Description);
+                viewModel.Description = viewModel.Description;
                 viewModel.ImageUrl = Server.HtmlEncode(viewModel.ImageUrl) ?? string.Empty;
 
                 // Populate a doctrine with automapper and pass it back to the service layer for update.

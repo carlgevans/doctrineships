@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using System.Web.Mvc;
     using System.Web.UI;
-    using DevTrends.MvcDonutCaching;
     using DoctrineShips.Service;
     using DoctrineShips.Validation;
     using DoctrineShips.Web.ViewModels;
@@ -20,7 +19,7 @@
             this.doctrineShipsServices = doctrineShipsServices;
         }
 
-        [DonutOutputCache(Duration = 300, VaryByCustom = "Account", Location = OutputCacheLocation.Server)]
+        
         public ActionResult List()
         {
             // Instantiate a new view model to populate the view.
